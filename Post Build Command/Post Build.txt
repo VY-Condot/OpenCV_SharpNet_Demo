@@ -1,0 +1,29 @@
+if not exist "$(TargetDir)CSPL_OCRLibs" mkdir "$(TargetDir)CSPL_OCRLibs"
+move "$(TargetDir)*.dll" "$(TargetDir)CSPL_OCRLibs\"
+move "$(TargetDir)CSPL_OCRLibs\$(TargetName).dll" "$(TargetDir)"
+
+
+
+--rename dll
+:: 1. Create libs folder and move everything
+if not exist "$(TargetDir)CSPL_OCRLibs" mkdir "$(TargetDir)CSPL_OCRLibs"
+move "$(TargetDir)*.dll" "$(TargetDir)CSPL_OCRLibs\"
+
+:: 2. Move your main executable's DLL back to the root!
+:: (Assuming your project name is YourApp, this moves YourApp.dll back)
+move "$(TargetDir)CSPL_OCRLibs\$(TargetName).dll" "$(TargetDir)"
+
+:: 3. Rename the files to match your C# Dictionary
+ren "$(TargetDir)CSPL_OCRLibs\ClosedXML.dll" "a3f8b9c2.dll"
+ren "$(TargetDir)CSPL_OCRLibs\ClosedXML.Parser.dll" "b7d4e1f5.dll"
+ren "$(TargetDir)CSPL_OCRLibs\DocumentFormat.OpenXml.dll" "c9a2b4d6.dll"
+ren "$(TargetDir)CSPL_OCRLibs\DocumentFormat.OpenXml.Framework.dll" "d1c8e7f9.dll"
+ren "$(TargetDir)CSPL_OCRLibs\ExcelNumberFormat.dll" "e5f2a1b9.dll"
+ren "$(TargetDir)CSPL_OCRLibs\OpenCvSharp.dll" "f8b3c7d1.dll"
+ren "$(TargetDir)CSPL_OCRLibs\OpenCvSharp.Extensions.dll" "a1d9e2f4.dll"
+ren "$(TargetDir)CSPL_OCRLibs\RBush.dll" "b6c3d8e1.dll"
+ren "$(TargetDir)CSPL_OCRLibs\SixLabors.Fonts.dll" "c4e7f2a9.dll"
+ren "$(TargetDir)CSPL_OCRLibs\System.Drawing.Common.dll" "d9f1a8b2.dll"
+ren "$(TargetDir)CSPL_OCRLibs\System.IO.Packaging.dll" "e2b5c9d4.dll"
+ren "$(TargetDir)CSPL_OCRLibs\System.Runtime.WindowsRuntime.dll" "f3a7d2e8.dll"
+ren "$(TargetDir)CSPL_OCRLibs\ZXingCpp.dll" "a8c4e1f7.dll"
