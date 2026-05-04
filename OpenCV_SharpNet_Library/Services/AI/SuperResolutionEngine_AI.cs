@@ -2,12 +2,14 @@
 using OpenCvSharp.DnnSuperres;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenCV_SharpNet.Services.AI
 {
+    [DebuggerStepThrough]
     public class SuperResolutionEngine_AI
     {
         private static DnnSuperResImpl _srEngine;

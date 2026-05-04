@@ -1,13 +1,15 @@
 ﻿using OpenCV_SharpNet.Enums;
-using OpenCV_SharpNet.Services;
 using OpenCV_SharpNet.Models;
 using OpenCV_SharpNet.Models.GS1_QC;
+using OpenCV_SharpNet.Services;
 using OpenCvSharp;
 using System.Collections.Generic;
+using System.Diagnostics;
 using ZXingCpp;
 
 namespace OpenCV_SharpNet.Models
 {
+    [DebuggerStepThrough]
     public class RoiObject
     {
         public int Id { get; set; }

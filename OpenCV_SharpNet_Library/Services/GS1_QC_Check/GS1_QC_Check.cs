@@ -3,6 +3,7 @@ using OpenCV_SharpNet.Models.GS1_QC;
 using OpenCvSharp;
 using System;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using ZXingCpp;
 using Point = OpenCvSharp.Point;
@@ -10,6 +11,7 @@ using Size = OpenCvSharp.Size;
 
 namespace OpenCV_SharpNet.Services.GS1_QC_Check
 {
+    [DebuggerStepThrough]
     public class GS1_QC_Check : IGS1_QC_Check
     {
         public GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded)

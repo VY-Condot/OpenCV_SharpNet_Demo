@@ -15,6 +15,7 @@ using CvRect = OpenCvSharp.Rect;
 
 namespace OpenCV_SharpNet.Services
 {
+    [DebuggerStepThrough]
     public static class OcrEngine
     {
         // --- CONFIGURATION ---
@@ -524,99 +525,105 @@ namespace OpenCV_SharpNet.Services
                 // =================================================================
                 if (roi.UseBruteForceGridRecovery)
                 {
-                    // 1. GLOBAL PRE-PROCESSING (Do the heavy OpenCV math ONCE!)
-                    using Mat binOtsuGlobal = new Mat();
-                    Cv2.Threshold(graySrc, binOtsuGlobal, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+                    //// 1. GLOBAL PRE-PROCESSING (Do the heavy OpenCV math ONCE!)
+                    //using Mat binOtsuGlobal = new Mat();
+                    //Cv2.Threshold(graySrc, binOtsuGlobal, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
 
-                    using Mat blurred = new Mat();
-                    Cv2.GaussianBlur(graySrc, blurred, new OpenCvSharp.Size(3, 3), 0);
+                    //using Mat blurred = new Mat();
+                    //Cv2.GaussianBlur(graySrc, blurred, new OpenCvSharp.Size(3, 3), 0);
 
-                    using Mat localEnhanced = new Mat();
-                    using var clahe = Cv2.CreateCLAHE(clipLimit: 2.0, tileGridSize: new OpenCvSharp.Size(8, 8));
-                    clahe.Apply(blurred, localEnhanced);
+                    //using Mat localEnhanced = new Mat();
+                    //using var clahe = Cv2.CreateCLAHE(clipLimit: 2.0, tileGridSize: new OpenCvSharp.Size(8, 8));
+                    //clahe.Apply(blurred, localEnhanced);
 
-                    using Mat binAdaptiveGlobal = new Mat();
-                    Cv2.AdaptiveThreshold(localEnhanced, binAdaptiveGlobal, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 45, 10);
+                    //using Mat binAdaptiveGlobal = new Mat();
+                    //Cv2.AdaptiveThreshold(localEnhanced, binAdaptiveGlobal, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 45, 10);
 
-                    // 2. SETUP TILE MATH
-                    int tileW = Math.Min(300, crop.Width);
-                    int step = tileW / 2; // 50% overlap
-                    int pad = 20;
+                    //// 2. SETUP TILE MATH
+                    //int tileW = Math.Min(300, crop.Width);
+                    //int step = tileW / 2; // 50% overlap
+                    //int pad = 20;
 
-                    // Calculate exactly how many tiles we need
-                    int numTiles = ((crop.Width - tileW) / step) + 1;
-                    if (crop.Width > tileW && (crop.Width - tileW) % step != 0) numTiles++;
-                    if (crop.Width <= tileW) numTiles = 1;
+                    //// Calculate exactly how many tiles we need
+                    //int numTiles = ((crop.Width - tileW) / step) + 1;
+                    //if (crop.Width > tileW && (crop.Width - tileW) % step != 0) numTiles++;
+                    //if (crop.Width <= tileW) numTiles = 1;
 
-                    // Thread-safe bag to hold the results from the parallel cores
-                    ConcurrentBag<CharResult> concurrentResults = new ConcurrentBag<CharResult>();
+                    //// Thread-safe bag to hold the results from the parallel cores
+                    //ConcurrentBag<CharResult> concurrentResults = new ConcurrentBag<CharResult>();
 
-                    // =================================================================
-                    // 3. PARALLEL TILE SCANNING (Uses all i7 CPU cores simultaneously!)
-                    // =================================================================
-                    Parallel.For(0, numTiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
-                    {
-                        int currentX = i * step;
-                        if (currentX + tileW > crop.Width) currentX = crop.Width - tileW; // Snap to right edge
+                    //// =================================================================
+                    //// 3. PARALLEL TILE SCANNING (Uses all i7 CPU cores simultaneously!)
+                    //// =================================================================
+                    //Parallel.For(0, numTiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                    //{
+                    //    int currentX = i * step;
+                    //    if (currentX + tileW > crop.Width) currentX = crop.Width - tileW; // Snap to right edge
 
-                        // Slice the pre-processed global images instantly (Zero heavy math)
-                        using Mat tileRaw = new Mat(graySrc, new Rect(currentX, 0, tileW, crop.Height));
-                        using Mat tileOtsu = new Mat(binOtsuGlobal, new Rect(currentX, 0, tileW, crop.Height));
-                        using Mat tileAdaptive = new Mat(binAdaptiveGlobal, new Rect(currentX, 0, tileW, crop.Height));
+                    //    // Slice the pre-processed global images instantly (Zero heavy math)
+                    //    using Mat tileRaw = new Mat(graySrc, new Rect(currentX, 0, tileW, crop.Height));
+                    //    using Mat tileOtsu = new Mat(binOtsuGlobal, new Rect(currentX, 0, tileW, crop.Height));
+                    //    using Mat tileAdaptive = new Mat(binAdaptiveGlobal, new Rect(currentX, 0, tileW, crop.Height));
 
-                        RoiObject tileRes = new RoiObject { CharResults = new List<CharResult>() };
+                    //    RoiObject tileRes = new RoiObject { CharResults = new List<CharResult>() };
 
-                        // ATTEMPT A: Raw
-                        using Mat paddedRaw = new Mat();
-                        Cv2.CopyMakeBorder(tileRaw, paddedRaw, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                        TryDecodeFast(paddedRaw, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
+                    //    // ATTEMPT A: Raw
+                    //    using Mat paddedRaw = new Mat();
+                    //    Cv2.CopyMakeBorder(tileRaw, paddedRaw, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    //    TryDecodeFast(paddedRaw, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
 
-                        // ATTEMPT B: Otsu
-                        using Mat paddedOtsu = new Mat();
-                        Cv2.CopyMakeBorder(tileOtsu, paddedOtsu, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                        TryDecodeFast(paddedOtsu, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
+                    //    // ATTEMPT B: Otsu
+                    //    using Mat paddedOtsu = new Mat();
+                    //    Cv2.CopyMakeBorder(tileOtsu, paddedOtsu, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    //    TryDecodeFast(paddedOtsu, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
 
-                        // ATTEMPT C: Adaptive
-                        using Mat paddedAdaptive = new Mat();
-                        Cv2.CopyMakeBorder(tileAdaptive, paddedAdaptive, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                        TryDecodeFast(paddedAdaptive, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
+                    //    // ATTEMPT C: Adaptive
+                    //    using Mat paddedAdaptive = new Mat();
+                    //    Cv2.CopyMakeBorder(tileAdaptive, paddedAdaptive, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    //    TryDecodeFast(paddedAdaptive, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
 
-                        // Dump local tile results into the thread-safe bag
-                        foreach (var found in tileRes.CharResults)
-                        {
-                            found.Box = new Rect(found.Box.X + currentX, found.Box.Y, found.Box.Width, found.Box.Height);
-                            if (found.Polygon != null)
-                            {
-                                for (int p = 0; p < 4; p++) found.Polygon[p].X += currentX;
-                            }
-                            concurrentResults.Add(found);
-                        }
-                    });
+                    //    // Dump local tile results into the thread-safe bag
+                    //    foreach (var found in tileRes.CharResults)
+                    //    {
+                    //        found.Box = new Rect(found.Box.X + currentX, found.Box.Y, found.Box.Width, found.Box.Height);
+                    //        if (found.Polygon != null)
+                    //        {
+                    //            for (int p = 0; p < 4; p++) found.Polygon[p].X += currentX;
+                    //        }
+                    //        concurrentResults.Add(found);
+                    //    }
+                    //});
 
-                    // 4. DEDUPLICATE AND ASSEMBLE
-                    foreach (var found in concurrentResults)
-                    {
-                        // Ensure we don't add the same barcode twice if it was caught in an overlapping tile
-                        if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 20))
-                        {
-                            roi.CharResults.Add(found);
-                        }
-                    }
+                    //// 4. DEDUPLICATE AND ASSEMBLE
+                    //foreach (var found in concurrentResults)
+                    //{
+                    //    // Ensure we don't add the same barcode twice if it was caught in an overlapping tile
+                    //    if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 20))
+                    //    {
+                    //        roi.CharResults.Add(found);
+                    //    }
+                    //}
 
-                    // Assembly results
-                    if (roi.CharResults.Count > 0)
-                    {
-                        var sortedResults = roi.CharResults.OrderBy(r => r.Box.X).ToList();
-                        roi.CharResults.Clear();
-                        roi.CharResults.AddRange(sortedResults);
+                    //// Assembly results
+                    //if (roi.CharResults.Count > 0)
+                    //{
+                    //    var sortedResults = roi.CharResults.OrderBy(r => r.Box.X).ToList();
+                    //    roi.CharResults.Clear();
+                    //    roi.CharResults.AddRange(sortedResults);
 
-                        roi.DecodedText = string.Join(" | ", roi.CharResults.Select(r => r.Text));
-                        return;
-                    }
+                    //    roi.DecodedText = string.Join(" | ", roi.CharResults.Select(r => r.Text));
+                    //    return;
+                    //}
 
                     //comment this for further processing of the image when gets failed
                     //roi.DecodedText = "Failed";
                     //return;
+
+                    //call brute force method
+                    BruteForceDecode(crop,roi);
+
+                    //check and return or pass 
+                    if (!string.IsNullOrWhiteSpace(roi.DecodedText)) return;
                 }
 
 
@@ -688,6 +695,94 @@ namespace OpenCV_SharpNet.Services
             }
             catch { roi.DecodedText = "Failed"; }
             finally { ReturnBcState(bcState); }
+        }
+
+        public static void BruteForceDecode(Mat crop, RoiObject roi)
+        {
+            if (crop == null || crop.Empty())
+                return;
+
+            Mat gray = new Mat();
+            if (crop.Channels() == 3)
+                Cv2.CvtColor(crop, gray, ColorConversionCodes.BGR2GRAY);
+            else
+                gray = crop.Clone();
+
+            using (gray)
+            {
+                using Mat binOtsuGlobal = new Mat();
+                Cv2.Threshold(gray, binOtsuGlobal, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+                using Mat blurred = new Mat();
+                Cv2.GaussianBlur(gray, blurred, new OpenCvSharp.Size(3, 3), 0);
+
+                using Mat localEnhanced = new Mat();
+                using var clahe = Cv2.CreateCLAHE(clipLimit: 2.0, tileGridSize: new OpenCvSharp.Size(8, 8));
+                clahe.Apply(blurred, localEnhanced);
+
+                using Mat binAdaptiveGlobal = new Mat();
+                Cv2.AdaptiveThreshold(localEnhanced, binAdaptiveGlobal, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 45, 10);
+
+                int tileW = Math.Min(300, gray.Width);
+                int step = Math.Max(1, tileW / 2);
+                int pad = 20;
+
+                int numTiles = gray.Width <= tileW ? 1 : ((gray.Width - tileW) / step) + 1;
+                if (gray.Width > tileW && (gray.Width - tileW) % step != 0) numTiles++;
+
+                ConcurrentBag<CharResult> concurrentResults = new ConcurrentBag<CharResult>();
+
+                Parallel.For(0, numTiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                {
+                    int currentX = i * step;
+                    if (currentX + tileW > gray.Width)
+                        currentX = gray.Width - tileW;
+
+                    using Mat tileRaw = new Mat(gray, new Rect(currentX, 0, tileW, gray.Height));
+                    using Mat tileOtsu = new Mat(binOtsuGlobal, new Rect(currentX, 0, tileW, gray.Height));
+                    using Mat tileAdaptive = new Mat(binAdaptiveGlobal, new Rect(currentX, 0, tileW, gray.Height));
+
+                    RoiObject tileRes = new RoiObject { CharResults = new List<CharResult>() };
+
+                    using Mat paddedRaw = new Mat();
+                    Cv2.CopyMakeBorder(tileRaw, paddedRaw, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    TryDecodeFast(paddedRaw, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
+
+                    using Mat paddedOtsu = new Mat();
+                    Cv2.CopyMakeBorder(tileOtsu, paddedOtsu, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    TryDecodeFast(paddedOtsu, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
+
+                    using Mat paddedAdaptive = new Mat();
+                    Cv2.CopyMakeBorder(tileAdaptive, paddedAdaptive, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    TryDecodeFast(paddedAdaptive, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
+
+                    foreach (var found in tileRes.CharResults)
+                    {
+                        found.Box = new Rect(found.Box.X + currentX, found.Box.Y, found.Box.Width, found.Box.Height);
+                        if (found.Polygon != null)
+                        {
+                            for (int p = 0; p < 4; p++)
+                                found.Polygon[p].X += currentX;
+                        }
+                        concurrentResults.Add(found);
+                    }
+                });
+
+                roi.CharResults.Clear();
+                foreach (var found in concurrentResults)
+                {
+                    if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 20))
+                        roi.CharResults.Add(found);
+                }
+
+                if (roi.CharResults.Count > 0)
+                {
+                    var sortedResults = roi.CharResults.OrderBy(r => r.Box.X).ToList();
+                    roi.CharResults.Clear();
+                    roi.CharResults.AddRange(sortedResults);
+                    roi.DecodedText = string.Join(" | ", roi.CharResults.Select(r => r.Text));
+                }
+            }
         }
 
         private static void TryDecodeCylindrical(Mat graySrc, RoiObject roi, int origW, int origH)

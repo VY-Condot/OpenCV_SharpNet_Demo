@@ -1,5 +1,8 @@
-﻿namespace OpenCV_SharpNet.Models.GS1_QC
+﻿using System.Diagnostics;
+
+namespace OpenCV_SharpNet.Models.GS1_QC
 {
+    [DebuggerStepThrough]
     public record GS1_QC_CheckResult
     (
         string BarcodeType = null,

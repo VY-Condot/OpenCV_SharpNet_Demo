@@ -1,10 +1,12 @@
-﻿using OpenCvSharp;
-using OpenCV_SharpNet.Enums;
+﻿using OpenCV_SharpNet.Enums;
+using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace OpenCV_SharpNet.Services
 {
+    [DebuggerStepThrough]
     public static class MorphologyProcessor
     {
         [ThreadStatic]

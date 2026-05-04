@@ -4,6 +4,7 @@ using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using Point = System.Drawing.Point;
 
 namespace OpenCV_SharpNet.Services
 {
+    [DebuggerStepThrough]
     public static class TemplateManager
     {
         // This list holds the images in RAM. If this is empty, matching FAILS.

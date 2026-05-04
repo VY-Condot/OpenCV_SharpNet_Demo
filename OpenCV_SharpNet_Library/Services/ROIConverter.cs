@@ -3,12 +3,14 @@ using OpenCV_SharpNet.Models;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OpenCV_SharpNet.Services
 {
+    [DebuggerStepThrough]
     public class ROIConverter
     {
         // 1. Convert Logic Object -> DTO (For Saving)

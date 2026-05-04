@@ -2,6 +2,7 @@
 using OpenCvSharp.Dnn;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ using Size = OpenCvSharp.Size;
 
 namespace OpenCV_SharpNet.Services.AI
 {
+    [DebuggerStepThrough]
     public class YoloDetector_AI
     {
         private static Net _yoloNet;

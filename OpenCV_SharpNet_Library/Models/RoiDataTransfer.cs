@@ -2,10 +2,12 @@
 using OpenCV_SharpNet.Models;
 using OpenCV_SharpNet.Services;
 using OpenCvSharp;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 namespace OpenCV_SharpNet.Models
 {
+    [DebuggerStepThrough]
     public class RoiDataTransfer
     {
         public int Id { get; set; }
