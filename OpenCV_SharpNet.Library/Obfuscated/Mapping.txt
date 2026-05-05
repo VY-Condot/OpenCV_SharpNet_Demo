@@ -1,0 +1,1148 @@
+Renamed Types:
+
+[CsplCam.Library]<>f__AnonymousType0`2 -> [CsplCam.Library]A.A`2
+{
+	[CsplCam.Library]<>f__AnonymousType0`2::get_Box[0]( ) -> A
+	[CsplCam.Library]<>f__AnonymousType0`2::get_CenterY[0]( ) -> a
+
+	[CsplCam.Library]<>f__AnonymousType0`2::.ctor[2]( !0, !1 ) skipped:  special name
+	[CsplCam.Library]<>f__AnonymousType0`2::Equals[1]( [System.Runtime]System.Object ) skipped:  external base class or interface
+	[CsplCam.Library]<>f__AnonymousType0`2::GetHashCode[0]( ) skipped:  external base class or interface
+	[CsplCam.Library]<>f__AnonymousType0`2::ToString[0]( ) skipped:  external base class or interface
+
+	<Box>j__TPar [CsplCam.Library]<Box>j__TPar <>f__AnonymousType0`2::<Box>i__Field -> A
+	<CenterY>j__TPar [CsplCam.Library]<CenterY>j__TPar <>f__AnonymousType0`2::<CenterY>i__Field -> A
+
+	A [CsplCam.Library]A <>f__AnonymousType0`2::Box -> dropped
+	a [CsplCam.Library]a <>f__AnonymousType0`2::CenterY -> dropped
+}
+
+[CsplCam.Library]<PrivateImplementationDetails> -> [CsplCam.Library]A.a
+{
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=24 [CsplCam.Library]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=24 <PrivateImplementationDetails>::0BBCD880966C04FDCB5365830C6C204BDAF39F1F9DBE2BF89BED7DF016B84023 -> A
+	<PrivateImplementationDetails>/__StaticArrayInitTypeSize=96 [CsplCam.Library]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=96 <PrivateImplementationDetails>::16D99BDC93B461DBCF7579348E1D69903927BE7775F73F5219E921AC4496884A -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/C
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<GetCharacterBoxes>b__44_0[2]( [OpenCvSharp]OpenCvSharp.Rect, [OpenCvSharp]OpenCvSharp.Rect ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<GetCharacterBoxes>b__44_1[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<GetCharacterBoxes>b__44_2[1]( [CsplCam.Library].<>f__AnonymousType0`2<[OpenCvSharp]OpenCvSharp.Rect,[System.Runtime]System.Double> ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<GetCharacterBoxes>b__44_3[1]( [System.Collections]System.Collections.Generic.List`1<[OpenCvSharp]OpenCvSharp.Rect> ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<GetCharacterBoxes>b__44_5[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> a
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<GetCharacterBoxes>b__44_4[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> B
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<BruteForceDecode>b__50_2[1]( [CsplCam.Library]CsplCam.Library.Models.CharResult ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<BruteForceDecode>b__50_3[1]( [CsplCam.Library]CsplCam.Library.Models.CharResult ) -> a
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeCylindrical>b__51_1[1]( [OpenCvSharp]OpenCvSharp.Point ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeCylindrical>b__51_2[1]( [OpenCvSharp]OpenCvSharp.Point ) -> a
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeCylindrical>b__51_3[1]( [OpenCvSharp]OpenCvSharp.Point ) -> B
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeCylindrical>b__51_4[1]( [OpenCvSharp]OpenCvSharp.Point ) -> b
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeCylindrical>b__51_0[1]( [CsplCam.Library]CsplCam.Library.Models.CharResult ) -> B
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeFast>b__52_0[1]( [ZXingCpp]ZXingCpp.Barcode ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeFast>b__52_1[1]( [ZXingCpp]ZXingCpp.PointI ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeFast>b__52_2[1]( [ZXingCpp]ZXingCpp.PointI ) -> a
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeFast>b__52_3[1]( [ZXingCpp]ZXingCpp.PointI ) -> B
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeFast>b__52_4[1]( [ZXingCpp]ZXingCpp.PointI ) -> b
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodeFast>b__52_5[1]( [ZXingCpp]ZXingCpp.PointI ) -> C
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_0[1]( [OpenCvSharp]OpenCvSharp.Point[] ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_1[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> b
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_2[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> C
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_3[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> c
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_6[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> D
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_8[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> d
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_9[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> E
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_11[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> e
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_12[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> F
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_14[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> f
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_15[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> G
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_16[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> g
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_17[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> H
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_18[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> h
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<TryDecodePharmacode>b__53_19[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> I
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<DecodeRoi>b__54_0[0]( ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<DecodeRoi>b__54_2[1]( [CsplCam.Library]CsplCam.Library.Services.OcrEngine/OcrThreadState ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<DeskewImage>b__58_0[2]( [OpenCvSharp]OpenCvSharp.Rect, [OpenCvSharp]OpenCvSharp.Rect ) -> a
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<FindMatchLocation>b__65_0[1]( [OpenCvSharp]OpenCvSharp.DMatch ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::<FindMatchLocation>b__65_1[1]( [OpenCvSharp]OpenCvSharp.DMatch ) -> a
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::.cctor[0]( ) skipped:  special name
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c::.ctor[0]( ) skipped:  special name
+
+	CsplCam.Library.Services.OcrEngine/<>c [CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c CsplCam.Library.Services.OcrEngine/<>c::<>9 -> A
+	System.Comparison`1<OpenCvSharp.Rect> [CsplCam.Library]System.Comparison`1<OpenCvSharp.Rect> CsplCam.Library.Services.OcrEngine/<>c::<>9__44_0 -> A
+	System.Func`2<OpenCvSharp.Rect,<>f__AnonymousType0`2<OpenCvSharp.Rect,System.Double>> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,<>f__AnonymousType0`2<OpenCvSharp.Rect,System.Double>> CsplCam.Library.Services.OcrEngine/<>c::<>9__44_1 -> A
+	System.Func`2<<>f__AnonymousType0`2<OpenCvSharp.Rect,System.Double>,System.Double> [CsplCam.Library]System.Func`2<<>f__AnonymousType0`2<OpenCvSharp.Rect,System.Double>,System.Double> CsplCam.Library.Services.OcrEngine/<>c::<>9__44_2 -> A
+	System.Func`2<System.Collections.Generic.List`1<OpenCvSharp.Rect>,System.Double> [CsplCam.Library]System.Func`2<System.Collections.Generic.List`1<OpenCvSharp.Rect>,System.Double> CsplCam.Library.Services.OcrEngine/<>c::<>9__44_3 -> A
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__44_5 -> A
+	System.Predicate`1<OpenCvSharp.Rect> [CsplCam.Library]System.Predicate`1<OpenCvSharp.Rect> CsplCam.Library.Services.OcrEngine/<>c::<>9__44_4 -> A
+	System.Func`2<CsplCam.Library.Models.CharResult,System.Int32> [CsplCam.Library]System.Func`2<CsplCam.Library.Models.CharResult,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__50_2 -> A
+	System.Func`2<CsplCam.Library.Models.CharResult,System.String> [CsplCam.Library]System.Func`2<CsplCam.Library.Models.CharResult,System.String> CsplCam.Library.Services.OcrEngine/<>c::<>9__50_3 -> A
+	System.Func`2<OpenCvSharp.Point,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Point,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__51_1 -> A
+	System.Func`2<OpenCvSharp.Point,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Point,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__51_2 -> a
+	System.Func`2<OpenCvSharp.Point,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Point,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__51_3 -> B
+	System.Func`2<OpenCvSharp.Point,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Point,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__51_4 -> b
+	System.Func`2<CsplCam.Library.Models.CharResult,System.String> [CsplCam.Library]System.Func`2<CsplCam.Library.Models.CharResult,System.String> CsplCam.Library.Services.OcrEngine/<>c::<>9__51_0 -> a
+	System.Func`2<ZXingCpp.Barcode,System.String> [CsplCam.Library]System.Func`2<ZXingCpp.Barcode,System.String> CsplCam.Library.Services.OcrEngine/<>c::<>9__52_0 -> A
+	System.Func`2<ZXingCpp.PointI,System.Boolean> [CsplCam.Library]System.Func`2<ZXingCpp.PointI,System.Boolean> CsplCam.Library.Services.OcrEngine/<>c::<>9__52_1 -> A
+	System.Func`2<ZXingCpp.PointI,System.Int32> [CsplCam.Library]System.Func`2<ZXingCpp.PointI,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__52_2 -> A
+	System.Func`2<ZXingCpp.PointI,System.Int32> [CsplCam.Library]System.Func`2<ZXingCpp.PointI,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__52_3 -> a
+	System.Func`2<ZXingCpp.PointI,System.Int32> [CsplCam.Library]System.Func`2<ZXingCpp.PointI,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__52_4 -> B
+	System.Func`2<ZXingCpp.PointI,System.Int32> [CsplCam.Library]System.Func`2<ZXingCpp.PointI,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__52_5 -> b
+	System.Func`2<OpenCvSharp.Point[],OpenCvSharp.Rect> [CsplCam.Library]System.Func`2<OpenCvSharp.Point[],OpenCvSharp.Rect> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_0 -> A
+	System.Func`2<OpenCvSharp.Rect,System.Boolean> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Boolean> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_1 -> A
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_2 -> a
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_3 -> B
+	System.Func`2<OpenCvSharp.Rect,System.Double> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Double> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_6 -> A
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_8 -> b
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_9 -> C
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_11 -> c
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_12 -> D
+	System.Func`2<OpenCvSharp.Rect,System.Double> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Double> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_14 -> a
+	System.Func`2<OpenCvSharp.Rect,System.Double> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Double> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_15 -> B
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_16 -> d
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_17 -> E
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_18 -> e
+	System.Func`2<OpenCvSharp.Rect,System.Int32> [CsplCam.Library]System.Func`2<OpenCvSharp.Rect,System.Int32> CsplCam.Library.Services.OcrEngine/<>c::<>9__53_19 -> F
+	System.Func`1<CsplCam.Library.Services.OcrEngine/OcrThreadState> [CsplCam.Library]System.Func`1<CsplCam.Library.Services.OcrEngine/OcrThreadState> CsplCam.Library.Services.OcrEngine/<>c::<>9__54_0 -> A
+	System.Action`1<CsplCam.Library.Services.OcrEngine/OcrThreadState> [CsplCam.Library]System.Action`1<CsplCam.Library.Services.OcrEngine/OcrThreadState> CsplCam.Library.Services.OcrEngine/<>c::<>9__54_2 -> A
+	System.Comparison`1<OpenCvSharp.Rect> [CsplCam.Library]System.Comparison`1<OpenCvSharp.Rect> CsplCam.Library.Services.OcrEngine/<>c::<>9__58_0 -> a
+	System.Func`2<OpenCvSharp.DMatch,System.Boolean> [CsplCam.Library]System.Func`2<OpenCvSharp.DMatch,System.Boolean> CsplCam.Library.Services.OcrEngine/<>c::<>9__65_0 -> A
+	System.Func`2<OpenCvSharp.DMatch,System.Single> [CsplCam.Library]System.Func`2<OpenCvSharp.DMatch,System.Single> CsplCam.Library.Services.OcrEngine/<>c::<>9__65_1 -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass44_0 -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/c
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass44_0::<GetCharacterBoxes>b__6[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass44_0::.ctor[0]( ) skipped:  special name
+
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass44_0::minAllowed -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass47_0 -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/D
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass47_0::<RecognizeImpl>b__0[1]( [System.Runtime]System.Collections.Generic.KeyValuePair`2<[System.Runtime]System.String,[System.Runtime]System.String> ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass47_0::.ctor[0]( ) skipped:  special name
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Services.OcrEngine/<>c__DisplayClass47_0::bestLabel -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0 -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/d
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::<BruteForceDecode>b__0[1]( [System.Runtime]System.Int32 ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::.ctor[0]( ) skipped:  special name
+
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::gray -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::step -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::tileW -> a
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::binOtsuGlobal -> a
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::binAdaptiveGlobal -> B
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::pad -> B
+	System.Collections.Concurrent.ConcurrentBag`1<CsplCam.Library.Models.CharResult> [CsplCam.Library]System.Collections.Concurrent.ConcurrentBag`1<CsplCam.Library.Models.CharResult> CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_0::concurrentResults -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_1 -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/E
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_1::<BruteForceDecode>b__1[1]( [CsplCam.Library]CsplCam.Library.Models.CharResult ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_1::.ctor[0]( ) skipped:  special name
+
+	CsplCam.Library.Models.CharResult [CsplCam.Library]CsplCam.Library.Models.CharResult CsplCam.Library.Services.OcrEngine/<>c__DisplayClass50_1::found -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0 -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/e
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::<TryDecodePharmacode>b__4[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::<TryDecodePharmacode>b__5[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> a
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::<TryDecodePharmacode>b__7[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> B
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::<TryDecodePharmacode>b__10[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> b
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::<TryDecodePharmacode>b__13[1]( [OpenCvSharp]OpenCvSharp.Rect ) -> C
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::.ctor[0]( ) skipped:  special name
+
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::clusterMaxHeight -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::laserLineY -> a
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::tolerance -> B
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass53_0::maxHeight -> b
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0 -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/F
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::<DecodeRoi>b__1[3]( [System.Runtime]System.Tuple`2<[System.Runtime]System.Int32,[System.Runtime]System.Int32>, [System.Threading.Tasks.Parallel]System.Threading.Tasks.ParallelLoopState, [CsplCam.Library]CsplCam.Library.Services.OcrEngine/OcrThreadState ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::.ctor[0]( ) skipped:  special name
+
+	CsplCam.Library.Models.RoiObject [CsplCam.Library]CsplCam.Library.Models.RoiObject CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::roi -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::origW -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::origH -> a
+	System.Collections.Generic.List`1<OpenCvSharp.Rect> [CsplCam.Library]System.Collections.Generic.List`1<OpenCvSharp.Rect> CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::boxes -> A
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::ocrSourceImage -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::cleanLen -> B
+	System.String [CsplCam.Library]System.String CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::cleanExpected -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::skewAngle -> A
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::centerX -> A
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::centerY -> a
+	CsplCam.Library.Models.CharResult[] [CsplCam.Library]CsplCam.Library.Models.CharResult[] CsplCam.Library.Services.OcrEngine/<>c__DisplayClass54_0::fastResults -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0 -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/f
+{
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::m00 -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::m01 -> a
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::m02 -> B
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::m10 -> b
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::m11 -> C
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::m12 -> c
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::minX -> A
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::maxX -> a
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::minY -> B
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0::maxY -> b
+}
+
+[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c -> [CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/A
+{
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c::<EvaluateISO15415Quality>b__0_0[1]( [OpenCvSharp]OpenCvSharp.Point[] ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c::.cctor[0]( ) skipped:  special name
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c::.ctor[0]( ) skipped:  special name
+
+	CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c [CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c::<>9 -> A
+	System.Func`2<OpenCvSharp.Point[],System.Double> [CsplCam.Library]System.Func`2<OpenCvSharp.Point[],System.Double> CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c::<>9__0_0 -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c__DisplayClass2_0 -> [CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/a
+{
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c__DisplayClass2_0::<SortCornersClockwiseFast>b__0[2]( [OpenCvSharp]OpenCvSharp.Point2f, [OpenCvSharp]OpenCvSharp.Point2f ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c__DisplayClass2_0::.ctor[0]( ) skipped:  special name
+
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c__DisplayClass2_0::cy -> A
+	System.Single [CsplCam.Library]System.Single CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check/<>c__DisplayClass2_0::cx -> a
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/PointXComparer -> [CsplCam.Library]CsplCam.Library.Services.OcrEngine/b
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/PointXComparer::Compare[2]( [OpenCvSharp]OpenCvSharp.Point2f, [OpenCvSharp]OpenCvSharp.Point2f ) skipped:  external base class or interface
+}
+
+[CsplCam.Library]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=24 -> [CsplCam.Library]A.a/A
+{
+}
+
+[CsplCam.Library]<PrivateImplementationDetails>/__StaticArrayInitTypeSize=96 -> [CsplCam.Library]A.a/a
+{
+}
+
+Skipped Types:
+
+[CsplCam.Library]CsplCam.Library.Services.MorphologyProcessor skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.MorphologyProcessor::Apply[5]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Enums.MorphOperation, [System.Runtime]System.Int32, [System.Runtime]System.Int32, [System.Runtime]System.Int32 ) skipped:  KeepPublicApi option in configuration
+
+	System.Collections.Generic.Dictionary`2<System.Int32,OpenCvSharp.Mat> [CsplCam.Library]System.Collections.Generic.Dictionary`2<System.Int32,OpenCvSharp.Mat> CsplCam.Library.Services.MorphologyProcessor::_kernelCache -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine skipped:  KeepPublicApi option in configuration
+{
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::GetOcrState[0]( ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::ReturnOcrState[1]( [CsplCam.Library]CsplCam.Library.Services.OcrEngine/OcrThreadState ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::GetBcState[0]( ) -> a
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::ReturnBcState[1]( [CsplCam.Library]CsplCam.Library.Services.OcrEngine/BarcodeThreadState ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::FastDotProduct[2]( [System.Runtime]System.Single[], [System.Runtime]System.Single[] ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::RecognizeImpl[4]( [OpenCvSharp]OpenCvSharp.Mat, [System.Runtime]System.Double, [System.Runtime]System.String, [CsplCam.Library]CsplCam.Library.Services.OcrEngine/OcrThreadState ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::GetBarCode[2]( [System.Runtime]System.Boolean, [System.Runtime]System.String ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::TryDecodeCylindrical[4]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Models.RoiObject, [System.Runtime]System.Int32, [System.Runtime]System.Int32 ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::TryDecodeFast[7]( [OpenCvSharp]OpenCvSharp.Mat, [ZXingCpp]ZXingCpp.ReaderOptions, [System.Runtime]System.Int32, [System.Runtime]System.Double, [CsplCam.Library]CsplCam.Library.Models.RoiObject, [System.Runtime]System.Int32, [System.Runtime]System.Int32 ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::TryDecodePharmacode[2]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Models.RoiObject ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::IsResultPass[2]( [System.Runtime]System.String, [System.Runtime]System.String ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::PerformFeatureMatching[2]( [CsplCam.Library]CsplCam.Library.Models.RoiObject, [OpenCvSharp]OpenCvSharp.Mat ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::InverseDeskewRect[4]( [OpenCvSharp]OpenCvSharp.Rect, [System.Runtime]System.Double, [System.Runtime]System.Single, [System.Runtime]System.Single ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::TryGetCenterZx[5]( [OpenCvSharp]OpenCvSharp.Mat, [ZXingCpp]ZXingCpp.ReaderOptions, [System.Runtime]System.Int32, [System.Runtime]System.Int32, [System.Runtime]System.Single ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::<InverseDeskewRect>g__Check|61_0[3]( [System.Runtime]System.Double, [System.Runtime]System.Double, [CsplCam.Library]CsplCam.Library.Services.OcrEngine/<>c__DisplayClass61_0& ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::get_DatasetRoot[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::set_DatasetRoot[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::get_IsNeglectGarabageChar[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::set_IsNeglectGarabageChar[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::get_SkewAngle[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::set_SkewAngle[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::get_TemplateVectors[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::set_TemplateVectors[1]( [System.Collections]System.Collections.Generic.Dictionary`2<[System.Runtime]System.String,[System.Collections]System.Collections.Generic.List`1<[CsplCam.Library]CsplCam.Library.Models.CharTemplate>> ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::get_BarCodeTextMode[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::ReloadTemplates[0]( ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::SaveTemplate[2]( [OpenCvSharp]OpenCvSharp.Mat, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::ProcessImageForMode[3]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::ProcessImageForMode[2]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::GetCharacterBoxes[2]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Models.RoiObject ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::RotateImage[4]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Mat&, [CsplCam.Library]CsplCam.Library.Enums.RotationAngles, [System.Runtime]System.Boolean ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::Recognize[3]( [OpenCvSharp]OpenCvSharp.Mat, [System.Runtime]System.Double, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::ReadBarcode[2]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Models.RoiObject ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::BruteForceDecode[2]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Models.RoiObject ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::DecodeRoi[2]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Models.RoiObject ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::DeskewImage[2]( [OpenCvSharp]OpenCvSharp.Mat, [System.Runtime]System.Double& ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::UnrotateBox[4]( [OpenCvSharp]OpenCvSharp.Rect, [System.Runtime]System.Int32, [System.Runtime]System.Int32, [CsplCam.Library]CsplCam.Library.Enums.RotationAngles ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::UnrotatePoint[4]( [OpenCvSharp]OpenCvSharp.Point, [System.Runtime]System.Int32, [System.Runtime]System.Int32, [CsplCam.Library]CsplCam.Library.Enums.RotationAngles ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::GenerateRoiControlPreview[2]( [OpenCvSharp]OpenCvSharp.Mat, [CsplCam.Library]CsplCam.Library.Models.RoiObject ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::FindAnyBarcodeCenter[2]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Rect ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::FindMatchLocation[4]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Rect, [System.Runtime]System.Boolean ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine::.cctor[0]( ) skipped:  special name
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Services.OcrEngine::<DatasetRoot>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Services.OcrEngine::<IsNeglectGarabageChar>k__BackingField -> A
+	OpenCvSharp.Size [CsplCam.Library]OpenCvSharp.Size CsplCam.Library.Services.OcrEngine::TemplateSize -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Services.OcrEngine::NumPixels -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine::<SkewAngle>k__BackingField -> A
+	System.Collections.Generic.Dictionary`2<System.String,System.Collections.Generic.List`1<CsplCam.Library.Models.CharTemplate>> [CsplCam.Library]System.Collections.Generic.Dictionary`2<System.String,System.Collections.Generic.List`1<CsplCam.Library.Models.CharTemplate>> CsplCam.Library.Services.OcrEngine::<TemplateVectors>k__BackingField -> A
+	CsplCam.Library.Services.OcrEngine/FastTemplate[] [CsplCam.Library]CsplCam.Library.Services.OcrEngine/FastTemplate[] CsplCam.Library.Services.OcrEngine::_globalFlatTemplates -> A
+	System.Object [CsplCam.Library]System.Object CsplCam.Library.Services.OcrEngine::_templateLock -> A
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine::Kernel2x2 -> A
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine::Kernel2x3 -> a
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine::Kernel3x3 -> B
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine::Kernel5x3 -> b
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine::Kernel5x5 -> C
+	System.Collections.Concurrent.ConcurrentBag`1<CsplCam.Library.Services.OcrEngine/OcrThreadState> [CsplCam.Library]System.Collections.Concurrent.ConcurrentBag`1<CsplCam.Library.Services.OcrEngine/OcrThreadState> CsplCam.Library.Services.OcrEngine::_ocrStatePool -> A
+	System.Collections.Concurrent.ConcurrentBag`1<CsplCam.Library.Services.OcrEngine/BarcodeThreadState> [CsplCam.Library]System.Collections.Concurrent.ConcurrentBag`1<CsplCam.Library.Services.OcrEngine/BarcodeThreadState> CsplCam.Library.Services.OcrEngine::_bcStatePool -> A
+	ZXingCpp.ReaderOptions [CsplCam.Library]ZXingCpp.ReaderOptions CsplCam.Library.Services.OcrEngine::_fastOpts -> A
+	ZXingCpp.ReaderOptions [CsplCam.Library]ZXingCpp.ReaderOptions CsplCam.Library.Services.OcrEngine::_hardOpts -> a
+
+	System.Collections.Generic.Dictionary`2<System.String,System.String> [CsplCam.Library]System.Collections.Generic.Dictionary`2<System.String,System.String> CsplCam.Library.Services.OcrEngine::SpecialReverse skipped:  KeepPublicApi option in configuration
+
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Services.OcrEngine::DatasetRoot skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Services.OcrEngine::IsNeglectGarabageChar skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine::SkewAngle skipped:  KeepPublicApi option in configuration
+	System.Collections.Generic.Dictionary`2<System.String,System.Collections.Generic.List`1<CsplCam.Library.Models.CharTemplate>> [CsplCam.Library]System.Collections.Generic.Dictionary`2<System.String,System.Collections.Generic.List`1<CsplCam.Library.Models.CharTemplate>> CsplCam.Library.Services.OcrEngine::TemplateVectors skipped:  KeepPublicApi option in configuration
+	ZXingCpp.TextMode [CsplCam.Library]ZXingCpp.TextMode CsplCam.Library.Services.OcrEngine::BarCodeTextMode skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services.TemplateManager skipped:  KeepPublicApi option in configuration
+{
+	[CsplCam.Library]CsplCam.Library.Services.TemplateManager::MakeValidFileName[1]( [System.Runtime]System.String ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.TemplateManager::get_TemplateSavePath[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.TemplateManager::set_TemplateSavePath[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Services.TemplateManager::LoadTemplates[0]( ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.TemplateManager::SaveTemplate[2]( [CsplCam.Library]CsplCam.Library.Models.RoiObject, [OpenCvSharp]OpenCvSharp.Mat ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.TemplateManager::.cctor[0]( ) skipped:  special name
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Services.TemplateManager::<TemplateSavePath>k__BackingField -> A
+
+	System.Collections.Generic.List`1<CsplCam.Library.Models.TemplateItem> [CsplCam.Library]System.Collections.Generic.List`1<CsplCam.Library.Models.TemplateItem> CsplCam.Library.Services.TemplateManager::GlobalTemplates skipped:  KeepPublicApi option in configuration
+
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Services.TemplateManager::TemplateSavePath skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services.AI.OpenCV_WeChatQREngine_AI skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.AI.OpenCV_WeChatQREngine_AI::Initialize[1]( [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.AI.OpenCV_WeChatQREngine_AI::DetectAndDecode[1]( [OpenCvSharp]OpenCvSharp.Mat ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.AI.OpenCV_WeChatQREngine_AI::.ctor[0]( ) skipped:  special name
+
+	OpenCvSharp.WeChatQRCode [CsplCam.Library]OpenCvSharp.WeChatQRCode CsplCam.Library.Services.AI.OpenCV_WeChatQREngine_AI::_detector -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Services.AI.OpenCV_WeChatQREngine_AI::_isInitialized -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.AI.SuperResolutionEngine_AI skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.AI.SuperResolutionEngine_AI::Initialize[1]( [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.AI.SuperResolutionEngine_AI::Upscale[1]( [OpenCvSharp]OpenCvSharp.Mat ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.AI.SuperResolutionEngine_AI::.ctor[0]( ) skipped:  special name
+
+	OpenCvSharp.DnnSuperres.DnnSuperResImpl [CsplCam.Library]OpenCvSharp.DnnSuperres.DnnSuperResImpl CsplCam.Library.Services.AI.SuperResolutionEngine_AI::_srEngine -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Services.AI.SuperResolutionEngine_AI::_isInitialized -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Services.AI.YoloDetector_AI skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.AI.YoloDetector_AI::Initialize[1]( [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.AI.YoloDetector_AI::DetectBarcodes[2]( [OpenCvSharp]OpenCvSharp.Mat, [System.Runtime]System.Single ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.AI.YoloDetector_AI::.ctor[0]( ) skipped:  special name
+
+	OpenCvSharp.Dnn.Net [CsplCam.Library]OpenCvSharp.Dnn.Net CsplCam.Library.Services.AI.YoloDetector_AI::_yoloNet -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Services.AI.YoloDetector_AI::_isInitialized -> A
+}
+
+[CsplCam.Library]CsplCam.Library.Models.AnchorSetting skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::get_Top[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::set_Top[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::get_Bottom[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::set_Bottom[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::get_Left[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::set_Left[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::get_Right[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::set_Right[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::get_IsEdgeBasedMatching[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::set_IsEdgeBasedMatching[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::get_IsHighPrecisionMode[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::set_IsHighPrecisionMode[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.AnchorSetting::.ctor[0]( ) skipped:  special name
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::<Top>k__BackingField -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::<Bottom>k__BackingField -> a
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::<Left>k__BackingField -> B
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::<Right>k__BackingField -> b
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.AnchorSetting::<IsEdgeBasedMatching>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.AnchorSetting::<IsHighPrecisionMode>k__BackingField -> a
+
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::Top skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::Bottom skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::Left skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.AnchorSetting::Right skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.AnchorSetting::IsEdgeBasedMatching skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.AnchorSetting::IsHighPrecisionMode skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Models.CharResult skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::get_Box[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::set_Box[1]( [OpenCvSharp]OpenCvSharp.Rect ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::get_Text[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::set_Text[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::get_Score[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::set_Score[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::get_IsGood[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::set_IsGood[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::get_IsExpectedMatch[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::set_IsExpectedMatch[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::get_ExactCorners[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::set_ExactCorners[1]( [OpenCvSharp]OpenCvSharp.Point2f[] ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::get_Polygon[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::set_Polygon[1]( [OpenCvSharp]OpenCvSharp.Point[] ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharResult::.ctor[0]( ) skipped:  special name
+
+	OpenCvSharp.Rect [CsplCam.Library]OpenCvSharp.Rect CsplCam.Library.Models.CharResult::<Box>k__BackingField -> A
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.CharResult::<Text>k__BackingField -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.CharResult::<Score>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.CharResult::<IsGood>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.CharResult::<IsExpectedMatch>k__BackingField -> a
+	OpenCvSharp.Point2f[] [CsplCam.Library]OpenCvSharp.Point2f[] CsplCam.Library.Models.CharResult::<ExactCorners>k__BackingField -> A
+	OpenCvSharp.Point[] [CsplCam.Library]OpenCvSharp.Point[] CsplCam.Library.Models.CharResult::<Polygon>k__BackingField -> A
+
+
+	OpenCvSharp.Rect [CsplCam.Library]OpenCvSharp.Rect CsplCam.Library.Models.CharResult::Box skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.CharResult::Text skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.CharResult::Score skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.CharResult::IsGood skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.CharResult::IsExpectedMatch skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Point2f[] [CsplCam.Library]OpenCvSharp.Point2f[] CsplCam.Library.Models.CharResult::ExactCorners skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Point[] [CsplCam.Library]OpenCvSharp.Point[] CsplCam.Library.Models.CharResult::Polygon skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Models.CharTemplate skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Models.CharTemplate::get_Vector[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharTemplate::set_Vector[1]( [System.Runtime]System.Single[] ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharTemplate::get_AspectRatio[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharTemplate::set_AspectRatio[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharTemplate::get_FillDensity[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharTemplate::set_FillDensity[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.CharTemplate::.ctor[0]( ) skipped:  special name
+
+	System.Single[] [CsplCam.Library]System.Single[] CsplCam.Library.Models.CharTemplate::<Vector>k__BackingField -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.CharTemplate::<AspectRatio>k__BackingField -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.CharTemplate::<FillDensity>k__BackingField -> a
+
+
+	System.Single[] [CsplCam.Library]System.Single[] CsplCam.Library.Models.CharTemplate::Vector skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.CharTemplate::AspectRatio skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.CharTemplate::FillDensity skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper::get_OriginalImageWidth[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper::set_OriginalImageWidth[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper::get_OriginalImageHeight[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper::set_OriginalImageHeight[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper::get_Rois[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper::set_Rois[1]( [System.Collections]System.Collections.Generic.List`1<[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer> ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiConfigWrapper::.ctor[0]( ) skipped:  special name
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiConfigWrapper::<OriginalImageWidth>k__BackingField -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiConfigWrapper::<OriginalImageHeight>k__BackingField -> a
+	System.Collections.Generic.List`1<CsplCam.Library.Models.RoiDataTransfer> [CsplCam.Library]System.Collections.Generic.List`1<CsplCam.Library.Models.RoiDataTransfer> CsplCam.Library.Models.RoiConfigWrapper::<Rois>k__BackingField -> A
+
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiConfigWrapper::OriginalImageWidth skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiConfigWrapper::OriginalImageHeight skipped:  KeepPublicApi option in configuration
+	System.Collections.Generic.List`1<CsplCam.Library.Models.RoiDataTransfer> [CsplCam.Library]System.Collections.Generic.List`1<CsplCam.Library.Models.RoiDataTransfer> CsplCam.Library.Models.RoiConfigWrapper::Rois skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_Id[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_Id[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_Name[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_Name[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_X[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_X[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_Y[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_Y[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_W[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_W[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_H[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_H[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_Type[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_Type[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_ShowOverlay[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_ShowOverlay[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_ExpectedText[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_ExpectedText[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_Threshold[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_Threshold[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MinBlobW[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MinBlobW[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MinBlobH[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MinBlobH[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MaxBlobW[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MaxBlobW[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MaxBlobH[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MaxBlobH[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_IsAnchor[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_IsAnchor[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_IsUseEdgeMatching[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_IsUseEdgeMatching[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_AnchorTop[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_AnchorTop[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_AnchorBottom[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_AnchorBottom[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_AnchorLeft[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_AnchorLeft[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_AnchorRight[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_AnchorRight[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_AnchorPatternData[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_AnchorPatternData[1]( [System.Runtime]System.Byte[] ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_RotationAngle[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_RotationAngle[1]( [CsplCam.Library]CsplCam.Library.Enums.RotationAngles ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_IsNameChanged[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_IsNameChanged[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_OverallThreshold[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_OverallThreshold[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_BarCodeFormat[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_BarCodeFormat[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MorphOp[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MorphOp[1]( [CsplCam.Library]CsplCam.Library.Enums.MorphOperation ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MorphKernelWidth[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MorphKernelWidth[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MorphKernelHeight[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MorphKernelHeight[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_MorphIterations[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_MorphIterations[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_SegmentationMode[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_SegmentationMode[1]( [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_IsUseRoiReference[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_IsUseRoiReference[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::get_ReferenceRoiID[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::set_ReferenceRoiID[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer::.ctor[0]( ) skipped:  special name
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<Id>k__BackingField -> A
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::<Name>k__BackingField -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<X>k__BackingField -> a
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<Y>k__BackingField -> B
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<W>k__BackingField -> b
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<H>k__BackingField -> C
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::<Type>k__BackingField -> a
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::<ShowOverlay>k__BackingField -> A
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::<ExpectedText>k__BackingField -> B
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiDataTransfer::<Threshold>k__BackingField -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<MinBlobW>k__BackingField -> c
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<MinBlobH>k__BackingField -> D
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<MaxBlobW>k__BackingField -> d
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<MaxBlobH>k__BackingField -> E
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::<IsAnchor>k__BackingField -> a
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::<IsUseEdgeMatching>k__BackingField -> B
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<AnchorTop>k__BackingField -> e
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<AnchorBottom>k__BackingField -> F
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<AnchorLeft>k__BackingField -> f
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<AnchorRight>k__BackingField -> G
+	System.Byte[] [CsplCam.Library]System.Byte[] CsplCam.Library.Models.RoiDataTransfer::<AnchorPatternData>k__BackingField -> A
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Models.RoiDataTransfer::<RotationAngle>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::<IsNameChanged>k__BackingField -> b
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiDataTransfer::<OverallThreshold>k__BackingField -> a
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::<BarCodeFormat>k__BackingField -> b
+	CsplCam.Library.Enums.MorphOperation [CsplCam.Library]CsplCam.Library.Enums.MorphOperation CsplCam.Library.Models.RoiDataTransfer::<MorphOp>k__BackingField -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<MorphKernelWidth>k__BackingField -> g
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<MorphKernelHeight>k__BackingField -> H
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<MorphIterations>k__BackingField -> h
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Models.RoiDataTransfer::<SegmentationMode>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::<IsUseRoiReference>k__BackingField -> C
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::<ReferenceRoiID>k__BackingField -> I
+
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::Id skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::Name skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::X skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::Y skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::W skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::H skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::Type skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::ShowOverlay skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::ExpectedText skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiDataTransfer::Threshold skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::MinBlobW skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::MinBlobH skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::MaxBlobW skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::MaxBlobH skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::IsAnchor skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::IsUseEdgeMatching skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::AnchorTop skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::AnchorBottom skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::AnchorLeft skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::AnchorRight skipped:  KeepPublicApi option in configuration
+	System.Byte[] [CsplCam.Library]System.Byte[] CsplCam.Library.Models.RoiDataTransfer::AnchorPatternData skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Models.RoiDataTransfer::RotationAngle skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::IsNameChanged skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiDataTransfer::OverallThreshold skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiDataTransfer::BarCodeFormat skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.MorphOperation [CsplCam.Library]CsplCam.Library.Enums.MorphOperation CsplCam.Library.Models.RoiDataTransfer::MorphOp skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::MorphKernelWidth skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::MorphKernelHeight skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::MorphIterations skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Models.RoiDataTransfer::SegmentationMode skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiDataTransfer::IsUseRoiReference skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiDataTransfer::ReferenceRoiID skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Models.RoiObject skipped:  KeepPublicApi option in configuration
+{
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::GetClone[0]( ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_Id[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_Id[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_Name[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_Name[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_Box[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_Box[1]( [OpenCvSharp]OpenCvSharp.Rect ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_Type[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_Type[1]( [CsplCam.Library]CsplCam.Library.Enums.RoiType ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_ShowOverlay[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_ShowOverlay[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_JustTrained[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_JustTrained[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_ExpectedText[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_ExpectedText[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_Threshold[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_Threshold[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_RoiScore[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_RoiScore[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MinBlobW[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MinBlobW[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MinBlobH[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MinBlobH[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MaxBlobW[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MaxBlobW[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MaxBlobH[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MaxBlobH[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_IsAnchor[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_IsAnchor[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_IsUseEdgeMatching[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_IsUseEdgeMatching[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_IsHighPrecisionMode[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_IsHighPrecisionMode[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_RotationAngle[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_RotationAngle[1]( [CsplCam.Library]CsplCam.Library.Enums.RotationAngles ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_IsNameChanged[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_IsNameChanged[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_OverAllResult[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_OverAllResult[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_Clone[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_IsSelected[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_IsSelected[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_TimeTakenForDecoding[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_TimeTakenForDecoding[1]( [System.Runtime]System.TimeSpan ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_TmTemplate[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_TmTemplate[1]( [OpenCvSharp]OpenCvSharp.Mat ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_TmPass[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_TmPass[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_TmScore[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_TmScore[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_TmThreshold[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_TmThreshold[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_SegmentationMode[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_SegmentationMode[1]( [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MorphOp[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MorphOp[1]( [CsplCam.Library]CsplCam.Library.Enums.MorphOperation ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MorphShape[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MorphShape[1]( [OpenCvSharp]OpenCvSharp.MorphShapes ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MorphKernelWidth[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MorphKernelWidth[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MorphKernelHeight[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MorphKernelHeight[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MorphIterations[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MorphIterations[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_PreviewBitmap[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_PreviewBitmap[1]( [System.Drawing.Common]System.Drawing.Bitmap ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_AnchorTop[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_AnchorTop[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_AnchorBottom[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_AnchorBottom[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_AnchorLeft[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_AnchorLeft[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_AnchorRight[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_AnchorRight[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_AnchorTemplate[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_AnchorTemplate[1]( [OpenCvSharp]OpenCvSharp.Mat ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_DecodedText[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_DecodedText[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_CharResults[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_CharResults[1]( [System.Collections]System.Collections.Generic.List`1<[CsplCam.Library]CsplCam.Library.Models.CharResult> ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_BarCodeFormat[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_BarCodeFormat[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_isBarCodeFormatAuto[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_isBarCodeFormatAuto[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_Gs1QcResult[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_Gs1QcResult[1]( [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_IsRunGS1QcCheck[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_IsRunGS1QcCheck[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_IsUseRoiReference[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_IsUseRoiReference[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_ReferenceRoiID[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_ReferenceRoiID[1]( [System.Runtime]System.Int32 ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_SkewAngleOfRoi[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_SkewAngleOfRoi[1]( [System.Runtime]System.Double ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_MaskType[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_MaskType[1]( [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_UseAiFallback[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_UseAiFallback[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_UseSuperResolution[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_UseSuperResolution[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::get_UseBruteForceGridRecovery[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::set_UseBruteForceGridRecovery[1]( [System.Runtime]System.Boolean ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.RoiObject::.ctor[0]( ) skipped:  special name
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<Id>k__BackingField -> A
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::<Name>k__BackingField -> A
+	OpenCvSharp.Rect [CsplCam.Library]OpenCvSharp.Rect CsplCam.Library.Models.RoiObject::<Box>k__BackingField -> A
+	CsplCam.Library.Enums.RoiType [CsplCam.Library]CsplCam.Library.Enums.RoiType CsplCam.Library.Models.RoiObject::<Type>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<ShowOverlay>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<JustTrained>k__BackingField -> a
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::<ExpectedText>k__BackingField -> a
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::<Threshold>k__BackingField -> A
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::<RoiScore>k__BackingField -> a
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<MinBlobW>k__BackingField -> a
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<MinBlobH>k__BackingField -> B
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<MaxBlobW>k__BackingField -> b
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<MaxBlobH>k__BackingField -> C
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<IsAnchor>k__BackingField -> B
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<IsUseEdgeMatching>k__BackingField -> b
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<IsHighPrecisionMode>k__BackingField -> C
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Models.RoiObject::<RotationAngle>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<IsNameChanged>k__BackingField -> c
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::<OverAllResult>k__BackingField -> B
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<IsSelected>k__BackingField -> D
+	System.TimeSpan [CsplCam.Library]System.TimeSpan CsplCam.Library.Models.RoiObject::<TimeTakenForDecoding>k__BackingField -> A
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Models.RoiObject::<TmTemplate>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<TmPass>k__BackingField -> d
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::<TmScore>k__BackingField -> B
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::<TmThreshold>k__BackingField -> b
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Models.RoiObject::<SegmentationMode>k__BackingField -> A
+	CsplCam.Library.Enums.MorphOperation [CsplCam.Library]CsplCam.Library.Enums.MorphOperation CsplCam.Library.Models.RoiObject::<MorphOp>k__BackingField -> A
+	OpenCvSharp.MorphShapes [CsplCam.Library]OpenCvSharp.MorphShapes CsplCam.Library.Models.RoiObject::<MorphShape>k__BackingField -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<MorphKernelWidth>k__BackingField -> c
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<MorphKernelHeight>k__BackingField -> D
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<MorphIterations>k__BackingField -> d
+	System.Drawing.Bitmap [CsplCam.Library]System.Drawing.Bitmap CsplCam.Library.Models.RoiObject::<PreviewBitmap>k__BackingField -> A
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<AnchorTop>k__BackingField -> E
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<AnchorBottom>k__BackingField -> e
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<AnchorLeft>k__BackingField -> F
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<AnchorRight>k__BackingField -> f
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Models.RoiObject::<AnchorTemplate>k__BackingField -> a
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::<DecodedText>k__BackingField -> b
+	System.Collections.Generic.List`1<CsplCam.Library.Models.CharResult> [CsplCam.Library]System.Collections.Generic.List`1<CsplCam.Library.Models.CharResult> CsplCam.Library.Models.RoiObject::<CharResults>k__BackingField -> A
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::<BarCodeFormat>k__BackingField -> C
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<isBarCodeFormatAuto>k__BackingField -> E
+	CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult CsplCam.Library.Models.RoiObject::<Gs1QcResult>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<IsRunGS1QcCheck>k__BackingField -> e
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<IsUseRoiReference>k__BackingField -> F
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::<ReferenceRoiID>k__BackingField -> G
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::<SkewAngleOfRoi>k__BackingField -> C
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Models.RoiObject::<MaskType>k__BackingField -> A
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<UseAiFallback>k__BackingField -> f
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<UseSuperResolution>k__BackingField -> G
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::<UseBruteForceGridRecovery>k__BackingField -> g
+
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::Id skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::Name skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Rect [CsplCam.Library]OpenCvSharp.Rect CsplCam.Library.Models.RoiObject::Box skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RoiType [CsplCam.Library]CsplCam.Library.Enums.RoiType CsplCam.Library.Models.RoiObject::Type skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::ShowOverlay skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::JustTrained skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::ExpectedText skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::Threshold skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::RoiScore skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::MinBlobW skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::MinBlobH skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::MaxBlobW skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::MaxBlobH skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::IsAnchor skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::IsUseEdgeMatching skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::IsHighPrecisionMode skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Models.RoiObject::RotationAngle skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::IsNameChanged skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::OverAllResult skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Models.RoiObject [CsplCam.Library]CsplCam.Library.Models.RoiObject CsplCam.Library.Models.RoiObject::Clone skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::IsSelected skipped:  KeepPublicApi option in configuration
+	System.TimeSpan [CsplCam.Library]System.TimeSpan CsplCam.Library.Models.RoiObject::TimeTakenForDecoding skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Models.RoiObject::TmTemplate skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::TmPass skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::TmScore skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::TmThreshold skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Models.RoiObject::SegmentationMode skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.MorphOperation [CsplCam.Library]CsplCam.Library.Enums.MorphOperation CsplCam.Library.Models.RoiObject::MorphOp skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.MorphShapes [CsplCam.Library]OpenCvSharp.MorphShapes CsplCam.Library.Models.RoiObject::MorphShape skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::MorphKernelWidth skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::MorphKernelHeight skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::MorphIterations skipped:  KeepPublicApi option in configuration
+	System.Drawing.Bitmap [CsplCam.Library]System.Drawing.Bitmap CsplCam.Library.Models.RoiObject::PreviewBitmap skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::AnchorTop skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::AnchorBottom skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::AnchorLeft skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::AnchorRight skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Models.RoiObject::AnchorTemplate skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::DecodedText skipped:  KeepPublicApi option in configuration
+	System.Collections.Generic.List`1<CsplCam.Library.Models.CharResult> [CsplCam.Library]System.Collections.Generic.List`1<CsplCam.Library.Models.CharResult> CsplCam.Library.Models.RoiObject::CharResults skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.RoiObject::BarCodeFormat skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::isBarCodeFormatAuto skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult CsplCam.Library.Models.RoiObject::Gs1QcResult skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::IsRunGS1QcCheck skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::IsUseRoiReference skipped:  KeepPublicApi option in configuration
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Models.RoiObject::ReferenceRoiID skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Models.RoiObject::SkewAngleOfRoi skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Models.RoiObject::MaskType skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::UseAiFallback skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::UseSuperResolution skipped:  KeepPublicApi option in configuration
+	System.Boolean [CsplCam.Library]System.Boolean CsplCam.Library.Models.RoiObject::UseBruteForceGridRecovery skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Models.TemplateItem skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Models.TemplateItem::get_Name[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.TemplateItem::set_Name[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.TemplateItem::get_Image[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.TemplateItem::set_Image[1]( [OpenCvSharp]OpenCvSharp.Mat ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.TemplateItem::.ctor[0]( ) skipped:  special name
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.TemplateItem::<Name>k__BackingField -> A
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Models.TemplateItem::<Image>k__BackingField -> A
+
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.TemplateItem::Name skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Models.TemplateItem::Image skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_EqualityContract[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_BarcodeType[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_BarcodeType[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_OverAll[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_OverAll[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_Decode[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_Decode[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_SC[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_SC[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_MOD[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_MOD[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_AN[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_AN[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_GN[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_GN[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_FPD[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_FPD[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_UEC[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_UEC[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_PG[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_PG[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_AS9132_Distortion[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_AS9132_Distortion[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_AS9132_QuietZone[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_AS9132_QuietZone[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_AS9132_Elongation[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_AS9132_Elongation[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_DPM_Rmin[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_DPM_Rmin[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_MinReflectance[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_MinReflectance[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_MinEdgeContrast[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_MinEdgeContrast[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_Defects[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_Defects[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::get_Decodability[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::set_Decodability[1]( [System.Runtime]System.String ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::Equals[1]( [System.Runtime]System.Object ) skipped:  external base class or interface
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::Equals[1]( [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult ) skipped:  external base class or interface
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::GetHashCode[0]( ) skipped:  external base class or interface
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::ToString[0]( ) skipped:  external base class or interface
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::.ctor[18]( [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String, [System.Runtime]System.String ) skipped:  special name
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::PrintMembers[1]( [System.Runtime]System.Text.StringBuilder ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::op_Inequality[2]( [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult, [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult ) skipped:  special name
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::op_Equality[2]( [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult, [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult ) skipped:  special name
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<Clone>$[0]( ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::.ctor[1]( [CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult ) skipped:  special name
+	[CsplCam.Library]CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::Deconstruct[18]( [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String&, [System.Runtime]System.String& ) skipped:  KeepPublicApi option in configuration
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<BarcodeType>k__BackingField -> A
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<OverAll>k__BackingField -> a
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<Decode>k__BackingField -> B
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<SC>k__BackingField -> b
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<MOD>k__BackingField -> C
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<AN>k__BackingField -> c
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<GN>k__BackingField -> D
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<FPD>k__BackingField -> d
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<UEC>k__BackingField -> E
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<PG>k__BackingField -> e
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<AS9132_Distortion>k__BackingField -> F
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<AS9132_QuietZone>k__BackingField -> f
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<AS9132_Elongation>k__BackingField -> G
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<DPM_Rmin>k__BackingField -> g
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<MinReflectance>k__BackingField -> H
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<MinEdgeContrast>k__BackingField -> h
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<Defects>k__BackingField -> I
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::<Decodability>k__BackingField -> i
+
+
+	System.Type [CsplCam.Library]System.Type CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::EqualityContract skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::BarcodeType skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::OverAll skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::Decode skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::SC skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::MOD skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::AN skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::GN skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::FPD skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::UEC skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::PG skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::AS9132_Distortion skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::AS9132_QuietZone skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::AS9132_Elongation skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::DPM_Rmin skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::MinReflectance skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::MinEdgeContrast skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::Defects skipped:  KeepPublicApi option in configuration
+	System.String [CsplCam.Library]System.String CsplCam.Library.Models.GS1_QC.GS1_QC_CheckResult::Decodability skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.RotationAngles skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.RotationAngles::value__ skipped:  special name
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Enums.RotationAngles::Zero skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Enums.RotationAngles::Ninety skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Enums.RotationAngles::OneEighty skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RotationAngles [CsplCam.Library]CsplCam.Library.Enums.RotationAngles CsplCam.Library.Enums.RotationAngles::TwoSeventy skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.DisplayInfo skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.DisplayInfo::value__ skipped:  special name
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::TextROISelection skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::BarcodeROISelection skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::TimeTaken skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::AllSelectionMode skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::SingleSelectionMode skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::ImageCounting skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::CurrentImageIndex skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::ImagePanning skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::ROISave skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::TemplateMatching skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::LoadROI skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.DisplayInfo [CsplCam.Library]CsplCam.Library.Enums.DisplayInfo CsplCam.Library.Enums.DisplayInfo::Default skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.RoiType skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.RoiType::value__ skipped:  special name
+	CsplCam.Library.Enums.RoiType [CsplCam.Library]CsplCam.Library.Enums.RoiType CsplCam.Library.Enums.RoiType::Text skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RoiType [CsplCam.Library]CsplCam.Library.Enums.RoiType CsplCam.Library.Enums.RoiType::Barcode skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.RoiType [CsplCam.Library]CsplCam.Library.Enums.RoiType CsplCam.Library.Enums.RoiType::TemplateMatch skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.MouseMode skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.MouseMode::value__ skipped:  special name
+	CsplCam.Library.Enums.MouseMode [CsplCam.Library]CsplCam.Library.Enums.MouseMode CsplCam.Library.Enums.MouseMode::None skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.MouseMode [CsplCam.Library]CsplCam.Library.Enums.MouseMode CsplCam.Library.Enums.MouseMode::PanningImage skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.MouseMode [CsplCam.Library]CsplCam.Library.Enums.MouseMode CsplCam.Library.Enums.MouseMode::MovingRoi skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.MouseMode [CsplCam.Library]CsplCam.Library.Enums.MouseMode CsplCam.Library.Enums.MouseMode::ResizingRoi skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.ResizeHandle skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.ResizeHandle::value__ skipped:  special name
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::None skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::TopLeft skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::TopRight skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::BottomLeft skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::BottomRight skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::Top skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::Bottom skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::Left skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.ResizeHandle [CsplCam.Library]CsplCam.Library.Enums.ResizeHandle CsplCam.Library.Enums.ResizeHandle::Right skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.SegmentationMode skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.SegmentationMode::value__ skipped:  special name
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Enums.SegmentationMode::Balanced skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Enums.SegmentationMode::Punctuation skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Enums.SegmentationMode::NoiseHeavy skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Enums.SegmentationMode::HighAccuracy skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.SegmentationMode [CsplCam.Library]CsplCam.Library.Enums.SegmentationMode CsplCam.Library.Enums.SegmentationMode::Industrial skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.MorphOperation skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.MorphOperation::value__ skipped:  special name
+	CsplCam.Library.Enums.MorphOperation [CsplCam.Library]CsplCam.Library.Enums.MorphOperation CsplCam.Library.Enums.MorphOperation::None skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.MorphOperation [CsplCam.Library]CsplCam.Library.Enums.MorphOperation CsplCam.Library.Enums.MorphOperation::Erode skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.MorphOperation [CsplCam.Library]CsplCam.Library.Enums.MorphOperation CsplCam.Library.Enums.MorphOperation::Dilate skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Enums.OcrMaskType skipped:  KeepPublicApi option in configuration
+{
+
+	System.Int32 [CsplCam.Library]System.Int32 CsplCam.Library.Enums.OcrMaskType::value__ skipped:  special name
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Enums.OcrMaskType::Numeric skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Enums.OcrMaskType::AlphaUppercase skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Enums.OcrMaskType::AlphaLowercase skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Enums.OcrMaskType::Punctuation skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Enums.OcrMaskType::Alpha skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Enums.OcrMaskType::AlphaNumeric skipped:  KeepPublicApi option in configuration
+	CsplCam.Library.Enums.OcrMaskType [CsplCam.Library]CsplCam.Library.Enums.OcrMaskType CsplCam.Library.Enums.OcrMaskType::Any skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/FastTemplate skipped:  KeepPublicApi option in configuration
+{
+
+	System.String [CsplCam.Library]System.String CsplCam.Library.Services.OcrEngine/FastTemplate::Label skipped:  KeepPublicApi option in configuration
+	System.Single[] [CsplCam.Library]System.Single[] CsplCam.Library.Services.OcrEngine/FastTemplate::Vector skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/FastTemplate::AspectRatio skipped:  KeepPublicApi option in configuration
+	System.Double [CsplCam.Library]System.Double CsplCam.Library.Services.OcrEngine/FastTemplate::FillDensity skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/OcrThreadState skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/OcrThreadState::Dispose[0]( ) skipped:  external base class or interface
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/OcrThreadState::.ctor[0]( ) skipped:  special name
+
+
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/OcrThreadState::Resized skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/OcrThreadState::Bin skipped:  KeepPublicApi option in configuration
+	System.Single[] [CsplCam.Library]System.Single[] CsplCam.Library.Services.OcrEngine/OcrThreadState::FloatArray skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services.OcrEngine/BarcodeThreadState skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/BarcodeThreadState::Dispose[0]( ) skipped:  external base class or interface
+	[CsplCam.Library]CsplCam.Library.Services.OcrEngine/BarcodeThreadState::.ctor[0]( ) skipped:  special name
+
+
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/BarcodeThreadState::Gray skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/BarcodeThreadState::Bin skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/BarcodeThreadState::Pad skipped:  KeepPublicApi option in configuration
+	OpenCvSharp.Mat [CsplCam.Library]OpenCvSharp.Mat CsplCam.Library.Services.OcrEngine/BarcodeThreadState::Scale skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::get_BoundedROI[0]( ) skipped:  skip by property
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::add_SelectionClick[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::remove_SelectionClick[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::add_SettingsChanged[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::remove_SettingsChanged[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::add_DecodeRequested[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::remove_DecodeRequested[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::add_OpenAnchorSettingsWindow[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::remove_OpenAnchorSettingsWindow[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::add_OpenRoiReferenceWindow[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::remove_OpenRoiReferenceWindow[1]( [System.Runtime]System.EventHandler ) skipped:  skip by event
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::BindData[2]( [CsplCam.Library]CsplCam.Library.Models.RoiObject, [System.Runtime]System.Boolean ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::SetPreviewImage[1]( [System.Drawing.Common]System.Drawing.Bitmap ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Interfaces.IRoiControl::SetSelectionState[1]( [System.Runtime]System.Boolean ) skipped:  KeepPublicApi option in configuration
+
+
+	CsplCam.Library.Models.RoiObject [CsplCam.Library]CsplCam.Library.Models.RoiObject CsplCam.Library.Interfaces.IRoiControl::BoundedROI skipped:  KeepPublicApi option in configuration
+
+
+	System.EventHandler [CsplCam.Library]System.EventHandler CsplCam.Library.Interfaces.IRoiControl::SelectionClick skipped:  KeepPublicApi option in configuration
+	System.EventHandler [CsplCam.Library]System.EventHandler CsplCam.Library.Interfaces.IRoiControl::SettingsChanged skipped:  KeepPublicApi option in configuration
+	System.EventHandler [CsplCam.Library]System.EventHandler CsplCam.Library.Interfaces.IRoiControl::DecodeRequested skipped:  KeepPublicApi option in configuration
+	System.EventHandler [CsplCam.Library]System.EventHandler CsplCam.Library.Interfaces.IRoiControl::OpenAnchorSettingsWindow skipped:  KeepPublicApi option in configuration
+	System.EventHandler [CsplCam.Library]System.EventHandler CsplCam.Library.Interfaces.IRoiControl::OpenRoiReferenceWindow skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services.ROIConverter skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services.ROIConverter::FromLogic[1]( [CsplCam.Library]CsplCam.Library.Models.RoiObject ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.ROIConverter::ToLogic[1]( [CsplCam.Library]CsplCam.Library.Models.RoiDataTransfer ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.ROIConverter::.ctor[0]( ) skipped:  special name
+}
+
+[CsplCam.Library]CsplCam.Library.Interfaces.IBarcodeVerifier skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Interfaces.IBarcodeVerifier::EvaluateQuality[4]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Rect, [System.Runtime]System.Boolean, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services._1D_BarCode.Verifier1D_Linear skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Services._1D_BarCode.Verifier1D_Linear::EvaluateQuality[4]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Rect, [System.Runtime]System.Boolean, [System.Runtime]System.String ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services._1D_BarCode.Verifier1D_Linear::.ctor[0]( ) skipped:  special name
+}
+
+[CsplCam.Library]CsplCam.Library.Interfaces.IGS1_QC_Check skipped:  KeepPublicApi option in configuration
+{
+
+	[CsplCam.Library]CsplCam.Library.Interfaces.IGS1_QC_Check::EvaluateISO15415Quality[4]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Rect, [OpenCvSharp]OpenCvSharp.Point2f[], [System.Runtime]System.Boolean ) skipped:  KeepPublicApi option in configuration
+}
+
+[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check skipped:  KeepPublicApi option in configuration
+{
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::GetFastCircularMean[4]( [OpenCvSharp]OpenCvSharp.Mat, [System.Runtime]System.Int32, [System.Runtime]System.Int32, [System.Runtime]System.Int32 ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::SortCornersClockwiseFast[1]( [OpenCvSharp]OpenCvSharp.Point2f[] ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::GetExtremeCorner[3]( [OpenCvSharp]OpenCvSharp.Point[], [System.Runtime]System.Int32, [System.Runtime]System.Int32 ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::GetClosestStandardGridSize[1]( [System.Runtime]System.Int32 ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::EstimateGridSizeFast[2]( [OpenCvSharp]OpenCvSharp.Mat, [System.Runtime]System.Double ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::CountTransitionsFast[4]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Point2f, [OpenCvSharp]OpenCvSharp.Point2f, [System.Runtime]System.Double ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::PointDistance[2]( [OpenCvSharp]OpenCvSharp.Point2f, [OpenCvSharp]OpenCvSharp.Point2f ) -> A
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::GetAS9132Distortion[3]( [OpenCvSharp]OpenCvSharp.Point2f, [OpenCvSharp]OpenCvSharp.Point2f, [OpenCvSharp]OpenCvSharp.Point2f ) -> A
+
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::EvaluateISO15415Quality[4]( [OpenCvSharp]OpenCvSharp.Mat, [OpenCvSharp]OpenCvSharp.Rect, [OpenCvSharp]OpenCvSharp.Point2f[], [System.Runtime]System.Boolean ) skipped:  KeepPublicApi option in configuration
+	[CsplCam.Library]CsplCam.Library.Services.GS1_QC_Check.GS1_QC_Check::.ctor[0]( ) skipped:  special name
+}
+
+Renamed Resources:
+
+
+Skipped Resources:
+

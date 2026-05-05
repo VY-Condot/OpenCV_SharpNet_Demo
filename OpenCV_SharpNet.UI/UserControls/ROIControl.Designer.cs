@@ -74,6 +74,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             NumPadMinWidth = new NumericUpDown();
             NumPadMinHeight = new NumericUpDown();
             NumPadMaxHeight = new NumericUpDown();
+            pzPreview = new PanZoomViewer();
             TblPNlMain.SuspendLayout();
             GrpBoxMorph.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -102,6 +103,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             TblPNlMain.Controls.Add(TblPnlBottom, 0, 5);
             TblPNlMain.Controls.Add(GrpRoiData, 0, 0);
             TblPNlMain.Controls.Add(GrpBlobFilter, 0, 1);
+            TblPNlMain.Controls.Add(pzPreview, 0, 4);
             TblPNlMain.Dock = DockStyle.Fill;
             TblPNlMain.Location = new Point(0, 0);
             TblPNlMain.Name = "TblPNlMain";
@@ -755,6 +757,16 @@ namespace OpenCV_SharpNet.UI.UserControls
             NumPadMaxHeight.Size = new Size(73, 28);
             NumPadMaxHeight.TabIndex = 9;
             NumPadMaxHeight.ValueChanged += NumPadMaxHeight_ValueChanged;
+            // 
+            // pzPreview
+            // 
+            pzPreview.Dock = DockStyle.Fill;
+            pzPreview.Image = null;
+            pzPreview.Interpolation = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            pzPreview.Location = new Point(3, 499);
+            pzPreview.Name = "pzPreview";
+            pzPreview.Size = new Size(591, 95);
+            pzPreview.TabIndex = 7;
             // 
             // ROIControl
             // 

@@ -88,8 +88,35 @@
     </None>
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+  <!--<Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="if not exist &quot;$(TargetDir)CSPL_OCRLibs&quot; mkdir &quot;$(TargetDir)CSPL_OCRLibs&quot;&#xD;&#xA;move &quot;$(TargetDir)*.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\&quot;&#xD;&#xA;move &quot;$(TargetDir)CSPL_OCRLibs\$(TargetName).dll&quot; &quot;$(TargetDir)&quot;" />
-  </Target>
+  </Target>-->
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="
+if not exist &quot;$(TargetDir)CSPL_OCRLibs&quot; mkdir &quot;$(TargetDir)CSPL_OCRLibs&quot;
+
+:: 1. Move everything to the subfolder first
+move /y &quot;$(TargetDir)*.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\&quot;
+
+:: 2. Bring your main application DLL back to the root so the exe can run
+move /y &quot;$(TargetDir)CSPL_OCRLibs\$(TargetName).dll&quot; &quot;$(TargetDir)&quot;
+
+:: 3. Rename the specific libraries to their fake hash names INSIDE the subfolder
+move /y &quot;$(TargetDir)CSPL_OCRLibs\ClosedXML.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\a3f8b9c2.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\ClosedXML.Parser.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\b7d4e1f5.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\DocumentFormat.OpenXml.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\c9a2b4d6.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\DocumentFormat.OpenXml.Framework.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\d1c8e7f9.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\ExcelNumberFormat.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\e5f2a1b9.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\OpenCvSharp.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\f8b3c7d1.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\OpenCvSharp.Extensions.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\a1d9e2f4.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\RBush.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\b6c3d8e1.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\SixLabors.Fonts.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\c4e7f2a9.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\System.Drawing.Common.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\d9f1a8b2.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\System.IO.Packaging.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\e2b5c9d4.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\ZXingCpp.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\a8c4e1f7.dll&quot;
+move /y &quot;$(TargetDir)CSPL_OCRLibs\CsplCam.Library.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\784t34jh.dll&quot;
+" />
+	</Target>
 
 </Project>
