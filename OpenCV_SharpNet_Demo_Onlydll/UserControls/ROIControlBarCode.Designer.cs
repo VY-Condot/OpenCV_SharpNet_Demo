@@ -30,6 +30,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ROIControlBarCode));
             TblPNlMain = new TableLayoutPanel();
             grpQC_Result = new GroupBox();
             lstGS1_Repo = new ListBox();
@@ -206,7 +207,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             BtnDecodeROI.Dock = DockStyle.Fill;
             BtnDecodeROI.Font = new Font("Calibri", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnDecodeROI.ForeColor = Color.Transparent;
-            BtnDecodeROI.Image = Properties.Resources.icons8_ocr_30;
+            BtnDecodeROI.Image = (Image)resources.GetObject("BtnDecodeROI.Image");
             BtnDecodeROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnDecodeROI.Location = new Point(219, 3);
             BtnDecodeROI.Name = "BtnDecodeROI";
@@ -265,6 +266,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             chkBarcodeFormatAuto.Text = "Auto";
             chkBarcodeFormatAuto.UseCompatibleTextRendering = true;
             chkBarcodeFormatAuto.UseVisualStyleBackColor = true;
+            chkBarcodeFormatAuto.Click += ChkBarcodeFormatAuto_Click;
             // 
             // cmbBarcodeFormat
             // 

@@ -1,4 +1,4 @@
-﻿using OpenCV_SharpNet.Models;
+﻿using CsplCam.Library.Models;
 
 namespace OpenCV_SharpNet_Demo.UI
 {

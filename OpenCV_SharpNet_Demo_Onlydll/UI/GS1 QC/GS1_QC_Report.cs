@@ -1,5 +1,5 @@
-﻿using OpenCV_SharpNet.Interfaces;
-using OpenCV_SharpNet.Models.GS1_QC;
+﻿using CsplCam.Library.Interfaces;
+using CsplCam.Library.Models.GS1_QC;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

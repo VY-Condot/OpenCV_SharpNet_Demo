@@ -1,42 +1,16 @@
-﻿using OpenCV_SharpNet.Enums;
-using OpenCV_SharpNet.Interfaces;
-using OpenCV_SharpNet.Models;
-using System;
-using System.Collections.Generic;
+﻿using CsplCam.Library.Enums;
+using CsplCam.Library.Interfaces;
+using CsplCam.Library.Models;
+using OpenCV_SharpNet_Demo.UI;
 using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using ZXingCpp;
 
 namespace OpenCV_SharpNet_Demo.UserControls
 {
-    public partial class RoiControlTemplate : UserControl, IRoiControl
+    public partial class ROIControl : UserControl, IRoiControl
     {
-        public RoiControlTemplate()
-        {
-            InitializeComponent();
-
-            // =================================================================
-            // OPTIMIZATION: ENABLE DEEP DOUBLE BUFFERING TO KILL FLICKERING
-            // =================================================================
-            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
-            UpdateStyles();
-            EnableDoubleBuffering(TblPNlMain);
-            EnableDoubleBuffering(TblPnlRoiOcrData);
-
-            cmbRotationAngle.DataSource = Enum.GetValues(typeof(RotationAngles));
-
-            //click events
-            Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
-            GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
-        }
-
-
         //GET ROI OBJECT
         public RoiObject BoundedROI { get; private set; }
 
@@ -58,6 +32,27 @@ namespace OpenCV_SharpNet_Demo.UserControls
         //public event EventHandler OpenBarCodeDetectionMode;
 
         string[] strBarCodeFormats = new string[] { string.Empty, "Pharma" };
+
+        public ROIControl()
+        {
+            InitializeComponent();
+
+            // =================================================================
+            // OPTIMIZATION: ENABLE DEEP DOUBLE BUFFERING TO KILL FLICKERING
+            // =================================================================
+            SetStyle(ControlStyles.OptimizedDoubleBuffer | ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
+            UpdateStyles();
+            EnableDoubleBuffering(TblPNlMain);
+            EnableDoubleBuffering(TblPnlRoiOcrData);
+            //EnableDoubleBuffering(TblImageAndRepo);
+
+            cmbRotationAngle.DataSource = Enum.GetValues(typeof(RotationAngles));
+
+            //click events
+            Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+            GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+            GrpBlobFilter.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+        }
 
         // =================================================================
         // OPTIMIZATION HELPER: Forces TableLayoutPanels to render smoothly
@@ -93,19 +88,48 @@ namespace OpenCV_SharpNet_Demo.UserControls
                     TxtDecoded.Text = roi.DecodedText;
                 }
 
+                if (!chkDoOCR.Focused && chkDoOCR.Checked != roi.ShowOverlay)
+                    chkDoOCR.Checked = roi.ShowOverlay;
+
                 if (!chkAnchor.Focused && chkAnchor.Checked != roi.IsAnchor)
                     chkAnchor.Checked = roi.IsAnchor;
 
                 if (chkIsUseReferance.Checked != roi.IsUseRoiReference)
                     chkIsUseReferance.Checked = roi.IsUseRoiReference;
 
-                string tmThr = Math.Round(roi.TmThreshold, 2).ToString();
-                if (TxtExpectedThr.Text != tmThr) TxtExpectedThr.Text = tmThr;
+                // =========================================================
+                // OPTIMIZATION: Suspend Layout during heavy UI shifts
+                // =========================================================
+                TblPNlMain.SuspendLayout();
+                
+                if (!TxtExpected.Focused && roi.ExpectedText != TxtExpected.Text)
+                    TxtExpected.Text = roi.ExpectedText;
 
-                string tmScore = Math.Round(roi.TmScore, 2).ToString();
-                if (LblDecodedThr.Text != tmScore) LblDecodedThr.Text = tmScore;
+                string thrText = (Math.Floor(roi.Threshold * 100) / 100.00).ToString("0.00");
+                if (!TxtExpectedThr.Focused && TxtExpectedThr.Text != thrText)
+                    TxtExpectedThr.Text = thrText;
 
-                TblPNlMain.ResumeLayout(true);
+                string scoreText = (Math.Floor(roi.RoiScore * 100) / 100.00).ToString("0.00");
+                if (!LblDecodedThr.Focused && LblDecodedThr.Text != scoreText)
+                    LblDecodedThr.Text = scoreText;
+
+                if (!string.IsNullOrWhiteSpace(BoundedROI.OverAllResult))
+                {
+                    var targetColor = string.Equals(BoundedROI.OverAllResult, "Pass", StringComparison.OrdinalIgnoreCase) ? Color.Green : Color.Red;
+                    if (lblOverAllResult.ForeColor != targetColor) lblOverAllResult.ForeColor = targetColor;
+                    if (lblOverAllResult.Text != BoundedROI.OverAllResult) lblOverAllResult.Text = BoundedROI.OverAllResult;
+                }
+                else
+                {
+                    if (lblOverAllResult.Text != "") lblOverAllResult.Text = "";
+                }
+
+                SetNum(NumPadMinWidth, roi.MinBlobW);
+                SetNum(NumPadMaxWidth, roi.MaxBlobW);
+                SetNum(NumPadMinHeight, roi.MinBlobH);
+                SetNum(NumPadMaxHeight, roi.MaxBlobH);
+
+                btnCopyDecodedText.Visible = true;
 
                 if (cmbRotationAngle.Items.Count > 0 && !cmbRotationAngle.Focused && (RotationAngles)cmbRotationAngle.SelectedItem != roi.RotationAngle)
                 {
@@ -117,10 +141,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
 
                 CheckedRadioButtonState(roi.MorphOp);
 
-                // =========================================================
-                // OPTIMIZATION: Suspend Layout during heavy UI shifts
-                // =========================================================
-                TblPNlMain.SuspendLayout();
+                TblPNlMain.ResumeLayout(true);
             }
             finally
             {
@@ -155,6 +176,18 @@ namespace OpenCV_SharpNet_Demo.UserControls
 
         private void BtnDecodeROI_Click(object sender, EventArgs e) { DecodeRequested?.Invoke(this, EventArgs.Empty); }
 
+        private void TxtExpected_TextChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.ExpectedText = TxtExpected.Text;
+        }
+
+        private void NumPadMaxWidth_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MaxBlobW = (int)NumPadMaxWidth.Value;
+        }
+
         private void TxtExpectedThr_TextChanged(object sender, EventArgs e)
         {
             if (double.TryParse(TxtExpectedThr.Text, out double val))
@@ -162,6 +195,29 @@ namespace OpenCV_SharpNet_Demo.UserControls
                 if (BoundedROI.Type == RoiType.TemplateMatch) BoundedROI.TmThreshold = val;
                 else BoundedROI.Threshold = val;
             }
+        }
+
+        private void NumPadMinWidth_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MinBlobW = (int)NumPadMinWidth.Value;
+        }
+
+        private void NumPadMinHeight_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MinBlobH = (int)NumPadMinHeight.Value;
+        }
+
+        private void NumPadMaxHeight_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MaxBlobH = (int)NumPadMaxHeight.Value;
+        }
+
+        private void chkDoOCR_CheckedChanged(object sender, EventArgs e)
+        {
+            BoundedROI.ShowOverlay = chkDoOCR.Checked;
         }
 
         public void SetSelectionState(bool isSelected)
@@ -235,6 +291,16 @@ namespace OpenCV_SharpNet_Demo.UserControls
             MorphModeSelection(d.Text);
         }
 
+        private void TxtExpectedThr_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) e.SuppressKeyPress = true;
+        }
+
+        private void TxtExpected_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter) e.SuppressKeyPress = true;
+        }
+
         private void CmbRotationAngle_Validating(object sender, CancelEventArgs e)
         {
             var strAngle = cmbRotationAngle.SelectedItem;
@@ -243,6 +309,13 @@ namespace OpenCV_SharpNet_Demo.UserControls
                 MessageBox.Show("Please select correct angle from dropdown.", "Invalid Data", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 e.Cancel = true;
             }
+        }
+       
+        private void BtnCharResult_Click(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || BoundedROI.CharResults is null) return;
+            FrmCharResult frmChar = new(BoundedROI.CharResults);
+            frmChar.ShowDialog();
         }
 
         private void ChkAnchor_CheckedChanged(object sender, EventArgs e)
@@ -261,6 +334,13 @@ namespace OpenCV_SharpNet_Demo.UserControls
 
             BoundedROI.IsUseRoiReference = chkIsUseReferance.Checked;
             OpenRoiReferenceWindow?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void BtnCopyDecodedText_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(TxtDecoded.Text)) return;
+
+            TxtExpected.Text = TxtDecoded.Text;
         }
     }
 }

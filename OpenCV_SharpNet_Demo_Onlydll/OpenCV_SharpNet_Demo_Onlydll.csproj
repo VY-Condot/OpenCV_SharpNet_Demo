@@ -36,10 +36,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OpenCV_SharpNet_Library\OpenCV_SharpNet.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Reference Include="CsplCam.Library">
+      <HintPath>..\..\OpenCV_SharpNet\OpenCV_SharpNet.Library\bin\Release\net8.0\Confused\CsplCam.Library.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.WindowsRuntime">
       <HintPath>..\System.Runtime.WindowsRuntime.dll</HintPath>
     </Reference>

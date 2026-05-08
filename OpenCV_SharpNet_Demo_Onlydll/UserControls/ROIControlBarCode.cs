@@ -1,7 +1,6 @@
-﻿using OpenCV_SharpNet.Enums;
-using OpenCV_SharpNet.Interfaces;
-using OpenCV_SharpNet.Models;
-using OpenCV_SharpNet_Demo.UI;
+﻿using CsplCam.Library.Enums;
+using CsplCam.Library.Interfaces;
+using CsplCam.Library.Models;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
@@ -9,7 +8,7 @@ using ZXingCpp;
 
 namespace OpenCV_SharpNet_Demo.UserControls
 {
-    public partial class ROIControl : UserControl, IRoiControl
+    public partial class ROIControlBarCode : UserControl, IRoiControl
     {
         //GET ROI OBJECT
         public RoiObject BoundedROI { get; private set; }
@@ -28,12 +27,9 @@ namespace OpenCV_SharpNet_Demo.UserControls
         //new event for open the roi anchor reference window
         public event EventHandler OpenRoiReferenceWindow;
 
-        ////new event for open the barcode reading and detecting mode
-        //public event EventHandler OpenBarCodeDetectionMode;
-
         string[] strBarCodeFormats = new string[] { string.Empty, "Pharma" };
 
-        public ROIControl()
+        public ROIControlBarCode()
         {
             InitializeComponent();
 
@@ -44,14 +40,20 @@ namespace OpenCV_SharpNet_Demo.UserControls
             UpdateStyles();
             EnableDoubleBuffering(TblPNlMain);
             EnableDoubleBuffering(TblPnlRoiOcrData);
-            //EnableDoubleBuffering(TblImageAndRepo);
+            EnableDoubleBuffering(TblImageAndRepo);
 
             cmbRotationAngle.DataSource = Enum.GetValues(typeof(RotationAngles));
+
+            //load dynamic controls
+            var formats = Enum.GetValues(typeof(BarcodeFormats)).Cast<BarcodeFormats>().Where(f => f != BarcodeFormats.None && f != BarcodeFormats.Any).Select(P => P.ToString()).ToList();
+            formats.AddRange(strBarCodeFormats);
+            formats = formats.OrderBy(P => P).ToList();
+
+            cmbBarcodeFormat.DataSource = formats;
 
             //click events
             Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
-            GrpBlobFilter.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
         }
 
         // =================================================================
@@ -62,6 +64,16 @@ namespace OpenCV_SharpNet_Demo.UserControls
             typeof(Control).InvokeMember("DoubleBuffered",
                 BindingFlags.SetProperty | BindingFlags.Instance | BindingFlags.NonPublic,
                 null, control, new object[] { true });
+        }
+
+        private void CmbBarcodeFormat_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (_isBinding || BoundedROI == null) return;
+
+            //set barcode format selected by user
+            BoundedROI.BarCodeFormat = cmbBarcodeFormat.SelectedItem?.ToString() ?? string.Empty;
+
+            chkBarcodeFormatAuto.Checked = string.IsNullOrWhiteSpace(BoundedROI.BarCodeFormat);
         }
 
         public void BindData(RoiObject roi, bool isSelected)
@@ -88,9 +100,6 @@ namespace OpenCV_SharpNet_Demo.UserControls
                     TxtDecoded.Text = roi.DecodedText;
                 }
 
-                if (!chkDoOCR.Focused && chkDoOCR.Checked != roi.ShowOverlay)
-                    chkDoOCR.Checked = roi.ShowOverlay;
-
                 if (!chkAnchor.Focused && chkAnchor.Checked != roi.IsAnchor)
                     chkAnchor.Checked = roi.IsAnchor;
 
@@ -101,43 +110,27 @@ namespace OpenCV_SharpNet_Demo.UserControls
                 // OPTIMIZATION: Suspend Layout during heavy UI shifts
                 // =========================================================
                 TblPNlMain.SuspendLayout();
-                
-                if (!TxtExpected.Focused && roi.ExpectedText != TxtExpected.Text)
-                    TxtExpected.Text = roi.ExpectedText;
 
-                string thrText = (Math.Floor(roi.Threshold * 100) / 100.00).ToString("0.00");
-                if (!TxtExpectedThr.Focused && TxtExpectedThr.Text != thrText)
-                    TxtExpectedThr.Text = thrText;
-
-                string scoreText = (Math.Floor(roi.RoiScore * 100) / 100.00).ToString("0.00");
-                if (!LblDecodedThr.Focused && LblDecodedThr.Text != scoreText)
-                    LblDecodedThr.Text = scoreText;
-
-                if (!string.IsNullOrWhiteSpace(BoundedROI.OverAllResult))
+                if (cmbBarcodeFormat.Items.Count > 0 && !cmbBarcodeFormat.Focused && cmbBarcodeFormat.SelectedItem?.ToString() != roi.BarCodeFormat)
                 {
-                    var targetColor = string.Equals(BoundedROI.OverAllResult, "Pass", StringComparison.OrdinalIgnoreCase) ? Color.Green : Color.Red;
-                    if (lblOverAllResult.ForeColor != targetColor) lblOverAllResult.ForeColor = targetColor;
-                    if (lblOverAllResult.Text != BoundedROI.OverAllResult) lblOverAllResult.Text = BoundedROI.OverAllResult;
-                }
-                else
-                {
-                    if (lblOverAllResult.Text != "") lblOverAllResult.Text = "";
+                    cmbBarcodeFormat.SelectedItem = roi.BarCodeFormat;
                 }
 
-                SetNum(NumPadMinWidth, roi.MinBlobW);
-                SetNum(NumPadMaxWidth, roi.MaxBlobW);
-                SetNum(NumPadMinHeight, roi.MinBlobH);
-                SetNum(NumPadMaxHeight, roi.MaxBlobH);
+                if (!chkBarcodeFormatAuto.Focused && chkBarcodeFormatAuto.Checked != roi.isBarCodeFormatAuto)
+                    chkBarcodeFormatAuto.Checked = roi.isBarCodeFormatAuto;
 
-                btnCopyDecodedText.Visible = true;
+                if (!chkAnchor.Focused && chkAnchor.Checked != roi.IsAnchor)
+                    chkAnchor.Checked = roi.IsAnchor;
+
+                GenerateReport();
 
                 if (cmbRotationAngle.Items.Count > 0 && !cmbRotationAngle.Focused && (RotationAngles)cmbRotationAngle.SelectedItem != roi.RotationAngle)
                 {
                     cmbRotationAngle.SelectedItem = roi.RotationAngle;
                 }
 
-                SetNum(NumPadMorphKeranalWidth, roi.MorphKernelWidth);
-                SetNum(NumPadMorphIteration, roi.MorphIterations);
+                //SetNum(NumPadMorphKeranalWidth, roi.MorphKernelWidth);
+                //SetNum(NumPadMorphIteration, roi.MorphIterations);
 
                 CheckedRadioButtonState(roi.MorphOp);
 
@@ -151,18 +144,18 @@ namespace OpenCV_SharpNet_Demo.UserControls
 
         private void CheckedRadioButtonState(MorphOperation morphOperation)
         {
-            switch (morphOperation)
-            {
-                case MorphOperation.None:
-                    if (!rdMorphModeNone.Checked) rdMorphModeNone.Checked = true;
-                    break;
-                case MorphOperation.Erode:
-                    if (!rdMorphModeErode.Checked) rdMorphModeErode.Checked = true;
-                    break;
-                case MorphOperation.Dilate:
-                    if (!rdMorphModeDilate.Checked) rdMorphModeDilate.Checked = true;
-                    break;
-            }
+            //switch (morphOperation)
+            //{
+            //    case MorphOperation.None:
+            //        if (!rdMorphModeNone.Checked) rdMorphModeNone.Checked = true;
+            //        break;
+            //    case MorphOperation.Erode:
+            //        if (!rdMorphModeErode.Checked) rdMorphModeErode.Checked = true;
+            //        break;
+            //    case MorphOperation.Dilate:
+            //        if (!rdMorphModeDilate.Checked) rdMorphModeDilate.Checked = true;
+            //        break;
+            //}
         }
 
         private void SetNum(NumericUpDown num, int val)
@@ -235,10 +228,12 @@ namespace OpenCV_SharpNet_Demo.UserControls
 
         private void NumPadMorphKeranalWidth_ValueChanged(object sender, EventArgs e)
         {
-            if (BoundedROI is null || _isBinding) return;
-            BoundedROI.MorphKernelWidth = BoundedROI.MorphKernelHeight = (int)NumPadMorphKeranalWidth.Value;
-            SettingsChanged?.Invoke(this, EventArgs.Empty);
+            //if (BoundedROI is null || _isBinding) return;
+            //BoundedROI.MorphKernelWidth = BoundedROI.MorphKernelHeight = (int)NumPadMorphKeranalWidth.Value;
+            //SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        private void NumPadMorphIteration_ValueChanged(object sender, EventArgs e) { }
 
         // =================================================================
         // OPTIMIZATION: Safe Image Disposing to prevent GDI Crashes
@@ -291,16 +286,6 @@ namespace OpenCV_SharpNet_Demo.UserControls
             MorphModeSelection(d.Text);
         }
 
-        private void TxtExpectedThr_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter) e.SuppressKeyPress = true;
-        }
-
-        private void TxtExpected_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Enter) e.SuppressKeyPress = true;
-        }
-
         private void CmbRotationAngle_Validating(object sender, CancelEventArgs e)
         {
             var strAngle = cmbRotationAngle.SelectedItem;
@@ -310,12 +295,56 @@ namespace OpenCV_SharpNet_Demo.UserControls
                 e.Cancel = true;
             }
         }
-       
-        private void BtnCharResult_Click(object sender, EventArgs e)
+
+        void GenerateReport()
         {
-            if (BoundedROI is null || BoundedROI.CharResults is null) return;
-            FrmCharResult frmChar = new(BoundedROI.CharResults);
-            frmChar.ShowDialog();
+            if (BoundedROI.Gs1QcResult is null || string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.OverAll))
+            {
+                lstGS1_Repo.Items.Clear();
+
+                lstGS1_Repo.Items.Add($"Over All: No data found");
+                return;
+            }
+
+            // =================================================================
+            // OPTIMIZATION: Suspend ListBox drawing while adding 15 items
+            // =================================================================
+            lstGS1_Repo.BeginUpdate();
+            lstGS1_Repo.Items.Clear();
+
+            if (BoundedROI.BarCodeFormat.Equals("datamatrix", StringComparison.OrdinalIgnoreCase) || BoundedROI.BarCodeFormat.Equals("QRCode", StringComparison.OrdinalIgnoreCase) || BoundedROI.BarCodeFormat.Equals("Aztec", StringComparison.OrdinalIgnoreCase) || BoundedROI.BarCodeFormat.Equals("PDF", StringComparison.OrdinalIgnoreCase))
+            {
+                lstGS1_Repo.Items.Add($"Over All: {BoundedROI.Gs1QcResult.OverAll}");
+                lstGS1_Repo.Items.Add(string.Empty);
+
+                lstGS1_Repo.Items.Add($"Decode: {BoundedROI.Gs1QcResult.Decode}");
+                lstGS1_Repo.Items.Add($"Symbol Contrast: {BoundedROI.Gs1QcResult.SC}");
+                lstGS1_Repo.Items.Add($"Auxiliary Nonuniformity: {BoundedROI.Gs1QcResult.AN}");
+                lstGS1_Repo.Items.Add($"Grid Nonuniformity: {BoundedROI.Gs1QcResult.GN}");
+                lstGS1_Repo.Items.Add($"Modulation: {BoundedROI.Gs1QcResult.MOD}");
+                lstGS1_Repo.Items.Add($"Fixed Pattern Damage: {BoundedROI.Gs1QcResult.FPD}");
+                lstGS1_Repo.Items.Add($"Unused Error Correction: {BoundedROI.Gs1QcResult.UEC}");
+                lstGS1_Repo.Items.Add($"Print Growth (Info): {BoundedROI.Gs1QcResult.PG}");
+                lstGS1_Repo.Items.Add(string.Empty);
+                lstGS1_Repo.Items.Add($"AngleOf Distortion: {BoundedROI.Gs1QcResult.AS9132_Distortion}");
+                lstGS1_Repo.Items.Add($"Quiet Zone: {BoundedROI.Gs1QcResult.AS9132_QuietZone}");
+                lstGS1_Repo.Items.Add($"Elongation: {BoundedROI.Gs1QcResult.AS9132_Elongation}");
+            }
+            else
+            {
+                //lstGS1_Repo.Items.Add($"Decode: {BoundedROI.Gs1QcResult.Decode}");
+                //lstGS1_Repo.Items.Add($"Symbol Contrast: {BoundedROI.Gs1QcResult.SC}");
+                //lstGS1_Repo.Items.Add($"Modulation: {BoundedROI.Gs1QcResult.MOD}");
+                //lstGS1_Repo.Items.Add($"Minimum Reflectance: {BoundedROI.Gs1QcResult.MinReflectance}");
+                //lstGS1_Repo.Items.Add($"Minimum Edge Contrast: {BoundedROI.Gs1QcResult.MinEdgeContrast}");
+                //lstGS1_Repo.Items.Add($"Defects(Spots / Voids):: {BoundedROI.Gs1QcResult.Defects}");
+                //lstGS1_Repo.Items.Add($"Decodability: {BoundedROI.Gs1QcResult.Defects}");
+                //lstGS1_Repo.Items.Add(string.Empty);
+                //lstGS1_Repo.Items.Add($"Over All: {BoundedROI.Gs1QcResult.OverAll}");
+
+                lstGS1_Repo.Items.Add($"Over All: No data found");
+            }
+            lstGS1_Repo.EndUpdate();
         }
 
         private void ChkAnchor_CheckedChanged(object sender, EventArgs e)
@@ -336,11 +365,24 @@ namespace OpenCV_SharpNet_Demo.UserControls
             OpenRoiReferenceWindow?.Invoke(this, EventArgs.Empty);
         }
 
-        private void BtnCopyDecodedText_Click(object sender, EventArgs e)
+        private void ChkBarcodeAdvancedMode_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(TxtDecoded.Text)) return;
+            if (BoundedROI is null || _isBinding) return;
 
-            TxtExpected.Text = TxtDecoded.Text;
+            BoundedROI.UseBruteForceGridRecovery = chkBarcodeAdvancedMode.Checked;
+        }
+
+        private void ChkBarcodeFormatAuto_Click(object sender, EventArgs e)
+        {
+            if (_isBinding || BoundedROI == null) return;
+
+            BoundedROI.isBarCodeFormatAuto = chkBarcodeFormatAuto.Checked;
+
+            //SET COMBOX VALUES BASED ON CHECKBOX STATE
+            if (chkBarcodeFormatAuto.Checked && cmbBarcodeFormat.Items.Count > 0)
+            {
+                cmbBarcodeFormat.SelectedItem = string.Empty;
+            }
         }
     }
 }

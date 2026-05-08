@@ -1,29 +1,60 @@
-using OpenCV_SharpNet.Enums;
-using OpenCV_SharpNet.Models;
+﻿using MvCamCtrl.NET;
+using CsplCam.Library.Enums;
+using CsplCam.Library.Models;
 using OpenCV_SharpNet_Demo.Services;
 using OpenCV_SharpNet_Demo.UI;
 using OpenCV_SharpNet_Demo.UserControls;
-using OpenCV_SharpNet.Models.GS1_QC;
+using CsplCam.Library.Models.GS1_QC;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System.ComponentModel;
 using System.Configuration;
+using System.Drawing.Imaging;
 using System.Runtime;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using CvRect = OpenCvSharp.Rect;
 using Point = System.Drawing.Point;
 
 // Aliases
 using SysPoint = System.Drawing.Point;
 using SysRect = System.Drawing.Rectangle;
-using OpenCV_SharpNet.Interfaces;
-using OpenCV_SharpNet.Services;
-using OpenCV_SharpNet.Services.AI;
+using CsplCam.Library.Interfaces;
+using CsplCam.Library.Enums;
+using CsplCam.Library.Services;
+using CsplCam.Library.Interfaces;
 
 namespace OpenCV_SharpNet_Demo
 {
-    public partial class MainForm : Form
+    public partial class CameraDemo : Form
     {
+        [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
+        private static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
+
+        public const Int32 CUSTOMER_PIXEL_FORMAT = unchecked((Int32)0x80000000);
+
+        MyCamera.MV_CC_DEVICE_INFO_LIST m_stDeviceList = new MyCamera.MV_CC_DEVICE_INFO_LIST();
+        private MyCamera m_MyCamera = new MyCamera();
+        bool m_bGrabbing = false;
+        Thread m_hReceiveThread = null;
+        MyCamera.MV_FRAME_OUT_INFO_EX m_stFrameInfo = new MyCamera.MV_FRAME_OUT_INFO_EX();
+
+        UInt32 m_nBufSizeForDriver = 0;
+        IntPtr m_BufForDriver = IntPtr.Zero;
+        private static Object BufForDriverLock = new Object();
+
+        Bitmap m_bitmap = null;
+        PixelFormat m_bitmapPixelFormat = PixelFormat.DontCare;
+        IntPtr m_ConvertDstBuf = IntPtr.Zero;
+        UInt32 m_nConvertDstBufLen = 0;
+
+        IntPtr displayHandle = IntPtr.Zero;
+        private delegate void listresult2(Int32 ErrorCode);
+        private listresult2 ListResult2;
+        public Bitmap CaptureImage = null;
+
         //// Core Data
         private Mat currentImage;
         private List<RoiObject> rois = new List<RoiObject>();
@@ -33,7 +64,7 @@ namespace OpenCV_SharpNet_Demo
         // ====================================================================
         private Bitmap _displayBitmap = null; // Caches the image so UI doesn't lag
         private double _smoothedExecutionTime = 0; // EMA Smoother for stable UI numbers
-        private long _imgCount = 0; // Tracks frames for the OpenCV GC Relief Valve
+        Int64 ImgCount = 0; // Tracks frames for the OpenCV GC Relief Valve
 
         // State
         private float zoom = 1.0f;
@@ -50,12 +81,28 @@ namespace OpenCV_SharpNet_Demo
         bool IsGenerateReport = bool.TryParse(ConfigurationManager.AppSettings["IsGenerateReport"], out var res) ? res : false;
         List<GS1_QC_CheckResult> lstGs1Res = new();
 
-        public MainForm()
+        public CameraDemo()
         {
             InitializeComponent();
             FlowPnlRoiData.DoubleBuffered(true);
             ImageCanvas.MouseWheel += ImageCanvas_MouseWheel;
         }
+
+        // ====================================================================
+        // NEW SAFE IMAGE SETTER (Prevents Memory Leaks & UI Lag)
+        // ====================================================================
+        //private void SetCurrentImage(Mat newMat)
+        //{
+        //    if (currentImage != null && currentImage != newMat) currentImage.Dispose();
+        //    currentImage = newMat;
+
+        //    if (_displayBitmap != null) _displayBitmap.Dispose();
+
+        //    if (currentImage != null && !currentImage.Empty())
+        //    {
+        //        _displayBitmap = BitmapConverter.ToBitmap(currentImage);
+        //    }
+        //}
 
         // Add these class-level variables to track the image size
         private int _lastImageWidth = 0;
@@ -131,7 +178,7 @@ namespace OpenCV_SharpNet_Demo
             _displayBitmap = BitmapConverter.ToBitmap(currentImage);
         }
 
-        private void MainForm_Load(object sender, EventArgs e)
+        private void CameraDemo_Load(object sender, EventArgs e)
         {
             // 1. Force Windows to treat this app as High Priority
             System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
@@ -145,99 +192,13 @@ namespace OpenCV_SharpNet_Demo
 
             Text = $"{Application.ProductName} : Template based OCR + Barcode - Multi ROI + Training + TM";
             toolStripVersion.Text = $"Version: {Application.ProductVersion.Split('+')[0]}";
+
             DisplaySelectInfo(DisplayInfo.Default);
+            SetCtrlWhenClose();
 
-
-
-            // Inside your Form_Load:
-
-            string aiFolderPath = System.IO.Path.Combine(Application.StartupPath, "AI.DataSet");
-
-            // 1. Init WeChat QR
-            OpenCV_WeChatQREngine_AI.Initialize(aiFolderPath);
-
-            // 2. Init Super Resolution (Make sure the filename matches what you downloaded)
-            string srModelPath = System.IO.Path.Combine(aiFolderPath, "ESPCN_x2.pb");
-            SuperResolutionEngine_AI.Initialize(srModelPath);
-
-            // 3. Init YOLOv8 Detector
-            string yoloModelPath = System.IO.Path.Combine(aiFolderPath, "yolov8n_barcode.onnx");
-            YoloDetector_AI.Initialize(yoloModelPath);
-        }
-
-        private void BtnLoadImage_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Multiselect = true;
-                ofd.Filter = "Image Files|*.png;*.jpg;*.jpeg;*.bmp;*.tiff|All Files|*.*";
-
-                if (ofd.ShowDialog() != DialogResult.OK) return;
-
-                var allfiles = ofd.FileNames;
-                if (allfiles.Length <= 0)
-                {
-                    MessageBox.Show("No files selected.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                foreach (var r in rois) if (r.AnchorTemplate != null) r.AnchorTemplate.Dispose();
-                rois.Clear();
-                selectedRoi = null;
-                ClearRoiControl();
-
-                LstImageList.Items.Clear();
-                LstImageList.Items.AddRange(allfiles);
-
-                DisplaySelectInfo(DisplayInfo.ImageCounting);
-                intCurrentSelectFileIndex = 0;
-                LstImageList.SelectedIndex = 0;
-
-                if (currentImage != null)
-                {
-                    float sx = (float)ImageCanvas.Width / currentImage.Width;
-                    float sy = (float)ImageCanvas.Height / currentImage.Height;
-                    zoom = Math.Min(sx, sy) * 0.9f;
-                    int dispW = (int)(currentImage.Width * zoom);
-                    int dispH = (int)(currentImage.Height * zoom);
-                    panOffset = new SysPoint((ImageCanvas.Width - dispW) / 2, (ImageCanvas.Height - dispH) / 2);
-                }
-                ImageCanvas.Invalidate();
-            }
-        }
-
-        private void LstImageList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (LstImageList.SelectedIndex == -1) return;
-
-            intCurrentSelectFileIndex = LstImageList.SelectedIndex;
-            string filePath = LstImageList.SelectedItem.ToString();
-
-            try
-            {
-                Mat newImg = Cv2.ImRead(filePath);
-                if (newImg.Empty()) return;
-
-                // USE NEW SAFE IMAGE SETTER
-                SetCurrentImage(newImg);
-
-                foreach (var r in rois) r.CharResults?.Clear();
-
-                if (rois.Any(r => r.IsAnchor)) AlignRois();
-
-                if (rois.Count > 0)
-                {
-                    BtnDecodeAllROI.PerformClick();
-                    return;
-                }
-
-                RefreshRightPanel();
-                ImageCanvas.Invalidate();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error loading image: " + ex.Message);
-            }
+            MyCamera.MV_CC_Initialize_NET();
+            DeviceListAcq();
+            ListResult2 = ShowList2;
         }
 
         private void ClearRoiControl()
@@ -259,8 +220,6 @@ namespace OpenCV_SharpNet_Demo
             if (FlowPnlRoiData.Controls.Count != rois.Count) RebuildRoiList();
             else UpdateRoiSelectionVisuals();
 
-            //var scrollControl = FlowPnlRoiData.Controls.Cast<ROIControl>().FirstOrDefault(x => x.BoundedROI == selectedRoi);
-
             var scrollControl = FlowPnlRoiData.Controls.Cast<IRoiControl>().FirstOrDefault(x => x.BoundedROI == selectedRoi);
             if (scrollControl != null) FlowPnlRoiData.ScrollControlIntoView((Control)scrollControl);
         }
@@ -269,7 +228,7 @@ namespace OpenCV_SharpNet_Demo
         {
             for (int i = 0; i < FlowPnlRoiData.Controls.Count; i++)
             {
-                if (FlowPnlRoiData.Controls[i] is IRoiControl ctrl)  //FlowPnlRoiData.Controls[i] is ROIControl ctrl
+                if (FlowPnlRoiData.Controls[i] is IRoiControl ctrl)
                 {
                     bool isSelected = (ctrl.BoundedROI == selectedRoi);
                     ctrl.SetSelectionState(isSelected);
@@ -294,7 +253,6 @@ namespace OpenCV_SharpNet_Demo
                     RoiType.TemplateMatch => new RoiControlTemplate(),
                     _ => new ROIControl()
                 };
-
 
                 roiCtrl.BindData(roi, (selectedRoi == roi));
                 UpdateSidePanelPreview(roiCtrl, roi);
@@ -332,6 +290,7 @@ namespace OpenCV_SharpNet_Demo
                     GC.Collect(0, GCCollectionMode.Optimized, false); // FAST SYNC GC
 
                     lstGs1Res.Add(roi.Gs1QcResult);
+                    //SetDataInDataGridView(rois);
 
                     SetDataInDataGridView(roi);
 
@@ -351,7 +310,6 @@ namespace OpenCV_SharpNet_Demo
             if (roiObject.IsUseRoiReference)
             {
                 var flRoi = rois.Where(x => x.Id != roiObject.Id).ToList();
-
                 if (flRoi is null || flRoi.Count == 0)
                 {
                     MessageBox.Show("No other rois available for reference.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -428,7 +386,6 @@ namespace OpenCV_SharpNet_Demo
                 // If the entire box is off-screen, don't draw anything
                 if (visibleBox.Width <= 0 || visibleBox.Height <= 0) continue;
 
-
                 //SysRect r = ImageToScreen(roi.Box);
                 SysRect r = ImageToScreen(visibleBox);
                 bool isSel = (roi == selectedRoi) || roi.IsSelected;
@@ -494,7 +451,6 @@ namespace OpenCV_SharpNet_Demo
                 {
                     foreach (var cr in roi.CharResults)
                     {
-
                         // Check if we successfully captured the 4 tilted corners
                         if (cr.Polygon != null && cr.Polygon.Length == 4)
                         {
@@ -540,8 +496,8 @@ namespace OpenCV_SharpNet_Demo
 
                         if (isOverlayMode)
                         {
-                            string strTempChar = (IntCharCounter < roi.ExpectedText?.Length) ? roi.ExpectedText[IntCharCounter].ToString() : string.Empty;
-                            if (IntCharCounter < roi.ExpectedText?.Length) IntCharCounter++;
+                            //string strTempChar = (IntCharCounter < roi.ExpectedText?.Length) ? roi.ExpectedText[IntCharCounter].ToString() : string.Empty;
+                            //if (IntCharCounter < roi.ExpectedText?.Length) IntCharCounter++;
 
                             string txt = cr.Text;
                             Brush DesiredBrush = brushOverlay;
@@ -726,8 +682,6 @@ namespace OpenCV_SharpNet_Demo
 
             dgvDecodeTextRec.ResumeLayout();
         }
-
-
         private void SetDataInDataGridView(RoiObject roiDatas)
         {
             if (dgvDecodeTextRec.InvokeRequired)
@@ -795,7 +749,7 @@ namespace OpenCV_SharpNet_Demo
             if (idx == 0 && dx != 0) idx = dx > 0 ? 1 : -1;
             if (idy == 0 && dy != 0) idy = dy > 0 ? 1 : -1;
 
-            if (currentMode == MouseMode.PanningImage)
+            if (currentMode == MouseMode.PanningImage || m_bGrabbing)
             {
                 panOffset.X += dx;
                 panOffset.Y += dy;
@@ -813,7 +767,7 @@ namespace OpenCV_SharpNet_Demo
 
                 selectedRoi.Box = r;
             }
-            else if (currentMode == MouseMode.ResizingRoi && selectedRoi != null)
+            else if ((currentMode == MouseMode.ResizingRoi && selectedRoi != null) || m_bGrabbing)
             {
                 CvRect r = selectedRoi.Box;
 
@@ -858,12 +812,6 @@ namespace OpenCV_SharpNet_Demo
         private void ImageCanvas_MouseUp(object sender, MouseEventArgs e)
         {
             bool wasModifyingRoi = (currentMode == MouseMode.MovingRoi || currentMode == MouseMode.ResizingRoi);
-
-            //if (wasModifyingRoi && selectedRoi != null && currentImage != null)
-            //{
-            //    var activeCtrl = FlowPnlRoiData.Controls.OfType<ROIControl>().FirstOrDefault(c => c.BoundedROI == selectedRoi);
-            //    if (activeCtrl != null) UpdateSidePanelPreview(activeCtrl, selectedRoi);
-            //}
 
             if (wasModifyingRoi && selectedRoi != null && currentImage != null)
             {
@@ -928,10 +876,10 @@ namespace OpenCV_SharpNet_Demo
                         RefreshRightPanel();
                         ImageCanvas.Invalidate();
                     };
-                    rotateItem.DropDownItems.Add("0� (Left->Right)", CreateMenuIcon("ANGLE_0"), (s, args) => changeRotation(RotationAngles.Zero));
-                    rotateItem.DropDownItems.Add("90� (Top->Bottom)", CreateMenuIcon("ANGLE_90"), (s, args) => changeRotation(RotationAngles.Ninety));
-                    rotateItem.DropDownItems.Add("180� (Right->Left)", CreateMenuIcon("ANGLE_180"), (s, args) => changeRotation(RotationAngles.OneEighty));
-                    rotateItem.DropDownItems.Add("270� (Bottom->Top)", CreateMenuIcon("ANGLE_270"), (s, args) => changeRotation(RotationAngles.TwoSeventy));
+                    rotateItem.DropDownItems.Add("0° (Left->Right)", CreateMenuIcon("ANGLE_0"), (s, args) => changeRotation(RotationAngles.Zero));
+                    rotateItem.DropDownItems.Add("90° (Top->Bottom)", CreateMenuIcon("ANGLE_90"), (s, args) => changeRotation(RotationAngles.Ninety));
+                    rotateItem.DropDownItems.Add("180° (Right->Left)", CreateMenuIcon("ANGLE_180"), (s, args) => changeRotation(RotationAngles.OneEighty));
+                    rotateItem.DropDownItems.Add("270° (Bottom->Top)", CreateMenuIcon("ANGLE_270"), (s, args) => changeRotation(RotationAngles.TwoSeventy));
                     contextMenu.Items.Add(rotateItem);
                 }
 
@@ -944,6 +892,7 @@ namespace OpenCV_SharpNet_Demo
                 contextMenu.Items.Add(deleteItem);
                 contextMenu.Show(ImageCanvas, e.Location);
             }
+
             RefreshRightPanel();
         }
 
@@ -1319,7 +1268,6 @@ namespace OpenCV_SharpNet_Demo
             if (OcrEngine.TemplateVectors.Count == 0) OcrEngine.ReloadTemplates();
 
             totalTimeTaken = 0;
-            _imgCount++;
 
             // 1. LATENCY LOCK
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
@@ -1331,7 +1279,6 @@ namespace OpenCV_SharpNet_Demo
                 r.CharResults?.Clear();
                 OcrEngine.DecodeRoi(currentImage, r);
                 totalTimeTaken += r.TimeTakenForDecoding.TotalMilliseconds;
-                //lstGs1Res.Add(r.Gs1QcResult);
             }
 
             // 3. LATENCY UNLOCK
@@ -1340,8 +1287,8 @@ namespace OpenCV_SharpNet_Demo
             // 4. FAST GC (C# Strings)
             GC.Collect(0, GCCollectionMode.Optimized, false);
 
-            // 5. DEEP OPENCV FLUSH (Every 50 Loads)
-            if (_imgCount % 50 == 0)
+            // 5. DEEP OPENCV FLUSH (Every 50 Loads - uses existing ImgCount)
+            if (ImgCount % 50 == 0)
             {
                 Task.Run(() =>
                 {
@@ -1363,37 +1310,6 @@ namespace OpenCV_SharpNet_Demo
         {
             TamplatesForm ObjTamplatesForm = new();
             ObjTamplatesForm.Show();
-        }
-
-        private void BtnNextImage_Click(object sender, EventArgs e)
-        {
-            intCurrentSelectFileIndex += 1;
-            if (intCurrentSelectFileIndex >= LstImageList.Items.Count)
-            {
-                MessageBox.Show("Reach the last image.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                intCurrentSelectFileIndex = LstImageList.Items.Count - 1;
-                return;
-            }
-            LstImageList.SelectedIndex = intCurrentSelectFileIndex;
-        }
-
-        private void BtnPreviousImage_Click(object sender, EventArgs e)
-        {
-            intCurrentSelectFileIndex -= 1;
-            if (intCurrentSelectFileIndex < 0)
-            {
-                MessageBox.Show("Reach the first image.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                intCurrentSelectFileIndex = 0;
-                return;
-            }
-            LstImageList.SelectedIndex = intCurrentSelectFileIndex;
-        }
-
-        private void BtnAddBarCodeRoi_Click(object sender, EventArgs e) { AddRoi(RoiType.Barcode); }
-
-        private void SplitConImageViewAndButton_SplitterMoved(object sender, SplitterEventArgs e)
-        {
-            //TblPnlImageList.ColumnStyles[0].Width = SplitConImageViewAndButton.SplitterDistance;
         }
 
         //public void OpenAnchorSettingWindow(RoiObject roiObject, ROIControl rOIControl)
@@ -1486,13 +1402,6 @@ namespace OpenCV_SharpNet_Demo
                     }
                 }
             }
-        }
-
-        private void UpdateSidePanelPreview(IRoiControl targetCtrl, RoiObject targetRoi)
-        {
-            if (currentImage == null || targetCtrl == null || targetRoi == null) return;
-            using Mat previewMat = OcrEngine.GenerateRoiControlPreview(currentImage, targetRoi);
-            if (previewMat != null) targetCtrl.SetPreviewImage(previewMat.ToBitmap());
         }
 
         private void AlignRois()
@@ -1615,7 +1524,7 @@ namespace OpenCV_SharpNet_Demo
                         };
 
                         var options = new JsonSerializerOptions { WriteIndented = true };
-                        string jsonString = JsonSerializer.Serialize(wrapper, options); // FIX: Serialized 'wrapper', not 'dataToSave'
+                        string jsonString = JsonSerializer.Serialize(wrapper, options);
                         System.IO.File.WriteAllText(sfd.FileName, jsonString);
 
                         MessageBox.Show($"Successfully saved {rois.Count} ROIs.");
@@ -1723,44 +1632,20 @@ namespace OpenCV_SharpNet_Demo
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            //if (ActiveControl is TextBox || ActiveControl is ROIControl || ActiveControl is NumericUpDown || (ActiveControl is ComboBox c && c.DroppedDown))
-            //{
-            //    return base.ProcessCmdKey(ref msg, keyData);
-            //}
-
             if (ActiveControl is TextBox || ActiveControl is IRoiControl || ActiveControl is NumericUpDown || (ActiveControl is ComboBox c && c.DroppedDown))
             {
                 return base.ProcessCmdKey(ref msg, keyData);
             }
 
-            if (keyData == (Keys.Control | Keys.C))
-            {
-                CopyROI();
-                return true;
-            }
-
+            if (keyData == (Keys.Control | Keys.C)) { CopyROI(); return true; }
             if (keyData == (Keys.Control | Keys.V))
             {
                 System.Drawing.Point clientPoint = ImageCanvas.PointToClient(Cursor.Position);
-                if (ImageCanvas.ClientRectangle.Contains(clientPoint))
-                {
-                    PasteROI(clientPoint);
-                    return true;
-                }
+                if (ImageCanvas.ClientRectangle.Contains(clientPoint)) { PasteROI(clientPoint); return true; }
             }
 
-            if (keyData == (Keys.Control | Keys.D) || keyData == Keys.Delete)
-            {
-                DeletROI(selectedRoi);
-                return true;
-            }
-
-            if (keyData == (Keys.Control | Keys.A))
-            {
-                PerformSelectAll();
-                DisplaySelectInfo(DisplayInfo.AllSelectionMode);
-                return true;
-            }
+            if (keyData == (Keys.Control | Keys.D) || keyData == Keys.Delete) { DeletROI(selectedRoi); return true; }
+            if (keyData == (Keys.Control | Keys.A)) { PerformSelectAll(); DisplaySelectInfo(DisplayInfo.AllSelectionMode); return true; }
 
             if (keyData == Keys.F1)
             {
@@ -1779,8 +1664,6 @@ namespace OpenCV_SharpNet_Demo
                 DisplayInfo.BarcodeROISelection => "Barcode ROI mode : click and drag canvas to draw and change barcode ROI.",
                 DisplayInfo.TimeTaken => $"Decode ROI in {totalTimeTaken} ms",
                 DisplayInfo.AllSelectionMode => $"ROI selection mode : All ROIs are selected.",
-                DisplayInfo.ImageCounting => $"Total {LstImageList.Items.Count} images are selected.",
-                DisplayInfo.CurrentImageIndex => $"Current image index: {intCurrentSelectFileIndex + 1} of {LstImageList.Items.Count}",
                 DisplayInfo.ImagePanning => $"Image Panning mode: move and zoom image on available canvas area.",
                 DisplayInfo.ROISave => $"ROI configuration is saved successfully.Total No. of saved ROI : {rois.Count}",
                 DisplayInfo.LoadROI => $"ROI configuration is loaded successfully.Total No. of loaded ROI : {rois.Count}",
@@ -1802,16 +1685,693 @@ namespace OpenCV_SharpNet_Demo
         //    using Mat previewMat = OcrEngine.GenerateRoiControlPreview(currentImage, targetRoi);
         //    if (previewMat != null) targetCtrl.SetPreviewImage(previewMat.ToBitmap());
         //}
-
-        //private void UpdateSidePanelPreview(ROIControlBarCode targetCtrl, RoiObject targetRoi)
-        //{
-        //    if (currentImage == null || targetCtrl == null || targetRoi == null) return;
-        //    using Mat previewMat = OcrEngine.GenerateRoiControlPreview(currentImage, targetRoi);
-        //    if (previewMat != null) targetCtrl.SetPreviewImage(previewMat.ToBitmap());
-        //}
-
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void UpdateSidePanelPreview(IRoiControl targetCtrl, RoiObject targetRoi)
         {
+            if (currentImage == null || targetCtrl == null || targetRoi == null) return;
+            using Mat previewMat = OcrEngine.GenerateRoiControlPreview(currentImage, targetRoi);
+            if (previewMat != null) targetCtrl.SetPreviewImage(previewMat.ToBitmap());
+        }
+
+        private void BnEnum_Click(object sender, EventArgs e) { DeviceListAcq(); }
+
+        private void DeviceListAcq()
+        {
+            System.GC.Collect();
+            cbDeviceList.Items.Clear();
+            m_stDeviceList.nDeviceNum = 0;
+            int nRet = MyCamera.MV_CC_EnumDevices_NET(MyCamera.MV_GIGE_DEVICE | MyCamera.MV_USB_DEVICE | MyCamera.MV_GENTL_GIGE_DEVICE
+                | MyCamera.MV_GENTL_CAMERALINK_DEVICE | MyCamera.MV_GENTL_CXP_DEVICE | MyCamera.MV_GENTL_XOF_DEVICE, ref m_stDeviceList);
+            if (0 != nRet) { ShowErrorMsg("Enumerate devices fail!", 0); return; }
+
+            for (int i = 0; i < m_stDeviceList.nDeviceNum; i++)
+            {
+                MyCamera.MV_CC_DEVICE_INFO device = (MyCamera.MV_CC_DEVICE_INFO)Marshal.PtrToStructure(m_stDeviceList.pDeviceInfo[i], typeof(MyCamera.MV_CC_DEVICE_INFO));
+                string strUserDefinedName = "";
+                if (device.nTLayerType == MyCamera.MV_GIGE_DEVICE)
+                {
+                    MyCamera.MV_GIGE_DEVICE_INFO_EX gigeInfo = (MyCamera.MV_GIGE_DEVICE_INFO_EX)MyCamera.ByteToStruct(device.SpecialInfo.stGigEInfo, typeof(MyCamera.MV_GIGE_DEVICE_INFO_EX));
+                    if ((gigeInfo.chUserDefinedName.Length > 0) && (gigeInfo.chUserDefinedName[0] != '\0'))
+                    {
+                        strUserDefinedName = MyCamera.IsTextUTF8(gigeInfo.chUserDefinedName) ? Encoding.UTF8.GetString(gigeInfo.chUserDefinedName).TrimEnd('\0') : Encoding.Default.GetString(gigeInfo.chUserDefinedName).TrimEnd('\0');
+                        cbDeviceList.Items.Add("GEV: " + DeleteTail(strUserDefinedName) + " (" + gigeInfo.chSerialNumber + ")");
+                    }
+                    else cbDeviceList.Items.Add("GEV: " + gigeInfo.chManufacturerName + " " + gigeInfo.chModelName + " (" + gigeInfo.chSerialNumber + ")");
+                }
+                else if (device.nTLayerType == MyCamera.MV_USB_DEVICE)
+                {
+                    MyCamera.MV_USB3_DEVICE_INFO_EX usbInfo = (MyCamera.MV_USB3_DEVICE_INFO_EX)MyCamera.ByteToStruct(device.SpecialInfo.stUsb3VInfo, typeof(MyCamera.MV_USB3_DEVICE_INFO_EX));
+                    if ((usbInfo.chUserDefinedName.Length > 0) && (usbInfo.chUserDefinedName[0] != '\0'))
+                    {
+                        strUserDefinedName = MyCamera.IsTextUTF8(usbInfo.chUserDefinedName) ? Encoding.UTF8.GetString(usbInfo.chUserDefinedName).TrimEnd('\0') : Encoding.Default.GetString(usbInfo.chUserDefinedName).TrimEnd('\0');
+                        cbDeviceList.Items.Add("U3V: " + DeleteTail(strUserDefinedName) + " (" + usbInfo.chSerialNumber + ")");
+                    }
+                    else cbDeviceList.Items.Add("U3V: " + usbInfo.chManufacturerName + " " + usbInfo.chModelName + " (" + usbInfo.chSerialNumber + ")");
+                }
+            }
+
+            if (m_stDeviceList.nDeviceNum != 0) cbDeviceList.SelectedIndex = 0;
+        }
+
+        private void SetCtrlWhenOpen()
+        {
+            bnOpen.Enabled = false;
+            bnClose.Enabled = true;
+            bnStartGrab.Enabled = true;
+            bnStopGrab.Enabled = false;
+            bnContinuesMode.Enabled = true;
+            bnContinuesMode.Checked = true;
+            bnTriggerMode.Enabled = true;
+            cbSoftTrigger.Enabled = false;
+            bnTriggerExec.Enabled = false;
+            tbExposure.Enabled = true;
+            tbGain.Enabled = true;
+            tbFrameRate.Enabled = true;
+            bnGetParam.Enabled = true;
+            bnSetParam.Enabled = true;
+        }
+
+        private void BnOpen_Click(object sender, EventArgs e)
+        {
+            if (m_stDeviceList.nDeviceNum == 0 || cbDeviceList.SelectedIndex == -1) { ShowErrorMsg("No device, please select", 0); return; }
+
+            MyCamera.MV_CC_DEVICE_INFO device = (MyCamera.MV_CC_DEVICE_INFO)Marshal.PtrToStructure(m_stDeviceList.pDeviceInfo[cbDeviceList.SelectedIndex], typeof(MyCamera.MV_CC_DEVICE_INFO));
+
+            if (null == m_MyCamera)
+            {
+                m_MyCamera = new MyCamera();
+                if (null == m_MyCamera) { ShowErrorMsg("Applying resource fail!", MyCamera.MV_E_RESOURCE); return; }
+            }
+
+            int nRet = m_MyCamera.MV_CC_CreateDevice_NET(ref device);
+            if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Create device fail!", nRet); return; }
+
+            nRet = m_MyCamera.MV_CC_OpenDevice_NET();
+            if (MyCamera.MV_OK != nRet) { m_MyCamera.MV_CC_DestroyDevice_NET(); ShowErrorMsg("Device open fail!", nRet); return; }
+
+            if (device.nTLayerType == MyCamera.MV_GIGE_DEVICE)
+            {
+                int nPacketSize = m_MyCamera.MV_CC_GetOptimalPacketSize_NET();
+                if (nPacketSize > 0)
+                {
+                    nRet = m_MyCamera.MV_CC_SetIntValueEx_NET("GevSCPSPacketSize", nPacketSize);
+                    if (nRet != MyCamera.MV_OK) ShowErrorMsg("Set Packet Size failed!", nRet);
+                }
+                else ShowErrorMsg("Get Packet Size failed!", nPacketSize);
+            }
+
+            m_MyCamera.MV_CC_SetEnumValue_NET("AcquisitionMode", (uint)MyCamera.MV_CAM_ACQUISITION_MODE.MV_ACQ_MODE_CONTINUOUS);
+            m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
+            BnGetParam_Click(null, null);
+            SetCtrlWhenOpen();
+        }
+
+        private void SetCtrlWhenClose()
+        {
+            bnOpen.Enabled = true;
+            bnClose.Enabled = false;
+            bnStartGrab.Enabled = false;
+            bnStopGrab.Enabled = false;
+            bnContinuesMode.Enabled = false;
+            bnTriggerMode.Enabled = false;
+            cbSoftTrigger.Enabled = false;
+            bnTriggerExec.Enabled = false;
+            //bnSaveBmp.Enabled = false;
+            //bnSaveJpg.Enabled = false;
+            //bnSaveTiff.Enabled = false;
+            //bnSavePng.Enabled = false;
+            tbExposure.Enabled = false;
+            tbGain.Enabled = false;
+            tbFrameRate.Enabled = false;
+            bnGetParam.Enabled = false;
+            bnSetParam.Enabled = false;
+        }
+
+        private void BnClose_Click(object sender, EventArgs e)
+        {
+            m_bGrabbing = false;
+
+            if (m_hReceiveThread != null)
+            {
+                if (!m_hReceiveThread.Join(1000)) { }
+                m_hReceiveThread = null;
+            }
+
+            if (m_BufForDriver != IntPtr.Zero)
+            {
+                Marshal.FreeHGlobal(m_BufForDriver);
+                m_BufForDriver = IntPtr.Zero;
+            }
+
+            if (m_MyCamera != null)
+            {
+                m_MyCamera.MV_CC_CloseDevice_NET();
+                m_MyCamera.MV_CC_DestroyDevice_NET();
+            }
+
+            SetCtrlWhenClose();
+        }
+
+        private void BnContinuesMode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (bnContinuesMode.Checked)
+            {
+                m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_OFF);
+                cbSoftTrigger.Enabled = false;
+                bnTriggerExec.Enabled = false;
+            }
+        }
+
+        private void BnTriggerMode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (bnTriggerMode.Checked)
+            {
+                m_MyCamera.MV_CC_SetEnumValue_NET("TriggerMode", (uint)MyCamera.MV_CAM_TRIGGER_MODE.MV_TRIGGER_MODE_ON);
+                if (cbSoftTrigger.Checked)
+                {
+                    m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_SOFTWARE);
+                    if (m_bGrabbing) bnTriggerExec.Enabled = true;
+                }
+                else m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_LINE0);
+                cbSoftTrigger.Enabled = true;
+            }
+        }
+
+        private void SetCtrlWhenStartGrab()
+        {
+            bnStartGrab.Enabled = false;
+            bnStopGrab.Enabled = true;
+            if (bnTriggerMode.Checked && cbSoftTrigger.Checked) bnTriggerExec.Enabled = true;
+            //bnSaveBmp.Enabled = true;
+            //bnSaveJpg.Enabled = true;
+            //bnSaveTiff.Enabled = true;
+            //bnSavePng.Enabled = true;
+        }
+
+        private Boolean IsMono(UInt32 enPixelType)
+        {
+            switch (enPixelType)
+            {
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono1p:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono2p:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono4p:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono8:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono8_Signed:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono10:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono10_Packed:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono12:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono12_Packed:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono14:
+                case (UInt32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono16:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private Int32 NecessaryOperBeforeGrab()
+        {
+            MyCamera.MVCC_INTVALUE_EX stWidth = new MyCamera.MVCC_INTVALUE_EX();
+            int nRet = m_MyCamera.MV_CC_GetIntValueEx_NET("Width", ref stWidth);
+            if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Get Width Info Fail!", nRet); return nRet; }
+
+            MyCamera.MVCC_INTVALUE_EX stHeight = new MyCamera.MVCC_INTVALUE_EX();
+            nRet = m_MyCamera.MV_CC_GetIntValueEx_NET("Height", ref stHeight);
+            if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Get Height Info Fail!", nRet); return nRet; }
+
+            MyCamera.MVCC_ENUMVALUE stPixelFormat = new MyCamera.MVCC_ENUMVALUE();
+            nRet = m_MyCamera.MV_CC_GetEnumValue_NET("PixelFormat", ref stPixelFormat);
+            if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Get Pixel Format Fail!", nRet); return nRet; }
+
+            if ((Int32)MyCamera.MvGvspPixelType.PixelType_Gvsp_Undefined == (Int32)stPixelFormat.nCurValue)
+            {
+                ShowErrorMsg("Unknown Pixel Format!", MyCamera.MV_E_UNKNOW);
+                return MyCamera.MV_E_UNKNOW;
+            }
+            else if (IsMono(stPixelFormat.nCurValue))
+            {
+                m_bitmapPixelFormat = PixelFormat.Format8bppIndexed;
+                if (IntPtr.Zero != m_ConvertDstBuf)
+                {
+                    Marshal.FreeHGlobal(m_ConvertDstBuf);
+                    m_ConvertDstBuf = IntPtr.Zero;
+                }
+
+                m_nConvertDstBufLen = (UInt32)(stWidth.nCurValue * stHeight.nCurValue);
+                m_ConvertDstBuf = Marshal.AllocHGlobal((Int32)m_nConvertDstBufLen);
+                if (IntPtr.Zero == m_ConvertDstBuf) { ShowErrorMsg("Malloc Memory Fail!", MyCamera.MV_E_RESOURCE); return MyCamera.MV_E_RESOURCE; }
+            }
+            else
+            {
+                m_bitmapPixelFormat = PixelFormat.Format24bppRgb;
+                if (IntPtr.Zero != m_ConvertDstBuf)
+                {
+                    Marshal.FreeHGlobal(m_ConvertDstBuf);
+                    m_ConvertDstBuf = IntPtr.Zero;
+                }
+
+                m_nConvertDstBufLen = (UInt32)(3 * stWidth.nCurValue * stHeight.nCurValue);
+                m_ConvertDstBuf = Marshal.AllocHGlobal((Int32)m_nConvertDstBufLen);
+                if (IntPtr.Zero == m_ConvertDstBuf) { ShowErrorMsg("Malloc Memory Fail!", MyCamera.MV_E_RESOURCE); return MyCamera.MV_E_RESOURCE; }
+            }
+
+            if (null != m_bitmap)
+            {
+                m_bitmap.Dispose();
+                m_bitmap = null;
+            }
+            m_bitmap = new Bitmap((Int32)stWidth.nCurValue, (Int32)stHeight.nCurValue, m_bitmapPixelFormat);
+
+            if (PixelFormat.Format8bppIndexed == m_bitmapPixelFormat)
+            {
+                ColorPalette palette = m_bitmap.Palette;
+                for (int i = 0; i < palette.Entries.Length; i++) palette.Entries[i] = Color.FromArgb(i, i, i);
+                m_bitmap.Palette = palette;
+            }
+
+            return MyCamera.MV_OK;
+        }
+
+        private void BnStartGrab_Click(object sender, EventArgs e)
+        {
+            int nRet = NecessaryOperBeforeGrab();
+            if (MyCamera.MV_OK != nRet) return;
+
+            displayHandle = ImageCanvas.Handle;
+            m_bGrabbing = true;
+
+            m_stFrameInfo.nFrameLen = 0;
+            m_stFrameInfo.enPixelType = MyCamera.MvGvspPixelType.PixelType_Gvsp_Undefined;
+
+            m_hReceiveThread = new Thread(ReceiveThreadProcess);
+
+            // 2. High Priority Thread!
+            m_hReceiveThread.Priority = ThreadPriority.Highest;
+            m_hReceiveThread.Start();
+
+            nRet = m_MyCamera.MV_CC_StartGrabbing_NET();
+            if (MyCamera.MV_OK != nRet)
+            {
+                m_bGrabbing = false;
+                m_hReceiveThread.Join();
+                ShowErrorMsg("Start Grabbing Fail!", nRet);
+                return;
+            }
+
+            SetCtrlWhenStartGrab();
+        }
+
+        private void CbSoftTrigger_CheckedChanged(object sender, EventArgs e)
+        {
+            if (cbSoftTrigger.Checked)
+            {
+                m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_SOFTWARE);
+                if (m_bGrabbing) bnTriggerExec.Enabled = true;
+            }
+            else
+            {
+                m_MyCamera.MV_CC_SetEnumValue_NET("TriggerSource", (uint)MyCamera.MV_CAM_TRIGGER_SOURCE.MV_TRIGGER_SOURCE_LINE0);
+                bnTriggerExec.Enabled = false;
+            }
+        }
+
+        private void BnTriggerExec_Click(object sender, EventArgs e)
+        {
+            int nRet = m_MyCamera.MV_CC_SetCommandValue_NET("TriggerSoftware");
+            if (MyCamera.MV_OK != nRet) ShowErrorMsg("Trigger Software Fail!", nRet);
+        }
+
+        private void SetCtrlWhenStopGrab()
+        {
+            bnStartGrab.Enabled = true;
+            bnStopGrab.Enabled = false;
+            bnTriggerExec.Enabled = false;
+            //bnSaveBmp.Enabled = false;
+            //bnSaveJpg.Enabled = false;
+            //bnSaveTiff.Enabled = false;
+            //bnSavePng.Enabled = false;
+        }
+
+        private void BnStopGrab_Click(object sender, EventArgs e)
+        {
+            m_bGrabbing = false;
+            int nRet = m_MyCamera.MV_CC_StopGrabbing_NET();
+            if (nRet != MyCamera.MV_OK) ShowErrorMsg("Stop Grabbing Fail!", nRet);
+            SetCtrlWhenStopGrab();
+        }
+
+        private void BnSaveBmp_Click(object sender, EventArgs e)
+        {
+            if (false == m_bGrabbing) { ShowErrorMsg("Not Start Grabbing", 0); return; }
+            MyCamera.MV_SAVE_IMG_TO_FILE_PARAM stSaveFileParam = new MyCamera.MV_SAVE_IMG_TO_FILE_PARAM();
+            lock (BufForDriverLock)
+            {
+                if (m_stFrameInfo.nFrameLen == 0) { ShowErrorMsg("Save Bmp Fail!", 0); return; }
+                stSaveFileParam.enImageType = MyCamera.MV_SAVE_IAMGE_TYPE.MV_Image_Bmp;
+                stSaveFileParam.enPixelType = m_stFrameInfo.enPixelType;
+                stSaveFileParam.pData = m_BufForDriver;
+                stSaveFileParam.nDataLen = m_stFrameInfo.nFrameLen;
+                stSaveFileParam.nHeight = m_stFrameInfo.nHeight;
+                stSaveFileParam.nWidth = m_stFrameInfo.nWidth;
+                stSaveFileParam.iMethodValue = 2;
+                stSaveFileParam.pImagePath = ConfigurationManager.AppSettings["ImagePath"] + "Image_w" + stSaveFileParam.nWidth.ToString() + "_h" + stSaveFileParam.nHeight.ToString() + "_fn" + m_stFrameInfo.nFrameNum.ToString() + ".bmp";
+                int nRet = m_MyCamera.MV_CC_SaveImageToFile_NET(ref stSaveFileParam);
+                if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Save Bmp Fail!", nRet); return; }
+            }
+            ShowErrorMsg("Save Succeed!", 0);
+        }
+
+        private void BnSaveJpg_Click(object sender, EventArgs e)
+        {
+            if (false == m_bGrabbing) { ShowErrorMsg("Not Start Grabbing", 0); return; }
+            MyCamera.MV_SAVE_IMG_TO_FILE_PARAM stSaveFileParam = new MyCamera.MV_SAVE_IMG_TO_FILE_PARAM();
+            lock (BufForDriverLock)
+            {
+                if (m_stFrameInfo.nFrameLen == 0) { ShowErrorMsg("Save Jpeg Fail!", 0); return; }
+                stSaveFileParam.enImageType = MyCamera.MV_SAVE_IAMGE_TYPE.MV_Image_Jpeg;
+                stSaveFileParam.enPixelType = m_stFrameInfo.enPixelType;
+                stSaveFileParam.pData = m_BufForDriver;
+                stSaveFileParam.nDataLen = m_stFrameInfo.nFrameLen;
+                stSaveFileParam.nHeight = m_stFrameInfo.nHeight;
+                stSaveFileParam.nWidth = m_stFrameInfo.nWidth;
+                stSaveFileParam.nQuality = 80;
+                stSaveFileParam.iMethodValue = 2;
+                stSaveFileParam.pImagePath = ConfigurationManager.AppSettings["ImagePath"] + "Image_w" + stSaveFileParam.nWidth.ToString() + "_h" + stSaveFileParam.nHeight.ToString() + "_fn" + m_stFrameInfo.nFrameNum.ToString() + ".jpg";
+                int nRet = m_MyCamera.MV_CC_SaveImageToFile_NET(ref stSaveFileParam);
+                if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Save Jpeg Fail!", nRet); return; }
+            }
+            ShowErrorMsg("Save Succeed!", 0);
+        }
+        private void BtnAddBarCodeRoi_Click(object sender, EventArgs e)
+        {
+            AddRoi(RoiType.Barcode);
+        }
+
+        private void BnSavePng_Click(object sender, EventArgs e)
+        {
+            if (false == m_bGrabbing) { ShowErrorMsg("Not Start Grabbing", 0); return; }
+            MyCamera.MV_SAVE_IMG_TO_FILE_PARAM stSaveFileParam = new MyCamera.MV_SAVE_IMG_TO_FILE_PARAM();
+            lock (BufForDriverLock)
+            {
+                if (m_stFrameInfo.nFrameLen == 0) { ShowErrorMsg("Save Png Fail!", 0); return; }
+                stSaveFileParam.enImageType = MyCamera.MV_SAVE_IAMGE_TYPE.MV_Image_Png;
+                stSaveFileParam.enPixelType = m_stFrameInfo.enPixelType;
+                stSaveFileParam.pData = m_BufForDriver;
+                stSaveFileParam.nDataLen = m_stFrameInfo.nFrameLen;
+                stSaveFileParam.nHeight = m_stFrameInfo.nHeight;
+                stSaveFileParam.nWidth = m_stFrameInfo.nWidth;
+                stSaveFileParam.nQuality = 8;
+                stSaveFileParam.iMethodValue = 2;
+                stSaveFileParam.pImagePath = ConfigurationManager.AppSettings["ImagePath"] + "Image_w" + stSaveFileParam.nWidth.ToString() + "_h" + stSaveFileParam.nHeight.ToString() + "_fn" + m_stFrameInfo.nFrameNum.ToString() + ".png";
+                int nRet = m_MyCamera.MV_CC_SaveImageToFile_NET(ref stSaveFileParam);
+                if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Save Png Fail!", nRet); return; }
+            }
+            ShowErrorMsg("Save Succeed!", 0);
+        }
+
+        private void BnSaveTiff_Click(object sender, EventArgs e)
+        {
+            if (false == m_bGrabbing) { ShowErrorMsg("Not Start Grabbing", 0); return; }
+            MyCamera.MV_SAVE_IMG_TO_FILE_PARAM stSaveFileParam = new MyCamera.MV_SAVE_IMG_TO_FILE_PARAM();
+            lock (BufForDriverLock)
+            {
+                if (m_stFrameInfo.nFrameLen == 0) { ShowErrorMsg("Save Tiff Fail!", 0); return; }
+                stSaveFileParam.enImageType = MyCamera.MV_SAVE_IAMGE_TYPE.MV_Image_Tif;
+                stSaveFileParam.enPixelType = m_stFrameInfo.enPixelType;
+                stSaveFileParam.pData = m_BufForDriver;
+                stSaveFileParam.nDataLen = m_stFrameInfo.nFrameLen;
+                stSaveFileParam.nHeight = m_stFrameInfo.nHeight;
+                stSaveFileParam.nWidth = m_stFrameInfo.nWidth;
+                stSaveFileParam.iMethodValue = 2;
+                stSaveFileParam.pImagePath = ConfigurationManager.AppSettings["ImagePath"] + "Image_w" + stSaveFileParam.nWidth.ToString() + "_h" + stSaveFileParam.nHeight.ToString() + "_fn" + m_stFrameInfo.nFrameNum.ToString() + ".tif";
+                int nRet = m_MyCamera.MV_CC_SaveImageToFile_NET(ref stSaveFileParam);
+                if (MyCamera.MV_OK != nRet) { ShowErrorMsg("Save Tiff Fail!", nRet); return; }
+            }
+            ShowErrorMsg("Save Succeed!", 0);
+        }
+
+        private void BnGetParam_Click(object sender, EventArgs e)
+        {
+            MyCamera.MVCC_FLOATVALUE stParam = new MyCamera.MVCC_FLOATVALUE();
+            int nRet = m_MyCamera.MV_CC_GetFloatValue_NET("ExposureTime", ref stParam);
+            if (MyCamera.MV_OK == nRet) tbExposure.Text = stParam.fCurValue.ToString("F1");
+
+            nRet = m_MyCamera.MV_CC_GetFloatValue_NET("Gain", ref stParam);
+            if (MyCamera.MV_OK == nRet) tbGain.Text = stParam.fCurValue.ToString("F1");
+
+            nRet = m_MyCamera.MV_CC_GetFloatValue_NET("ResultingFrameRate", ref stParam);
+            if (MyCamera.MV_OK == nRet) tbFrameRate.Text = stParam.fCurValue.ToString("F1");
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            // 1. Force Windows to treat this app as High Priority (prevents background apps from stealing CPU)
+            System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+
+            System.Threading.ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
+
+            // Populate Enums
+            CmbSegments.DataSource = Enum.GetValues(typeof(SegmentationMode)); // <--- NEW
+
+            // Events
+            CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
+
+            //1.Ensure templates are loaded(Just in case)
+            if (OcrEngine.TemplateVectors.Count == 0) OcrEngine.ReloadTemplates();
+
+            // Load templates from folder
+            TemplateManager.LoadTemplates();
+
+            Text = $"{Application.ProductName} : Template based OCR + Barcode - Multi ROI + Training + TM";
+
+            toolStripVersion.Text = $"Version: {Application.ProductVersion.Split('+')[0]}";
+
+            //display msg
+            DisplaySelectInfo(DisplayInfo.Default);
+
+            //DISBALE CONTROLS
+            SetCtrlWhenClose();
+
+            // ch: 初始化 SDK | en: Initialize SDK
+            MyCamera.MV_CC_Initialize_NET();
+
+            // ch: 枚举设备 | en: Enum Device List
+            DeviceListAcq();
+
+            ListResult2 = ShowList2;
+        }
+        private void BnSetParam_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                float.Parse(tbExposure.Text);
+                float.Parse(tbGain.Text);
+                float.Parse(tbFrameRate.Text);
+            }
+            catch { ShowErrorMsg("Please enter correct type!", 0); return; }
+
+            m_MyCamera.MV_CC_SetEnumValue_NET("ExposureAuto", 0);
+            int nRet = m_MyCamera.MV_CC_SetFloatValue_NET("ExposureTime", float.Parse(tbExposure.Text));
+            if (nRet != MyCamera.MV_OK) ShowErrorMsg("Set Exposure Time Fail!", nRet);
+
+            m_MyCamera.MV_CC_SetEnumValue_NET("GainAuto", 0);
+            nRet = m_MyCamera.MV_CC_SetFloatValue_NET("Gain", float.Parse(tbGain.Text));
+            if (nRet != MyCamera.MV_OK) ShowErrorMsg("Set Gain Fail!", nRet);
+
+            nRet = m_MyCamera.MV_CC_SetFloatValue_NET("AcquisitionFrameRate", float.Parse(tbFrameRate.Text));
+            if (nRet != MyCamera.MV_OK) ShowErrorMsg("Set Frame Rate Fail!", nRet);
+        }
+
+        public void ReceiveThreadProcess()
+        {
+            MyCamera.MV_FRAME_OUT stFrameInfo = new MyCamera.MV_FRAME_OUT();
+            MyCamera.MV_DISPLAY_FRAME_INFO stDisplayInfo = new MyCamera.MV_DISPLAY_FRAME_INFO();
+            MyCamera.MV_PIXEL_CONVERT_PARAM stConvertInfo = new MyCamera.MV_PIXEL_CONVERT_PARAM();
+            int nRet = MyCamera.MV_OK;
+
+            while (m_bGrabbing)
+            {
+                nRet = m_MyCamera.MV_CC_GetImageBuffer_NET(ref stFrameInfo, 1000);
+                if (nRet == MyCamera.MV_OK)
+                {
+                    lock (BufForDriverLock)
+                    {
+                        if (m_BufForDriver == IntPtr.Zero || stFrameInfo.stFrameInfo.nFrameLen > m_nBufSizeForDriver)
+                        {
+                            if (m_BufForDriver != IntPtr.Zero)
+                            {
+                                Marshal.FreeHGlobal(m_BufForDriver);
+                                m_BufForDriver = IntPtr.Zero;
+                            }
+
+                            m_BufForDriver = Marshal.AllocHGlobal((Int32)stFrameInfo.stFrameInfo.nFrameLen);
+                            if (m_BufForDriver == IntPtr.Zero) return;
+                            m_nBufSizeForDriver = stFrameInfo.stFrameInfo.nFrameLen;
+                        }
+
+                        m_stFrameInfo = stFrameInfo.stFrameInfo;
+                        CopyMemory(m_BufForDriver, stFrameInfo.pBufAddr, stFrameInfo.stFrameInfo.nFrameLen);
+
+                        stConvertInfo.nWidth = stFrameInfo.stFrameInfo.nWidth;
+                        stConvertInfo.nHeight = stFrameInfo.stFrameInfo.nHeight;
+                        stConvertInfo.enSrcPixelType = stFrameInfo.stFrameInfo.enPixelType;
+                        stConvertInfo.pSrcData = stFrameInfo.pBufAddr;
+                        stConvertInfo.nSrcDataLen = stFrameInfo.stFrameInfo.nFrameLen;
+                        stConvertInfo.pDstBuffer = m_ConvertDstBuf;
+                        stConvertInfo.nDstBufferSize = m_nConvertDstBufLen;
+
+                        if (PixelFormat.Format8bppIndexed == m_bitmap.PixelFormat)
+                        {
+                            stConvertInfo.enDstPixelType = MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono8;
+                            m_MyCamera.MV_CC_ConvertPixelType_NET(ref stConvertInfo);
+                        }
+                        else
+                        {
+                            stConvertInfo.enDstPixelType = MyCamera.MvGvspPixelType.PixelType_Gvsp_BGR8_Packed;
+                            m_MyCamera.MV_CC_ConvertPixelType_NET(ref stConvertInfo);
+                        }
+
+                        BitmapData bitmapData = m_bitmap.LockBits(new Rectangle(0, 0, stConvertInfo.nWidth, stConvertInfo.nHeight), ImageLockMode.ReadWrite, m_bitmap.PixelFormat);
+                        CopyMemory(bitmapData.Scan0, stConvertInfo.pDstBuffer, (UInt32)(bitmapData.Stride * m_bitmap.Height));
+                        m_bitmap.UnlockBits(bitmapData);
+                    }
+
+                    Bitmap oldBitmap = CaptureImage;
+                    CaptureImage = new Bitmap(stFrameInfo.stFrameInfo.nWidth, stFrameInfo.stFrameInfo.nHeight, stFrameInfo.stFrameInfo.nWidth, System.Drawing.Imaging.PixelFormat.Format8bppIndexed, stFrameInfo.pBufAddr);
+
+                    ColorPalette cp = CaptureImage.Palette;
+                    for (int i = 0; i < 256; ++i) cp.Entries[i] = System.Drawing.Color.FromArgb(i, i, i);
+                    CaptureImage.Palette = cp;
+
+                    stDisplayInfo.pData = stFrameInfo.pBufAddr;
+                    stDisplayInfo.nDataLen = stFrameInfo.stFrameInfo.nFrameLen;
+                    stDisplayInfo.nWidth = stFrameInfo.stFrameInfo.nWidth;
+                    stDisplayInfo.nHeight = stFrameInfo.stFrameInfo.nHeight;
+                    stDisplayInfo.enPixelType = stFrameInfo.stFrameInfo.enPixelType;
+                    m_MyCamera.MV_CC_DisplayOneFrame_NET(ref stDisplayInfo);
+
+                    Invoke((MethodInvoker)delegate
+                    {
+                        if (m_bGrabbing)
+                        {
+                            // USE NEW SAFE IMAGE SETTER INSTEAD OF .ToMat() ONLY
+                            SetCurrentImage(CaptureImage.ToMat());
+
+                            if (rois.Any(r => r.IsAnchor)) AlignRois();
+                            ImageCanvas.Invalidate();
+                        }
+                    });
+
+                    m_MyCamera.MV_CC_FreeImageBuffer_NET(ref stFrameInfo);
+                    if (oldBitmap != null) oldBitmap.Dispose();
+                    listBoxResult1.Invoke(ListResult2, new object[] { nRet });
+                }
+                else
+                {
+                    if (bnTriggerMode.Checked) Thread.Sleep(5);
+                }
+            }
+        }
+
+        private void ShowErrorMsg(string csMessage, int nErrorNum)
+        {
+            string errorMsg;
+            if (nErrorNum == 0) errorMsg = csMessage;
+            else errorMsg = csMessage + ": Error =" + String.Format("{0:X}", nErrorNum);
+
+            switch (nErrorNum)
+            {
+                case MyCamera.MV_E_HANDLE: errorMsg += " Error or invalid handle "; break;
+                case MyCamera.MV_E_SUPPORT: errorMsg += " Not supported function "; break;
+                case MyCamera.MV_E_BUFOVER: errorMsg += " Cache is full "; break;
+                case MyCamera.MV_E_CALLORDER: errorMsg += " Function calling order error "; break;
+                case MyCamera.MV_E_PARAMETER: errorMsg += " Incorrect parameter "; break;
+                case MyCamera.MV_E_RESOURCE: errorMsg += " Applying resource failed "; break;
+                case MyCamera.MV_E_NODATA: errorMsg += " No data "; break;
+                case MyCamera.MV_E_PRECONDITION: errorMsg += " Precondition error, or running environment changed "; break;
+                case MyCamera.MV_E_VERSION: errorMsg += " Version mismatches "; break;
+                case MyCamera.MV_E_NOENOUGH_BUF: errorMsg += " Insufficient memory "; break;
+                case MyCamera.MV_E_UNKNOW: errorMsg += " Unknown error "; break;
+                case MyCamera.MV_E_GC_GENERIC: errorMsg += " General error "; break;
+                case MyCamera.MV_E_GC_ACCESS: errorMsg += " Node accessing condition error "; break;
+                case MyCamera.MV_E_ACCESS_DENIED: errorMsg += " No permission "; break;
+                case MyCamera.MV_E_BUSY: errorMsg += " Device is busy, or network disconnected "; break;
+                case MyCamera.MV_E_NETER: errorMsg += " Network error "; break;
+            }
+            MessageBox.Show(errorMsg, "PROMPT");
+        }
+
+        private string DeleteTail(string strUserDefinedName)
+        {
+            strUserDefinedName = Regex.Unescape(strUserDefinedName);
+            int nIndex = strUserDefinedName.IndexOf("\0");
+            if (nIndex >= 0) strUserDefinedName = strUserDefinedName.Remove(nIndex);
+            return strUserDefinedName;
+        }
+
+        private Boolean IsMonoData(MyCamera.MvGvspPixelType enGvspPixelType)
+        {
+            switch (enGvspPixelType)
+            {
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono8:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono10:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono10_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono12:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_Mono12_Packed:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private Boolean IsColorData(MyCamera.MvGvspPixelType enGvspPixelType)
+        {
+            switch (enGvspPixelType)
+            {
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGR8:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerRG8:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGB8:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerBG8:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGR10:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerRG10:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGB10:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerBG10:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGR12:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerRG12:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGB12:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerBG12:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGR10_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerRG10_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGB10_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerBG10_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGR12_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerRG12_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerGB12_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_BayerBG12_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_RGB8_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_YUV422_Packed:
+                case MyCamera.MvGvspPixelType.PixelType_Gvsp_YUV422_YUYV_Packed:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public async void ShowList2(Int32 ErrorCode)
+        {
+            if (MyCamera.MV_OK == ErrorCode)
+            {
+                try
+                {
+                    ImgCount++;
+                    BtnDecodeAllROI.PerformClick();
+                }
+                catch { }
+            }
+        }
+
+        private void CameraDemo_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            BnClose_Click(sender, e);
+            MyCamera.MV_CC_Finalize_NET();
             if (_displayBitmap != null) _displayBitmap.Dispose();
             Environment.Exit(0);
         }
@@ -1828,9 +2388,24 @@ namespace OpenCV_SharpNet_Demo
             OpenDocument.Open(DocPath);
         }
 
-        private void PictureStorageToolStripMenuItem_Click(object sender, EventArgs e)
+        private void SaveAsBMPToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            BnSaveBmp_Click(sender, e);
+        }
 
+        private void SaveAsJPGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BnSaveJpg_Click(sender, e);
+        }
+
+        private void SaveAsTIFFToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BnSaveTiff_Click(sender, e);
+        }
+
+        private void SaveAsPNGToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BnSavePng_Click(sender, e);
         }
 
         private void HideMenuoolStripMenuItem_Click(object sender, EventArgs e)

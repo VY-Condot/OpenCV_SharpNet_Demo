@@ -1,4 +1,4 @@
-﻿using OpenCV_SharpNet.Services;
+﻿using CsplCam.Library.Services;
 using OpenCV_SharpNet_Demo.Services;
 using System.Data;
 
