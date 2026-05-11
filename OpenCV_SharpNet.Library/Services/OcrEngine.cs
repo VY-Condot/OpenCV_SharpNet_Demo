@@ -15,7 +15,7 @@ using CvRect = OpenCvSharp.Rect;
 
 namespace CsplCam.Library.Services
 {
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public static class OcrEngine
     {
         // --- CONFIGURATION ---
@@ -237,7 +237,11 @@ namespace CsplCam.Library.Services
                     break;
                 case SegmentationMode.Balanced:
                 default:
-                    Cv2.AdaptiveThreshold(gray, binaryOut, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 25, 15);
+
+                    //Cv2.AdaptiveThreshold(gray, binaryOut, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 25, 15);
+
+                    Cv2.AdaptiveThreshold(gray, binaryOut, 255, AdaptiveThresholdTypes.MeanC, ThresholdTypes.BinaryInv, 41, 30);
+
                     Cv2.MorphologyEx(binaryOut, binaryOut, MorphTypes.Close, Kernel5x3);
                     break;
             }
@@ -285,9 +289,65 @@ namespace CsplCam.Library.Services
                     {
                         if (IsNeglectGarabageChar && (rect.X <= 2 || rect.Y <= 2 || rect.Right >= imgW2 || rect.Bottom >= imgH2)) continue;
 
+
+                        //// ---> ADD THIS NEW CODE HERE <---
+                        //// Calculate the actual area of the contour vs the bounding box area
+                        //double contourArea = Cv2.ContourArea(cnt);
+                        //double boundingBoxArea = rect.Width * rect.Height;
+                        //double fillRatio = contourArea / boundingBoxArea;
+
+                        //// If the contour takes up less than 15% of its own bounding box, it is noise/lines
+                        //if (fillRatio < 10)
+                        //    continue;
+                        //// --------------------------------
+
                         initialBoxes.Add(rect);
                     }
                 }
+
+                //R & D code 11052026
+                //foreach (var cnt in contours)
+                //{
+                //    var rect = Cv2.BoundingRect(cnt);
+
+                //    // User's flexible Min/Max Size limits are respected here
+                //    if (rect.Width >= effectiveMinW && rect.Height >= effectiveMinH && rect.Width <= roi.MaxBlobW && rect.Height <= roi.MaxBlobH)
+                //    {
+                //        if (IsNeglectGarabageChar)
+                //        {
+                //            // RULE 1: Ignore shapes touching the absolute edge of the camera view
+                //            if (rect.X <= 2 || rect.Y <= 2 || rect.Right >= imgW2 || rect.Bottom >= imgH2)
+                //                continue;
+
+                //            // RULE 2: Aspect Ratio Filter (Kills thin scratches & flat lines)
+                //            // Normal characters rarely have an aspect ratio below 0.15 or above 4.0
+                //            double aspectRatio = (double)rect.Width / rect.Height;
+                //            if (aspectRatio < 0.12 || aspectRatio > 5.0)
+                //                continue;
+
+                //            // RULE 3: Fill Density Filter (The Ultimate Garbage Killer)
+                //            // Measures how much "ink" vs "empty space" is inside the bounding box.
+                //            double contourArea = Cv2.ContourArea(cnt);
+                //            double boundingBoxArea = rect.Width * rect.Height;
+                //            double fillRatio = contourArea / boundingBoxArea;
+
+                //            // A. Empty Box/Diagonal Line Rule: 
+                //            // Real characters (even thin ones like 'l' or '1') fill at least 20% of their box.
+                //            // Diagonal scratches have wide boxes but zero area (fill ratio < 0.15).
+                //            if (fillRatio < 0.18)
+                //                continue;
+
+                //            // B. Solid Block Noise Rule:
+                //            // Large chunks of dirt/black background are solid blocks (fill ratio > 95%).
+                //            // Real letters have curves and holes. 
+                //            // We only apply this to shapes larger than 25 pixels to protect tiny periods (.).
+                //            if (fillRatio > 0.95 && boundingBoxArea > 25)
+                //                continue;
+                //        }
+
+                //        initialBoxes.Add(rect);
+                //    }
+                //}
 
                 if (initialBoxes.Count == 0) return initialBoxes;
 
@@ -373,7 +433,36 @@ namespace CsplCam.Library.Services
                     double minAllowed = medianH * 0.25;
                     sortedBoxes.RemoveAll(b => b.Height < minAllowed);
                 }
-                else if (roi.SegmentationMode == SegmentationMode.Industrial) sortedBoxes.RemoveAll(b => b.Height < 3);
+                else if (roi.SegmentationMode == SegmentationMode.Industrial)
+                    sortedBoxes.RemoveAll(b => b.Height < 3);
+
+
+                //// ==========================================================
+                //// THE ABSOLUTE FIX
+                //// ==========================================================
+                //if (IsNeglectGarabageChar)
+                //{
+                //    sortedBoxes.RemoveAll(box =>
+                //    {
+                //        double aspect = (double)box.Width / box.Height;
+
+                //        // 1. KILL SCRATCHES: A pure straight line is very narrow (Aspect < 0.25)
+                //        // Real characters like '1' or 'I' have serifs making them wider (> 0.33)
+                //        if (aspect < 0.25 || aspect > 5.0) return true;
+
+                //        // 2. KILL SHADOWS: If the box is wide but mostly empty inside
+                //        Rect safeBox = box.Intersect(new Rect(0, 0, th.Width, th.Height));
+                //        if (safeBox.Width > 0 && safeBox.Height > 0)
+                //        {
+                //            using Mat roiMat = new Mat(th, safeBox);
+                //            double fillDensity = (double)Cv2.CountNonZero(roiMat) / (safeBox.Width * safeBox.Height);
+                //            if (fillDensity < 0.20) return true;
+                //        }
+
+                //        return false;
+                //    });
+                //}
+                //// ==========================================================
 
                 return sortedBoxes;
             }

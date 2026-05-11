@@ -82,15 +82,15 @@ namespace OpenCV_SharpNet.UI
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
-            //check before saving weather all the characters are filled by user not 
-            var empetyTxtBox = lstTxtGen.OrderBy(P => (int)P.Tag).Where(P => string.IsNullOrWhiteSpace(P.Text)).FirstOrDefault();
+            ////check before saving weather all the characters are filled by user not 
+            //var empetyTxtBox = lstTxtGen.OrderBy(P => (int)P.Tag).Where(P => string.IsNullOrWhiteSpace(P.Text)).FirstOrDefault();
 
-            if(empetyTxtBox != null)
-            {
-                MessageBox.Show($"Blob {((int)empetyTxtBox.Tag) + 1} has no label.","Alert",MessageBoxButtons.OK,MessageBoxIcon.Warning);
-                empetyTxtBox.Focus();
-                return;
-            }
+            //if(empetyTxtBox != null)
+            //{
+            //    MessageBox.Show($"Blob {((int)empetyTxtBox.Tag) + 1} has no label.","Alert",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+            //    empetyTxtBox.Focus();
+            //    return;
+            //}
 
             foreach (var item in trainingItems)
             {
