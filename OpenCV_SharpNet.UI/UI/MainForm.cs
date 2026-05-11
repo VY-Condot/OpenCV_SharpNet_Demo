@@ -1228,74 +1228,88 @@ namespace OpenCV_SharpNet.UI
 
             if (selectedRoi.Type != RoiType.Text) return;
 
-            CvRect safeBox = selectedRoi.Box.Intersect(new CvRect(0, 0, currentImage.Width, currentImage.Height));
-            if (safeBox.Width == 0 || safeBox.Height == 0) return;
+            //CvRect safeBox = selectedRoi.Box.Intersect(new CvRect(0, 0, currentImage.Width, currentImage.Height));
+            //if (safeBox.Width == 0 || safeBox.Height == 0) return;
 
-            using Mat crop = new Mat(currentImage, safeBox);
-            Mat rotatedCrop = null;
-            Mat deskewedCrop = null;
-            Mat trainingSourceImage = null;
-            Mat tempMorphedImage = null;
+            //using Mat crop = new Mat(currentImage, safeBox);
+            //Mat rotatedCrop = null;
+            //Mat deskewedCrop = null;
+            //Mat trainingSourceImage = null;
+            //Mat tempMorphedImage = null;
 
-            try
+            //try
+            //{
+            //    OcrEngine.RotateImage(crop, out rotatedCrop, selectedRoi.RotationAngle);
+            //    deskewedCrop = OcrEngine.DeskewImage(rotatedCrop, out double skewAngle);
+
+            //    if (selectedRoi.MorphOp == MorphOperation.None)
+            //    {
+            //        trainingSourceImage = deskewedCrop;
+            //    }
+            //    else
+            //    {
+            //        tempMorphedImage = new Mat();
+            //        using Mat tempGray = new Mat();
+            //        if (deskewedCrop.Channels() == 3) Cv2.CvtColor(deskewedCrop, tempGray, ColorConversionCodes.BGR2GRAY);
+            //        else deskewedCrop.CopyTo(tempGray);
+
+            //        using Mat tempTh = new Mat();
+            //        OcrEngine.ProcessImageForMode(tempGray, tempTh, selectedRoi.SegmentationMode);
+            //        MorphologyProcessor.Apply(tempTh, selectedRoi.MorphOp, selectedRoi.MorphKernelWidth, selectedRoi.MorphKernelHeight, selectedRoi.MorphIterations);
+
+            //        Cv2.BitwiseNot(tempTh, tempMorphedImage);
+            //        trainingSourceImage = tempMorphedImage;
+            //    }
+
+            //    bool oldFilterState = OcrEngine.IsNeglectGarabageChar;
+            //    OcrEngine.IsNeglectGarabageChar = false;
+
+            //    var boxes = OcrEngine.GetCharacterBoxes(deskewedCrop, selectedRoi);
+
+            //    OcrEngine.IsNeglectGarabageChar = oldFilterState;
+
+            //    if (boxes.Count == 0)
+            //    {
+            //        MessageBox.Show("No blobs found. Try adjusting Min/Max Width and Height.");
+            //        return;
+            //    }
+
+            //    List<Mat> crops = new List<Mat>();
+            //    foreach (var b in boxes) crops.Add(new Mat(trainingSourceImage, b).Clone());
+
+            //    using (var dlg = new TrainingForm(crops))
+            //    {
+            //        if (dlg.ShowDialog(this) == DialogResult.OK)
+            //        {
+            //            selectedRoi.JustTrained = true;
+            //            OcrEngine.DecodeRoi(currentImage, selectedRoi);
+            //            selectedRoi.ShowOverlay = false;
+            //            RefreshRightPanel();
+            //            ImageCanvas.Invalidate();
+            //        }
+            //    }
+
+            //    foreach (var c in crops) c.Dispose();
+            //}
+            //finally
+            //{
+            //    if (rotatedCrop != null && !rotatedCrop.IsDisposed) rotatedCrop.Dispose();
+            //    if (deskewedCrop != null && !deskewedCrop.IsDisposed) deskewedCrop.Dispose();
+            //    if (tempMorphedImage != null && !tempMorphedImage.IsDisposed) tempMorphedImage.Dispose();
+            //}
+
+            List<Mat> crops = OcrEngine.TrainRoi(currentImage, selectedRoi);
+
+            using (var dlg = new TrainingForm(crops))
             {
-                OcrEngine.RotateImage(crop, out rotatedCrop, selectedRoi.RotationAngle);
-                deskewedCrop = OcrEngine.DeskewImage(rotatedCrop, out double skewAngle);
-
-                if (selectedRoi.MorphOp == MorphOperation.None)
+                if (dlg.ShowDialog(this) == DialogResult.OK)
                 {
-                    trainingSourceImage = deskewedCrop;
+                    selectedRoi.JustTrained = true;
+                    OcrEngine.DecodeRoi(currentImage, selectedRoi);
+                    selectedRoi.ShowOverlay = false;
+                    RefreshRightPanel();
+                    ImageCanvas.Invalidate();
                 }
-                else
-                {
-                    tempMorphedImage = new Mat();
-                    using Mat tempGray = new Mat();
-                    if (deskewedCrop.Channels() == 3) Cv2.CvtColor(deskewedCrop, tempGray, ColorConversionCodes.BGR2GRAY);
-                    else deskewedCrop.CopyTo(tempGray);
-
-                    using Mat tempTh = new Mat();
-                    OcrEngine.ProcessImageForMode(tempGray, tempTh, selectedRoi.SegmentationMode);
-                    MorphologyProcessor.Apply(tempTh, selectedRoi.MorphOp, selectedRoi.MorphKernelWidth, selectedRoi.MorphKernelHeight, selectedRoi.MorphIterations);
-
-                    Cv2.BitwiseNot(tempTh, tempMorphedImage);
-                    trainingSourceImage = tempMorphedImage;
-                }
-
-                bool oldFilterState = OcrEngine.IsNeglectGarabageChar;
-                OcrEngine.IsNeglectGarabageChar = false;
-
-                var boxes = OcrEngine.GetCharacterBoxes(deskewedCrop, selectedRoi);
-
-                OcrEngine.IsNeglectGarabageChar = oldFilterState;
-
-                if (boxes.Count == 0)
-                {
-                    MessageBox.Show("No blobs found. Try adjusting Min/Max Width and Height.");
-                    return;
-                }
-
-                List<Mat> crops = new List<Mat>();
-                foreach (var b in boxes) crops.Add(new Mat(trainingSourceImage, b).Clone());
-
-                using (var dlg = new TrainingForm(crops))
-                {
-                    if (dlg.ShowDialog(this) == DialogResult.OK)
-                    {
-                        selectedRoi.JustTrained = true;
-                        OcrEngine.DecodeRoi(currentImage, selectedRoi);
-                        selectedRoi.ShowOverlay = false;
-                        RefreshRightPanel();
-                        ImageCanvas.Invalidate();
-                    }
-                }
-
-                foreach (var c in crops) c.Dispose();
-            }
-            finally
-            {
-                if (rotatedCrop != null && !rotatedCrop.IsDisposed) rotatedCrop.Dispose();
-                if (deskewedCrop != null && !deskewedCrop.IsDisposed) deskewedCrop.Dispose();
-                if (tempMorphedImage != null && !tempMorphedImage.IsDisposed) tempMorphedImage.Dispose();
             }
         }
 

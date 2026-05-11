@@ -133,6 +133,77 @@ namespace CsplCam.Library.Services
             return sum;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static Mat GetMatObject() => new Mat();
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="image"></param>
+        /// <param name="roiArea"></param>
+        /// <returns></returns>
+        public static Mat GetMatObject(Mat image,CvRect roiArea) => new Mat(image, roiArea);
+
+        public static List<Mat> TrainRoi(Mat image, RoiObject selectedRoi)
+        {
+            List<Mat> crops = new List<Mat>();
+
+            CvRect safeBox = selectedRoi.Box.Intersect(new CvRect(0, 0, image.Width, image.Height));
+            if (safeBox.Width == 0 || safeBox.Height == 0) return crops;
+
+            using Mat crop = new Mat(image, safeBox);
+            Mat rotatedCrop = null;
+            Mat deskewedCrop = null;
+            Mat trainingSourceImage = null;
+            Mat tempMorphedImage = null;
+
+            try
+            {
+                RotateImage(crop, out rotatedCrop, selectedRoi.RotationAngle);
+                deskewedCrop = DeskewImage(rotatedCrop, out double skewAngle);
+
+                if (selectedRoi.MorphOp == MorphOperation.None)
+                {
+                    trainingSourceImage = deskewedCrop;
+                }
+                else
+                {
+                    tempMorphedImage = new Mat();
+                    using Mat tempGray = new Mat();
+                    if (deskewedCrop.Channels() == 3) Cv2.CvtColor(deskewedCrop, tempGray, ColorConversionCodes.BGR2GRAY);
+                    else deskewedCrop.CopyTo(tempGray);
+
+                    using Mat tempTh = new Mat();
+                    ProcessImageForMode(tempGray, tempTh, selectedRoi.SegmentationMode);
+                    MorphologyProcessor.Apply(tempTh, selectedRoi.MorphOp, selectedRoi.MorphKernelWidth, selectedRoi.MorphKernelHeight, selectedRoi.MorphIterations);
+
+                    Cv2.BitwiseNot(tempTh, tempMorphedImage);
+                    trainingSourceImage = tempMorphedImage;
+                }
+
+                bool oldFilterState = IsNeglectGarabageChar;
+                IsNeglectGarabageChar = false;
+
+                var boxes = GetCharacterBoxes(deskewedCrop, selectedRoi);
+
+                IsNeglectGarabageChar = oldFilterState;
+
+                if (boxes.Count == 0) return crops;
+
+                foreach (var b in boxes) crops.Add(new Mat(trainingSourceImage, b).Clone());
+            }
+            finally
+            {
+                if (rotatedCrop != null && !rotatedCrop.IsDisposed) rotatedCrop.Dispose();
+                if (deskewedCrop != null && !deskewedCrop.IsDisposed) deskewedCrop.Dispose();
+                if (tempMorphedImage != null && !tempMorphedImage.IsDisposed) tempMorphedImage.Dispose();
+            }
+
+            return crops;
+        }
+
         // --------------------------------------------------------
         // 1. TEMPLATE LOADING 
         // --------------------------------------------------------
