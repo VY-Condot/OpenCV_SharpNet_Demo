@@ -36,6 +36,8 @@ namespace CsplCam.Library.Services
             public float[] Vector;
             public double AspectRatio;
             public double FillDensity;
+            public double Cx; // <--- ADD THIS
+            public double Cy; // <--- ADD THIS
 
             //public OcrMaskType CharType; // <--- NEW TAG
         }
@@ -207,6 +209,82 @@ namespace CsplCam.Library.Services
         // --------------------------------------------------------
         // 1. TEMPLATE LOADING 
         // --------------------------------------------------------
+        //public static void ReloadTemplates()
+        //{
+        //    var newDict = new Dictionary<string, List<CharTemplate>>();
+        //    var flatList = new List<FastTemplate>();
+
+        //    if (!Directory.Exists(DatasetRoot)) Directory.CreateDirectory(DatasetRoot);
+
+        //    foreach (var dir in Directory.GetDirectories(DatasetRoot))
+        //    {
+        //        string label = new DirectoryInfo(dir).Name;
+        //        if (!newDict.ContainsKey(label)) newDict[label] = new List<CharTemplate>();
+
+        //        foreach (var file in Directory.GetFiles(dir))
+        //        {
+        //            using Mat img = Cv2.ImRead(file, ImreadModes.Grayscale);
+        //            if (img.Empty()) continue;
+
+        //            double ar = (double)img.Width / img.Height;
+        //            double density = (double)Cv2.CountNonZero(img) / (img.Width * img.Height);
+
+        //            using Mat resized = new();
+        //            Cv2.Resize(img, resized, TemplateSize);
+        //            using Mat bin = new();
+        //            Cv2.Threshold(resized, bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+        //            using Mat vec = new();
+        //            bin.ConvertTo(vec, MatType.CV_32F);
+        //            using Mat flat = vec.Reshape(1, 1);
+
+        //            // DOUBLE PRECISION NORM TO MATCH EXACT ACCURACY OF ORIGINAL CODE
+        //            double norm = Cv2.Norm(flat);
+
+        //            using Mat finalFlat = new Mat();
+        //            flat.ConvertTo(finalFlat, MatType.CV_32F, 1.0 / (norm + 1e-6));
+
+        //            float[] floatArray = new float[finalFlat.Total()];
+        //            Marshal.Copy(finalFlat.Data, floatArray, 0, floatArray.Length);
+
+        //            //newDict[label].Add(new CharTemplate { Vector = floatArray, AspectRatio = ar, FillDensity = density });
+
+        //            //flatList.Add(new FastTemplate { Label = label, Vector = floatArray, AspectRatio = ar, FillDensity = density });
+
+
+        //            // --- CALCULATE CENTER OF MASS ONCE DURING LOAD ---
+        //            double tSumX = 0, tSumY = 0, tTotal = 0;
+        //            for (int y = 0; y < TemplateSize.Height; y++)
+        //            {
+        //                int rowOff = y * TemplateSize.Width;
+        //                for (int x = 0; x < TemplateSize.Width; x++)
+        //                {
+        //                    float val = floatArray[rowOff + x];
+        //                    tSumX += val * x; tSumY += val * y; tTotal += val;
+        //                }
+        //            }
+        //            double tmplCx = tTotal > 0 ? (tSumX / tTotal) / TemplateSize.Width : 0.5;
+        //            double tmplCy = tTotal > 0 ? (tSumY / tTotal) / TemplateSize.Height : 0.5;
+        //            // -------------------------------------------------
+
+        //            // IMPORTANT: Add Cx and Cy to both your lists!
+        //            newDict[label].Add(new CharTemplate { Vector = floatArray, AspectRatio = ar, FillDensity = density, Cx = tmplCx, Cy = tmplCy });
+
+        //            flatList.Add(new FastTemplate { Label = label, Vector = floatArray, AspectRatio = ar, FillDensity = density, Cx = tmplCx, Cy = tmplCy });
+        //        }
+        //    }
+
+        //    var flatArray = flatList.ToArray();
+        //    var oldDict = TemplateVectors;
+
+        //    lock (_templateLock)
+        //    {
+        //        TemplateVectors = newDict;
+        //        _globalFlatTemplates = flatArray;
+        //    }
+        //    if (oldDict != null) oldDict.Clear();
+        //}
+
+
         public static void ReloadTemplates()
         {
             var newDict = new Dictionary<string, List<CharTemplate>>();
@@ -244,9 +322,47 @@ namespace CsplCam.Library.Services
                     float[] floatArray = new float[finalFlat.Total()];
                     Marshal.Copy(finalFlat.Data, floatArray, 0, floatArray.Length);
 
-                    newDict[label].Add(new CharTemplate { Vector = floatArray, AspectRatio = ar, FillDensity = density });
+                    // ====================================================================
+                    // NEW ADDITION: Calculate Center of Mass ONCE during load time.
+                    // This makes the Recognition phase lightning fast while solving I vs T.
+                    // ====================================================================
+                    double tSumX = 0, tSumY = 0, tTotal = 0;
+                    for (int y = 0; y < TemplateSize.Height; y++)
+                    {
+                        int rowOff = y * TemplateSize.Width;
+                        for (int x = 0; x < TemplateSize.Width; x++)
+                        {
+                            float val = floatArray[rowOff + x];
+                            tSumX += val * x;
+                            tSumY += val * y;
+                            tTotal += val;
+                        }
+                    }
+                    // Normalize the coordinates to be between 0.0 and 1.0
+                    double tmplCx = tTotal > 0 ? (tSumX / tTotal) / TemplateSize.Width : 0.5;
+                    double tmplCy = tTotal > 0 ? (tSumY / tTotal) / TemplateSize.Height : 0.5;
+                    // ====================================================================
 
-                    flatList.Add(new FastTemplate { Label = label, Vector = floatArray, AspectRatio = ar, FillDensity = density });
+                    // Save to the Dictionary (Targeted Search)
+                    newDict[label].Add(new CharTemplate
+                    {
+                        Vector = floatArray,
+                        AspectRatio = ar,
+                        FillDensity = density,
+                        Cx = tmplCx,
+                        Cy = tmplCy
+                    });
+
+                    // Save to the Flattened Array (Global Fallback Search)
+                    flatList.Add(new FastTemplate
+                    {
+                        Label = label,
+                        Vector = floatArray,
+                        AspectRatio = ar,
+                        FillDensity = density,
+                        Cx = tmplCx,
+                        Cy = tmplCy
+                    });
                 }
             }
 
@@ -562,7 +678,7 @@ namespace CsplCam.Library.Services
         }
 
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        private static (string label, double score) RecognizeImpl(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
+        private static (string label, double score) RecognizeImpl_Old(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
         {
             var flatArray = _globalFlatTemplates;
             if (flatArray.Length == 0) return ("?", 0.0);
@@ -602,8 +718,24 @@ namespace CsplCam.Library.Services
                     {
                         foreach (var item in templates)
                         {
+                            //double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                            //double penalty = (arDiff * 0.5) + (Math.Abs(inputDensity - item.FillDensity) * 0.3);
+
                             double arDiff = Math.Abs(inputAR - item.AspectRatio);
-                            double penalty = (arDiff * 0.5) + (Math.Abs(inputDensity - item.FillDensity) * 0.3);
+                            double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+
+                            // Base penalty
+                            double penalty = (arDiff * 0.8) + (densityDiff * 0.4);
+
+                            // THE FIX: Exponentially punish shapes that have the wrong width.
+                            // If the engine compares a narrow '0' to a wide 'O' template, arDiff is large.
+                            // This multiplies the penalty, destroying the wrong character's score instantly!
+                            // Because it uses `item.AspectRatio` from the trained template, it adapts to ANY font.
+                            if (arDiff > 0.15)
+                            {
+                                penalty += (arDiff * 2.5);
+                            }
+
                             double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
 
                             if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
@@ -624,8 +756,24 @@ namespace CsplCam.Library.Services
                     for (int i = 0; i < flatArray.Length; i++)
                     {
                         ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
+                        //double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                        //double penalty = (arDiff * 0.5) + (Math.Abs(inputDensity - item.FillDensity) * 0.3);
+
                         double arDiff = Math.Abs(inputAR - item.AspectRatio);
-                        double penalty = (arDiff * 0.5) + (Math.Abs(inputDensity - item.FillDensity) * 0.3);
+                        double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+
+                        // Base penalty
+                        double penalty = (arDiff * 0.8) + (densityDiff * 0.4);
+
+                        // THE FIX: Exponentially punish shapes that have the wrong width.
+                        // If the engine compares a narrow '0' to a wide 'O' template, arDiff is large.
+                        // This multiplies the penalty, destroying the wrong character's score instantly!
+                        // Because it uses `item.AspectRatio` from the trained template, it adapts to ANY font.
+                        if (arDiff > 0.15)
+                        {
+                            penalty += (arDiff * 2.5);
+                        }
+
                         if (1.0 - penalty < bestScore) continue;
 
                         double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
@@ -642,6 +790,401 @@ namespace CsplCam.Library.Services
             }
             finally { if (charImg.Channels() == 3) gray.Dispose(); }
         }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        private static (string label, double score) RecognizeImpl_working(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
+        {
+            var flatArray = _globalFlatTemplates;
+            if (flatArray.Length == 0) return ("?", 0.0);
+
+            Mat gray = charImg.Channels() == 3 ? charImg.CvtColor(ColorConversionCodes.BGR2GRAY) : charImg;
+
+            try
+            {
+                double inputAR = (double)charImg.Width / charImg.Height;
+                double inputDensity = (double)Cv2.CountNonZero(gray) / (charImg.Width * charImg.Height);
+
+                Cv2.Resize(gray, ts.Resized, TemplateSize);
+                Cv2.Threshold(ts.Resized, ts.Bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+                // 1. Convert to normalized array AND calculate input Center of Mass simultaneously for maximum speed
+                double inSumX = 0, inSumY = 0, inTotal = 0;
+                unsafe
+                {
+                    byte* pSrc = (byte*)ts.Bin.DataPointer;
+                    ref float dstRef = ref MemoryMarshal.GetArrayDataReference(ts.FloatArray);
+                    double sumSq = 0.0;
+                    for (int i = 0; i < NumPixels; i++)
+                    {
+                        float val = pSrc[i];
+                        Unsafe.Add(ref dstRef, i) = val;
+                        sumSq += val * val;
+
+                        // Center of Mass math
+                        int y = i / TemplateSize.Width;
+                        int x = i % TemplateSize.Width;
+                        inSumX += val * x;
+                        inSumY += val * y;
+                        inTotal += val;
+                    }
+                    float invNorm = (float)(1.0 / (Math.Sqrt(sumSq) + 1e-6));
+                    for (int i = 0; i < NumPixels; i++) Unsafe.Add(ref dstRef, i) *= invNorm;
+                }
+
+                double inputCx = inTotal > 0 ? (inSumX / inTotal) / TemplateSize.Width : 0.5;
+                double inputCy = inTotal > 0 ? (inSumY / inTotal) / TemplateSize.Height : 0.5;
+
+                string bestLabel = "?";
+                double bestScore = -1.0;
+                bool skipGlobalSearch = false;
+
+                // --- STEP 1: TARGETED SPEED BOOST ---
+                // If the user provided a specific expected character (and it's NOT a generic mask like # or @)
+                if (!string.IsNullOrEmpty(targetLabel) && targetLabel != "#" && targetLabel != "@" && targetLabel != "*")
+                {
+                    string folderName = targetLabel;
+                    if (SpecialReverse.ContainsKey(targetLabel)) folderName = SpecialReverse[targetLabel];
+                    else if (targetLabel.Length == 1 && char.IsLetter(targetLabel[0])) folderName = char.IsLower(targetLabel[0]) ? "lower_" + targetLabel : "upper_" + targetLabel;
+
+                    if (TemplateVectors.TryGetValue(folderName, out var templates))
+                    {
+                        foreach (var item in templates)
+                        {
+                            double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                            double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+                            double cxDiff = Math.Abs(inputCx - item.Cx);
+                            double cyDiff = Math.Abs(inputCy - item.Cy);
+
+                            double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+                            if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
+
+                            double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+
+                            if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
+
+                            // The speed shortcut: If it's a near-perfect match, stop here.
+                            if (finalScore >= 0.92) { skipGlobalSearch = true; break; }
+                        }
+                    }
+                }
+
+                // --- STEP 2: GLOBAL FALLBACK ---
+                if (!skipGlobalSearch)
+                {
+                    ref FastTemplate flatRef = ref MemoryMarshal.GetArrayDataReference(flatArray);
+                    for (int i = 0; i < flatArray.Length; i++)
+                    {
+                        ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
+
+                        // ========================================================
+                        // FORMAT MASKING (Bulletproof filtering for # and @)
+                        // Skips heavy math entirely if the mask doesn't match!
+                        // ========================================================
+                        if (targetLabel == "#" && !char.IsDigit(item.Label[0])) continue; // Ignore Letters
+                        if (targetLabel == "@" && !char.IsLetter(item.Label[0])) continue; // Ignore Numbers
+
+                        double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                        double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+                        double cxDiff = Math.Abs(inputCx - item.Cx);
+                        double cyDiff = Math.Abs(inputCy - item.Cy);
+
+                        double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+                        if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
+
+                        // INSTANT SPEED CHECK: If geometry penalty is too high, skip heavy dot product!
+                        if (1.0 - penalty < bestScore) continue;
+
+                        // Heavy math ONLY runs if it passes all the visual checks above
+                        double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+                        if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
+                    }
+                }
+
+                // Clean up labels
+                if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
+                var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
+                if (specialEntry.Key != null) bestLabel = specialEntry.Key;
+
+                return (bestLabel, Math.Clamp(bestScore, 0, 1));
+            }
+            finally { if (charImg.Channels() == 3) gray.Dispose(); }
+        }
+
+
+
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        private static (string label, double score) RecognizeImpl(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
+        {
+            var flatArray = _globalFlatTemplates;
+            if (flatArray.Length == 0) return ("?", 0.0);
+
+            Mat gray = charImg.Channels() == 3 ? charImg.CvtColor(ColorConversionCodes.BGR2GRAY) : charImg;
+
+            try
+            {
+                double inputAR = (double)charImg.Width / charImg.Height;
+                double inputDensity = (double)Cv2.CountNonZero(gray) / (charImg.Width * charImg.Height);
+
+                Cv2.Resize(gray, ts.Resized, TemplateSize);
+                Cv2.Threshold(ts.Resized, ts.Bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+                // --- Pre-parse string masks ---
+                bool isHash = targetLabel == "#";
+                bool isAt = targetLabel == "@";
+                bool hasSpecificTarget = !string.IsNullOrEmpty(targetLabel) && !isHash && !isAt && targetLabel != "*";
+                // ------------------------------
+
+                double inSumX = 0, inSumY = 0, inTotal = 0;
+                unsafe
+                {
+                    byte* pSrc = (byte*)ts.Bin.DataPointer;
+                    ref float dstRef = ref MemoryMarshal.GetArrayDataReference(ts.FloatArray);
+                    double sumSq = 0.0;
+
+                    int x = 0, y = 0;
+                    int w = TemplateSize.Width;
+
+                    for (int i = 0; i < NumPixels; i++)
+                    {
+                        float val = pSrc[i];
+                        Unsafe.Add(ref dstRef, i) = val;
+                        sumSq += val * val;
+
+                        inSumX += val * x;
+                        inSumY += val * y;
+                        inTotal += val;
+
+                        x++;
+                        if (x >= w) { x = 0; y++; }
+                    }
+                    float invNorm = (float)(1.0 / (Math.Sqrt(sumSq) + 1e-6));
+                    for (int i = 0; i < NumPixels; i++) Unsafe.Add(ref dstRef, i) *= invNorm;
+                }
+
+                double inputCx = inTotal > 0 ? (inSumX / inTotal) / TemplateSize.Width : 0.5;
+                double inputCy = inTotal > 0 ? (inSumY / inTotal) / TemplateSize.Height : 0.5;
+
+                string bestLabel = "?";
+                double bestScore = -1.0;
+                bool skipGlobalSearch = false;
+
+                // --- STEP 1: TARGETED OCV VERIFICATION (Ultra Fast) ---
+                if (hasSpecificTarget)
+                {
+                    // THE FIX: If the user provided a specific letter/number, NEVER search the whole dataset!
+                    skipGlobalSearch = true;
+
+                    string folderName = targetLabel;
+                    if (SpecialReverse.ContainsKey(targetLabel)) folderName = SpecialReverse[targetLabel];
+                    else if (targetLabel.Length == 1 && char.IsLetter(targetLabel[0])) folderName = char.IsLower(targetLabel[0]) ? "lower_" + targetLabel : "upper_" + targetLabel;
+
+                    if (TemplateVectors.TryGetValue(folderName, out var templates))
+                    {
+                        foreach (var item in templates)
+                        {
+                            double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                            double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+                            double cxDiff = Math.Abs(inputCx - item.Cx);
+                            double cyDiff = Math.Abs(inputCy - item.Cy);
+
+                            double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+                            if (arDiff > 0.15) penalty += (arDiff * 2.5);
+
+                            double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+
+                            if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
+                        }
+                    }
+                    else
+                    {
+                        // Safety: The user expects a character, but hasn't trained it yet. 
+                        bestLabel = targetLabel;
+                        bestScore = 0.0;
+                    }
+                }
+
+                // --- STEP 2: GLOBAL FALLBACK OCR (Only runs for *, #, @, or empty Expected Text) ---
+                if (!skipGlobalSearch)
+                {
+                    ref FastTemplate flatRef = ref MemoryMarshal.GetArrayDataReference(flatArray);
+                    for (int i = 0; i < flatArray.Length; i++)
+                    {
+                        ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
+
+                        if (isHash && !char.IsDigit(item.Label[0])) continue;
+                        if (isAt && !char.IsLetter(item.Label[0])) continue;
+
+                        double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                        double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+                        double cxDiff = Math.Abs(inputCx - item.Cx);
+                        double cyDiff = Math.Abs(inputCy - item.Cy);
+
+                        double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+                        if (arDiff > 0.15) penalty += (arDiff * 2.5);
+
+                        if (1.0 - penalty < bestScore) continue;
+
+                        double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+                        if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
+                    }
+                }
+
+                if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
+                var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
+                if (specialEntry.Key != null) bestLabel = specialEntry.Key;
+
+                return (bestLabel, Math.Clamp(bestScore, 0, 1));
+            }
+            finally { if (charImg.Channels() == 3) gray.Dispose(); }
+        }
+
+
+
+
+
+        //[MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        //private static (string label, double score) RecognizeImpl(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
+        //{
+        //    var flatArray = _globalFlatTemplates;
+        //    if (flatArray.Length == 0) return ("?", 0.0);
+
+        //    Mat gray = charImg.Channels() == 3 ? charImg.CvtColor(ColorConversionCodes.BGR2GRAY) : charImg;
+
+        //    try
+        //    {
+        //        double inputAR = (double)charImg.Width / charImg.Height;
+        //        double inputDensity = (double)Cv2.CountNonZero(gray) / (charImg.Width * charImg.Height);
+
+        //        Cv2.Resize(gray, ts.Resized, TemplateSize);
+        //        Cv2.Threshold(ts.Resized, ts.Bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+        //        unsafe
+        //        {
+        //            byte* pSrc = (byte*)ts.Bin.DataPointer;
+        //            ref float dstRef = ref MemoryMarshal.GetArrayDataReference(ts.FloatArray);
+        //            double sumSq = 0.0;
+        //            for (int i = 0; i < NumPixels; i++) { float val = pSrc[i]; Unsafe.Add(ref dstRef, i) = val; sumSq += val * val; }
+        //            float invNorm = (float)(1.0 / (Math.Sqrt(sumSq) + 1e-6));
+        //            for (int i = 0; i < NumPixels; i++) Unsafe.Add(ref dstRef, i) *= invNorm;
+        //        }
+
+        //        // ==========================================================
+        //        // BULLETPROOF GEOMETRY: CALCULATE INPUT CENTER OF MASS 
+        //        // This determines if the shape is Top/Bottom/Left/Right heavy
+        //        // ==========================================================
+        //        double inSumX = 0, inSumY = 0, inTotal = 0;
+        //        for (int y = 0; y < TemplateSize.Height; y++)
+        //        {
+        //            int rowOff = y * TemplateSize.Width;
+        //            for (int x = 0; x < TemplateSize.Width; x++)
+        //            {
+        //                float val = ts.FloatArray[rowOff + x];
+        //                inSumX += val * x;
+        //                inSumY += val * y;
+        //                inTotal += val;
+        //            }
+        //        }
+        //        double inputCx = inTotal > 0 ? (inSumX / inTotal) / TemplateSize.Width : 0.5;
+        //        double inputCy = inTotal > 0 ? (inSumY / inTotal) / TemplateSize.Height : 0.5;
+        //        // ==========================================================
+
+        //        string bestLabel = "?";
+        //        double bestScore = -1.0;
+        //        bool skipGlobalSearch = false;
+
+        //        // --- STEP 1: TARGETED SPEED BOOST ---
+        //        if (!string.IsNullOrEmpty(targetLabel))
+        //        {
+        //            string folderName = targetLabel;
+        //            if (SpecialReverse.ContainsKey(targetLabel)) folderName = SpecialReverse[targetLabel];
+        //            else if (targetLabel.Length == 1 && char.IsLetter(targetLabel[0])) folderName = char.IsLower(targetLabel[0]) ? "lower_" + targetLabel : "upper_" + targetLabel;
+
+        //            if (TemplateVectors.TryGetValue(folderName, out var templates))
+        //            {
+        //                foreach (var item in templates)
+        //                {
+        //                    // Calculate Template Center of Mass
+        //                    double tSumX = 0, tSumY = 0, tTotal = 0;
+        //                    for (int y = 0; y < TemplateSize.Height; y++)
+        //                    {
+        //                        int rowOff = y * TemplateSize.Width;
+        //                        for (int x = 0; x < TemplateSize.Width; x++)
+        //                        {
+        //                            float val = item.Vector[rowOff + x];
+        //                            tSumX += val * x; tSumY += val * y; tTotal += val;
+        //                        }
+        //                    }
+        //                    double tmplCx = tTotal > 0 ? (tSumX / tTotal) / TemplateSize.Width : 0.5;
+        //                    double tmplCy = tTotal > 0 ? (tSumY / tTotal) / TemplateSize.Height : 0.5;
+
+        //                    // Calculate Differences
+        //                    double arDiff = Math.Abs(inputAR - item.AspectRatio);
+        //                    double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+        //                    double cxDiff = Math.Abs(inputCx - tmplCx);
+        //                    double cyDiff = Math.Abs(inputCy - tmplCy);
+
+        //                    // The Ultimate Penalty: Punishes wrong Aspect Ratio AND wrong Center of Mass!
+        //                    double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+        //                    if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
+
+        //                    double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+
+        //                    if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
+        //                    if (finalScore >= 0.92) { skipGlobalSearch = true; break; }
+        //                }
+        //            }
+        //        }
+
+        //        // --- STEP 2: GLOBAL FALLBACK ---
+        //        if (!skipGlobalSearch)
+        //        {
+        //            ref FastTemplate flatRef = ref MemoryMarshal.GetArrayDataReference(flatArray);
+        //            for (int i = 0; i < flatArray.Length; i++)
+        //            {
+        //                ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
+
+        //                // Calculate Template Center of Mass
+        //                double tSumX = 0, tSumY = 0, tTotal = 0;
+        //                for (int y = 0; y < TemplateSize.Height; y++)
+        //                {
+        //                    int rowOff = y * TemplateSize.Width;
+        //                    for (int x = 0; x < TemplateSize.Width; x++)
+        //                    {
+        //                        float val = item.Vector[rowOff + x];
+        //                        tSumX += val * x; tSumY += val * y; tTotal += val;
+        //                    }
+        //                }
+        //                double tmplCx = tTotal > 0 ? (tSumX / tTotal) / TemplateSize.Width : 0.5;
+        //                double tmplCy = tTotal > 0 ? (tSumY / tTotal) / TemplateSize.Height : 0.5;
+
+        //                // Calculate Differences
+        //                double arDiff = Math.Abs(inputAR - item.AspectRatio);
+        //                double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+        //                double cxDiff = Math.Abs(inputCx - tmplCx);
+        //                double cyDiff = Math.Abs(inputCy - tmplCy);
+
+        //                // The Ultimate Penalty
+        //                double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+        //                if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
+
+        //                // Instant Speed Boost: If penalty is too high, skip the heavy FastDotProduct!
+        //                if (1.0 - penalty < bestScore) continue;
+
+        //                double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+        //                if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
+        //            }
+        //        }
+
+        //        // Clean up labels
+        //        if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
+        //        var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
+        //        if (specialEntry.Key != null) bestLabel = specialEntry.Key;
+
+        //        return (bestLabel, Math.Clamp(bestScore, 0, 1));
+        //    }
+        //    finally { if (charImg.Channels() == 3) gray.Dispose(); }
+        //}
 
         private static BarcodeFormats GetBarCode(bool isAuto, string StrFomat)
         {
@@ -1305,6 +1848,11 @@ namespace CsplCam.Library.Services
 
                         var fastResults = new CharResult[boxes.Count];
 
+
+                        // Calculate median height of the whole ROI to use for Context Checking
+                        var allHeights = boxes.Select(b => b.Height).OrderBy(h => h).ToList();
+                        int globalMedianH = allHeights.Count > 0 ? allHeights[allHeights.Count / 2] : 20;
+
                         Parallel.ForEach(Partitioner.Create(0, boxes.Count),
                             new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount },
                             () => GetOcrState(),
@@ -1316,9 +1864,26 @@ namespace CsplCam.Library.Services
                                     using Mat charImg = new Mat(ocrSourceImage, b);
 
                                     string targetForThisChar = (i < cleanLen) ? cleanExpected[i].ToString() : null;
+                                    
                                     var (label, score) = RecognizeImpl(charImg, roi.Threshold, targetForThisChar, threadState);
 
                                     //var (label, score) = RecognizeImpl(charImg, roi.Threshold, null , threadState);
+
+                                    //// =================================================================
+                                    //// THE FIX: Apply Geometric Heuristics BEFORE we accept the label
+                                    //// =================================================================
+                                    //if (label == "O" || label == "o" || label == "0" ||
+                                    //    label == "1" || label == "I" || label == "l" ||
+                                    //    label == "S" || label == "5")
+                                    //{
+                                    //    label = ApplySmartHeuristics(label, b, charImg, globalMedianH);
+                                    //}
+
+                                    //if (score <= 0.20)
+                                    //{
+                                    //    continue;
+                                    //    //return threadState;
+                                    //}
 
                                     Rect visualBox = Math.Abs(skewAngle) > 0.001 ? InverseDeskewRect(b, skewAngle, centerX, centerY) : b;
 
@@ -1336,16 +1901,92 @@ namespace CsplCam.Library.Services
                             (threadState) => ReturnOcrState(threadState)
                         );
 
+                        //var sb = new StringBuilder(boxes.Count);
+                        //double minScore = double.MaxValue;
+
+
+                        //// =========================================================
+                        //// DYNAMIC HEIGHT CORRECTOR (NO HARDCODED PIXELS)
+                        //// Fixes Uppercase vs Lowercase based on the current image size
+                        //// =========================================================
+                        //if (fastResults.Length > 0)
+                        //{
+                        //    // Get median height of this specific text line (ignores noise)
+                        //    var heights = fastResults.Where(r => r != null).Select(r => r.Box.Height).OrderBy(h => h).ToList();
+                        //    double medianHeight = heights.Count > 0 ? heights[heights.Count / 2] : 20;
+
+                        //    for (int i = 0; i < fastResults.Length; i++)
+                        //    {
+                        //        if (fastResults[i] == null) continue;
+                        //        string txt = fastResults[i].Text;
+
+                        //        // If it is an O, o, or 0, check its relative height
+                        //        if (txt == "O" || txt == "o" || txt == "0")
+                        //        {
+                        //            // Lowercase 'o' is usually 60-80% the height of a normal letter.
+                        //            if (fastResults[i].Box.Height <= medianHeight * 0.82)
+                        //            {
+                        //                fastResults[i].Text = "o";
+                        //            }
+                        //            // If the engine guessed lowercase 'o', but it's actually tall, fix it to Uppercase 'O'
+                        //            else if (txt == "o")
+                        //            {
+                        //                fastResults[i].Text = "O";
+                        //            }
+                        //        }
+                        //    }
+                        //}
+                        //// =========================================================
+
+                        //for (int i = 0; i < fastResults.Length; i++)
+                        //{
+                        //    var res = fastResults[i];
+                        //    sb.Append(res.Text);
+                        //    roi.CharResults.Add(res);
+                        //    if (res.Score < minScore) minScore = res.Score;
+                        //}
+
+                        //==============================================================================
+
                         var sb = new StringBuilder(boxes.Count);
                         double minScore = double.MaxValue;
 
+                        // 1. Calculate Median Height ONCE before the loop
+                        double medianHeight = 20;
+                        if (fastResults.Length > 0)
+                        {
+                            var heights = fastResults.Where(r => r != null).Select(r => r.Box.Height).OrderBy(h => h).ToList();
+                            medianHeight = heights.Count > 0 ? heights[heights.Count / 2] : 20;
+                        }
+
+                        // 2. Process everything in ONE single loop
                         for (int i = 0; i < fastResults.Length; i++)
                         {
                             var res = fastResults[i];
+                            if (res == null) continue;
+
+                            // --- DYNAMIC HEIGHT CORRECTOR (o vs O) ---
+                            if (res.Text == "O" || res.Text == "o" || res.Text == "0")
+                            {
+                                // Lowercase 'o' is usually 60-80% the height of a normal letter.
+                                if (res.Box.Height <= medianHeight * 0.82)
+                                {
+                                    res.Text = "o";
+                                }
+                                // If the engine guessed lowercase 'o', but it's actually tall, fix it to Uppercase 'O'
+                                else if (res.Text == "o")
+                                {
+                                    res.Text = "O";
+                                }
+                            }
+
+                            // --- ORIGINAL APPEND & SCORE LOGIC ---
                             sb.Append(res.Text);
                             roi.CharResults.Add(res);
                             if (res.Score < minScore) minScore = res.Score;
                         }
+
+                        //========================================================================
 
                         roi.DecodedText = sb.ToString();
                         roi.RoiScore = fastResults.Length > 0 ? minScore : 0;
@@ -1437,6 +2078,29 @@ namespace CsplCam.Library.Services
             }
         }
 
+        //private static string IsResultPass(string expText, string decText)
+        //{
+        //    // 1. Quick exit if lengths don't match
+        //    if (expText.Length != decText.Length) return "Fail";
+
+        //    for (int i = 0; i < expText.Length; i++)
+        //    {
+        //        // ==========================================================
+        //        // THE FIX: Use single quotes '*' to compare the raw char.
+        //        // This allocates ZERO memory and is instantly processed by the CPU!
+        //        // ==========================================================
+        //        if (expText[i] == '*') continue;
+
+        //        // If it's not a wildcard, and the characters don't match, fail instantly
+        //        if (expText[i] != decText[i])
+        //        {
+        //            return "Fail";
+        //        }
+        //    }
+
+        //    return "Pass";
+        //}
+
         private static string IsResultPass(string expText, string decText)
         {
             // 1. Quick exit if lengths don't match
@@ -1444,17 +2108,26 @@ namespace CsplCam.Library.Services
 
             for (int i = 0; i < expText.Length; i++)
             {
-                // ==========================================================
-                // THE FIX: Use single quotes '*' to compare the raw char.
-                // This allocates ZERO memory and is instantly processed by the CPU!
-                // ==========================================================
-                if (expText[i] == '*') continue;
+                char exp = expText[i];
+                char dec = decText[i];
 
-                // If it's not a wildcard, and the characters don't match, fail instantly
-                if (expText[i] != decText[i])
+                // 2. Process Wildcards
+                if (exp == '*') continue; // '*' means ANY character is a Pass
+
+                if (exp == '#') // '#' means MUST BE A NUMBER
                 {
-                    return "Fail";
+                    if (!char.IsDigit(dec)) return "Fail";
+                    continue;
                 }
+
+                if (exp == '@') // '@' means MUST BE A LETTER
+                {
+                    if (!char.IsLetter(dec)) return "Fail";
+                    continue;
+                }
+
+                // 3. Exact match for normal characters
+                if (exp != dec) return "Fail";
             }
 
             return "Pass";
@@ -1685,6 +2358,174 @@ namespace CsplCam.Library.Services
                 return deskewed;
             }
             catch { return src.Clone(); }
+        }
+
+        //private static string ApplySmartHeuristics(string label, Rect box, Mat charImg, int medianLineHeight)
+        //{
+        //    double aspectRatio = (double)box.Width / box.Height;
+        //    double heightRatio = (double)box.Height / medianLineHeight;
+
+        //    // RULE 1: The "O vs o vs 0" Resolver
+        //    if (label.Equals("O", StringComparison.OrdinalIgnoreCase) || label == "0" || label == "D")
+        //    {
+        //        if (aspectRatio < 0.75) return "0";
+        //        if (heightRatio < 0.75) return "o";
+        //        return "O";
+        //    }
+
+        //    // =================================================================
+        //    // THE FIX: Ensure we have a 1-channel image for CountNonZero
+        //    // =================================================================
+        //    using Mat binImg = new Mat();
+        //    if (charImg.Channels() == 3)
+        //    {
+        //        Cv2.CvtColor(charImg, binImg, ColorConversionCodes.BGR2GRAY);
+        //        // Binarize it so ink is White (255) and background is Black (0)
+        //        Cv2.Threshold(binImg, binImg, 0, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
+        //    }
+        //    else
+        //    {
+        //        // If it's already 1 channel, we must ensure it is BinaryInv (White Ink)
+        //        Cv2.Threshold(charImg, binImg, 0, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
+        //    }
+
+        //    // RULE 2: The "8 vs B" Resolver
+        //    if (label == "8" || label == "B")
+        //    {
+        //        using Mat leftEdge = new Mat(binImg, new Rect(0, 0, (int)(binImg.Width * 0.25), binImg.Height));
+        //        double leftDensity = (double)Cv2.CountNonZero(leftEdge) / (leftEdge.Width * leftEdge.Height);
+
+        //        return leftDensity > 0.70 ? "B" : "8";
+        //    }
+
+        //    // RULE 3: The "t vs 7" Resolver
+        //    if (label == "t" || label == "7")
+        //    {
+        //        using Mat topLeft = new Mat(binImg, new Rect(0, 0, binImg.Width / 2, binImg.Height / 3));
+        //        double topLeftDensity = (double)Cv2.CountNonZero(topLeft) / (topLeft.Width * topLeft.Height);
+
+        //        return topLeftDensity < 0.25 ? "7" : "t";
+        //    }
+
+        //    // RULE 4: The "1 vs I vs l" Resolver
+        //    if (label == "1" || label == "I" || label == "l")
+        //    {
+        //        if (aspectRatio > 0.35)
+        //        {
+        //            using Mat topLeft = new Mat(binImg, new Rect(0, 0, binImg.Width / 2, binImg.Height / 3));
+        //            double topLeftDensity = (double)Cv2.CountNonZero(topLeft) / (topLeft.Width * topLeft.Height);
+
+        //            if (topLeftDensity > 0.15) return "1";
+        //        }
+
+        //        if (heightRatio < 0.85) return "l";
+
+        //        return "I";
+        //    }
+
+        //    // RULE 5: The "S vs 5" Resolver
+        //    if (label == "S" || label == "5")
+        //    {
+        //        using Mat topEdge = new Mat(binImg, new Rect(0, 0, binImg.Width, binImg.Height / 5));
+        //        double topDensity = (double)Cv2.CountNonZero(topEdge) / (topEdge.Width * topEdge.Height);
+
+        //        if (topDensity > 0.60) return "5";
+        //        return "S";
+        //    }
+
+        //    return label;
+        //}
+
+        private static string ApplySmartHeuristics(string label, Rect box, Mat charImg, int medianLineHeight)
+        {
+            double aspectRatio = (double)box.Width / box.Height;
+            double heightRatio = (double)box.Height / medianLineHeight;
+
+            // RULE 1: The "O vs o vs 0" Resolver
+            if (label.Equals("O", StringComparison.OrdinalIgnoreCase) || label == "0" || label == "D" || label == "Q")
+            {
+                // A 'Q' usually has a tail dropping below the baseline, making it artificially taller 
+                // or having ink in the bottom right corner.
+                if (label == "Q") return "Q";
+
+                if (aspectRatio < 0.70) return "0";
+                if (heightRatio < 0.75) return "o";
+                return "O";
+            }
+
+            using Mat binImg = new Mat();
+            if (charImg.Channels() == 3)
+            {
+                Cv2.CvtColor(charImg, binImg, ColorConversionCodes.BGR2GRAY);
+                Cv2.Threshold(binImg, binImg, 0, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
+            }
+            else
+            {
+                Cv2.Threshold(charImg, binImg, 0, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
+            }
+
+            // RULE 2: The "8 vs B" Resolver
+            if (label == "8" || label == "B")
+            {
+                using Mat leftEdge = new Mat(binImg, new Rect(0, 0, (int)(binImg.Width * 0.25), binImg.Height));
+                double leftDensity = (double)Cv2.CountNonZero(leftEdge) / (leftEdge.Width * leftEdge.Height);
+                return leftDensity > 0.70 ? "B" : "8";
+            }
+
+            // RULE 3: The "t vs 7" Resolver
+            if (label == "t" || label == "7")
+            {
+                using Mat topLeft = new Mat(binImg, new Rect(0, 0, binImg.Width / 2, binImg.Height / 3));
+                double topLeftDensity = (double)Cv2.CountNonZero(topLeft) / (topLeft.Width * topLeft.Height);
+                return topLeftDensity < 0.25 ? "7" : "t";
+            }
+
+            //// =================================================================
+            //// THE FIX: RULE 4: The "1 vs I vs l" Symmetry Resolver
+            //// =================================================================
+            //if (label == "1" || label == "I" || label == "l")
+            //{
+            //    // 1. If it is incredibly skinny, it's almost always a lowercase 'l'.
+            //    if (aspectRatio < 0.25) return "l";
+
+            //    // 2. We split the image down the middle vertically.
+            //    int halfWidth = binImg.Width / 2;
+            //    using Mat leftHalf = new Mat(binImg, new Rect(0, 0, halfWidth, binImg.Height));
+            //    using Mat rightHalf = new Mat(binImg, new Rect(halfWidth, 0, binImg.Width - halfWidth, binImg.Height));
+
+            //    int leftPixels = Cv2.CountNonZero(leftHalf);
+            //    int rightPixels = Cv2.CountNonZero(rightHalf);
+
+            //    // 3. A '1' has the main vertical bar on the right side, and mostly empty space under the left flag.
+            //    //    An 'I' (even with serifs) is perfectly balanced left and right.
+            //    if (rightPixels > (leftPixels * 1.5))
+            //    {
+            //        return "1"; // Highly asymmetrical to the right
+            //    }
+
+            //    // 4. Default to Capital 'I' in industrial environments
+            //    return "I";
+            //}
+
+            //// RULE 5: The "S vs 5" Resolver
+            //if (label == "S" || label == "5")
+            //{
+            //    using Mat topEdge = new Mat(binImg, new Rect(0, 0, binImg.Width, binImg.Height / 5));
+            //    double topDensity = (double)Cv2.CountNonZero(topEdge) / (topEdge.Width * topEdge.Height);
+            //    if (topDensity > 0.60) return "5";
+            //    return "S";
+            //}
+
+            //// RULE 6: The "2 vs Z" Resolver
+            //if (label == "2" || label == "Z")
+            //{
+            //    // A '2' has a curved top right (empty space). A 'Z' has a hard right angle (ink).
+            //    using Mat topRight = new Mat(binImg, new Rect(binImg.Width / 2, 0, binImg.Width / 2, binImg.Height / 3));
+            //    double trDensity = (double)Cv2.CountNonZero(topRight) / (topRight.Width * topRight.Height);
+            //    return trDensity > 0.40 ? "Z" : "2";
+            //}
+
+            return label;
         }
 
         public static Rect UnrotateBox(Rect box, int origW, int origH, RotationAngles angle)

@@ -16,5 +16,8 @@ namespace CsplCam.Library.Models
         public float[] Vector { get; set; }
         public double AspectRatio { get; set; } // Width / Height
         public double FillDensity { get; set; } // How much ink? (0.0 to 1.0)
+
+        public double Cx; // <--- ADD THIS
+        public double Cy; // <--- ADD THIS
     }
 }
