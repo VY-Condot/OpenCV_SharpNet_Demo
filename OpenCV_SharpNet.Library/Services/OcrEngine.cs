@@ -15,21 +15,38 @@ using CvRect = OpenCvSharp.Rect;
 
 namespace CsplCam.Library.Services
 {
-    //[DebuggerStepThrough]
+    /// <summary>
+    /// Provides OCR (Optical Character Recognition) functionalities, including character recognition, template management, and skew correction.
+    /// Primary class for character recoginition tasks.it inlcudes methods for training,recognizaing etc etc. It also manages the character templates and provides utilities for image processing specific to OCR tasks.
+    /// </summary>
+    [DebuggerStepThrough]
     public static class OcrEngine
     {
+        /// <summary>
+        /// The root directory of the character dataset.
+        /// </summary>
         // --- CONFIGURATION ---
-        public static string DatasetRoot { get; set; } = @"D:\py\char_dataset"; //ConfigurationManager.AppSettings["DataSetPath"] ?? 
+        public static string DatasetRoot { get; set; } = @"D:\py\char_dataset"; 
         public static bool IsNeglectGarabageChar { get; set; } = true;
         private static readonly OpenCvSharp.Size TemplateSize = new(30, 30);
         private static readonly int NumPixels = TemplateSize.Width * TemplateSize.Height;
-        public static double SkewAngle { get; set; } =  20; //double.TryParse(ConfigurationManager.AppSettings["SkewAngle"], out var skew) ? skew :
+
+        /// <summary>
+        /// Angle in degrees to deskew the character crops during training and recognition. This is a global setting that applies to all ROIs. You can adjust it based on your specific use case and the typical skew you encounter in your images. A value of 20 degrees is a common starting point for many OCR applications, but you may want to experiment with it to find the optimal angle for your dataset.
+        /// </summary>
+        public static double SkewAngle { get; set; } =  10; //double.TryParse(ConfigurationManager.AppSettings["SkewAngle"], out var skew) ? skew :
 
         // --- STATE ---
+        /// <summary>
+        /// Holds the character vectors with aspect ration and char for lightning-fast global fallback search when the targeted search fails.
+        /// </summary>
         public static Dictionary<string, List<CharTemplate>> TemplateVectors { get; set; } = new Dictionary<string, List<CharTemplate>>();
 
         // NEW: FLATTENED MEMORY FOR MASSIVE DATASETS
         // Struct arrays are contiguous in memory. This prevents Cache Misses as the dataset grows!
+        /// <summary>
+        /// Holds the flattened templates for lightning-fast global fallback search when the targeted search fails.
+        /// </summary>
         public struct FastTemplate
         {
             public string Label;
@@ -41,6 +58,16 @@ namespace CsplCam.Library.Services
 
             //public OcrMaskType CharType; // <--- NEW TAG
         }
+
+        /// <summary>
+        /// set the min and max confidence of the anchor character (the character with the highest anchor confidence in the image).
+        /// </summary>
+        public struct AnchorConfidence
+        {
+            public static double Min { get; set; } = 0.35;
+            public static double Max { get; set; } = 0.50;
+        }
+
         private static FastTemplate[] _globalFlatTemplates = Array.Empty<FastTemplate>();
 
         private static readonly object _templateLock = new object();
@@ -2275,7 +2302,79 @@ namespace CsplCam.Library.Services
 
         private struct PointXComparer : IComparer<Point2f> { public int Compare(Point2f a, Point2f b) => a.X.CompareTo(b.X); }
 
+
         public static Mat DeskewImage(Mat src, out double skewAngle)
+        {
+            skewAngle = 0;
+            try
+            {
+                using Mat gray = src.Channels() == 3 ? src.CvtColor(ColorConversionCodes.BGR2GRAY) : src.Clone();
+                using Mat bin = new Mat();
+                Cv2.Threshold(gray, bin, 0, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
+
+                Cv2.FindContours(bin, out var contours, out _, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+                List<Rect> boxes = new List<Rect>();
+                foreach (var cnt in contours)
+                {
+                    var r = Cv2.BoundingRect(cnt);
+                    // Only use substantial characters to calculate angle, ignore tiny noise specks
+                    if (r.Height >= 10 && r.Width >= 4) boxes.Add(r);
+                }
+
+                // STABILITY FIX 1: If we don't have at least 4 solid characters, 
+                // it's impossible to calculate a reliable angle. Don't rotate.
+                if (boxes.Count < 4) return src.Clone();
+
+                boxes.Sort((a, b) => a.X.CompareTo(b.X));
+                List<double> angles = new List<double>();
+
+                for (int i = 0; i < boxes.Count - 1; i++)
+                {
+                    Rect b1 = boxes[i];
+                    for (int j = i + 1; j < Math.Min(i + 4, boxes.Count); j++)
+                    {
+                        Rect b2 = boxes[j];
+                        // Only compare boxes on the same horizontal line
+                        if (Math.Abs(b1.Y - b2.Y) < b1.Height * 0.5)
+                        {
+                            double dx = b2.X - b1.X;
+                            double dy = b2.Bottom - b1.Bottom;
+                            if (dx > 20) // Only trust boxes that are far enough apart
+                            {
+                                angles.Add(Math.Atan2(dy, dx) * (180.0 / Math.PI));
+                            }
+                        }
+                    }
+                }
+
+                if (angles.Count < 3) return src.Clone();
+
+                angles.Sort();
+                double medianAngle = angles[angles.Count / 2];
+
+                // STABILITY FIX 2: "The Dead Zone"
+                // If the angle is less than 1.5 degrees, it's basically straight. 
+                // Do not rotate, as rotation makes the pixels blurry.
+                if (Math.Abs(medianAngle) < 1.5) return src.Clone();
+
+                // STABILITY FIX 3: "The Sanity Limit"
+                // In an industrial line, text is never tilted 12 degrees. 
+                // If the math says 12, it's probably noise. Limit to 5 degrees.
+                //if (Math.Abs(medianAngle) > 5.0) return src.Clone();
+                if (Math.Abs(medianAngle) > SkewAngle) return src.Clone();
+
+                skewAngle = medianAngle;
+                Mat deskewed = new Mat();
+                using Mat rotMat = Cv2.GetRotationMatrix2D(new Point2f(src.Width / 2f, src.Height / 2f), skewAngle, 1.0);
+                Cv2.WarpAffine(src, deskewed, rotMat, src.Size(), InterpolationFlags.Cubic, BorderTypes.Constant, Scalar.White);
+
+                return deskewed;
+            }
+            catch { return src.Clone(); }
+        }
+
+        public static Mat DeskewImage_Old(Mat src, out double skewAngle)
         {
             skewAngle = 0;
             try
@@ -2745,7 +2844,12 @@ namespace CsplCam.Library.Services
                 Cv2.MatchTemplate(procSearch, procTemplate, res, TemplateMatchModes.CCoeffNormed);
                 Cv2.MinMaxLoc(res, out double minVal, out double maxVal, out OpenCvSharp.Point minLoc, out OpenCvSharp.Point maxLoc);
 
-                double threshold = useEdge ? 0.4 : 0.65;
+                //decrese the thersold to increase the accurcy
+                //double threshold = useEdge ? 0.4 : 0.65;  -- not in use
+                //double threshold = useEdge ? 0.35 : 0.50;
+
+                double threshold = useEdge ? AnchorConfidence.Min : AnchorConfidence.Max;
+
                 if (maxVal >= threshold) return maxLoc;
 
                 using var orb = ORB.Create(500);
