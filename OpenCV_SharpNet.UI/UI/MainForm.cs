@@ -1199,7 +1199,7 @@ namespace OpenCV_SharpNet.UI
                 Name = "ROI " + IntId,
                 Box = new CvRect(imgCenter.X - (w / 2), imgCenter.Y - (h / 2), w, h),
                 Type = type,
-                IsRunGS1QcCheck = IsGenerateReport
+                IsRunGS1QcCheck = IsGenerateReport,
             };
 
             CvRect safeBox = roi.Box;

@@ -27,7 +27,15 @@ namespace CsplCam.Library.Services
         /// </summary>
         // --- CONFIGURATION ---
         public static string DatasetRoot { get; set; } = @"D:\py\char_dataset"; 
+
+        /// <summary>
+        /// Indicates whether to ignore characters with low confidence during character recognition.
+        /// </summary>
         public static bool IsNeglectGarabageChar { get; set; } = true;
+
+        /// <summary>
+        /// The size of the character templates.
+        /// </summary>
         private static readonly OpenCvSharp.Size TemplateSize = new(30, 30);
         private static readonly int NumPixels = TemplateSize.Width * TemplateSize.Height;
 
@@ -704,242 +712,6 @@ namespace CsplCam.Library.Services
             finally { ReturnOcrState(ts); }
         }
 
-        //[MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        //private static (string label, double score) RecognizeImpl_Old(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
-        //{
-        //    var flatArray = _globalFlatTemplates;
-        //    if (flatArray.Length == 0) return ("?", 0.0);
-
-        //    Mat gray = charImg.Channels() == 3 ? charImg.CvtColor(ColorConversionCodes.BGR2GRAY) : charImg;
-
-        //    try
-        //    {
-        //        double inputAR = (double)charImg.Width / charImg.Height;
-        //        double inputDensity = (double)Cv2.CountNonZero(gray) / (charImg.Width * charImg.Height);
-
-        //        Cv2.Resize(gray, ts.Resized, TemplateSize);
-        //        Cv2.Threshold(ts.Resized, ts.Bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
-
-        //        unsafe
-        //        {
-        //            byte* pSrc = (byte*)ts.Bin.DataPointer;
-        //            ref float dstRef = ref MemoryMarshal.GetArrayDataReference(ts.FloatArray);
-        //            double sumSq = 0.0;
-        //            for (int i = 0; i < NumPixels; i++) { float val = pSrc[i]; Unsafe.Add(ref dstRef, i) = val; sumSq += val * val; }
-        //            float invNorm = (float)(1.0 / (Math.Sqrt(sumSq) + 1e-6));
-        //            for (int i = 0; i < NumPixels; i++) Unsafe.Add(ref dstRef, i) *= invNorm;
-        //        }
-
-        //        string bestLabel = "?";
-        //        double bestScore = -1.0;
-        //        bool skipGlobalSearch = false;
-
-        //        // --- STEP 1: TARGETED SPEED BOOST ---
-        //        if (!string.IsNullOrEmpty(targetLabel))
-        //        {
-        //            string folderName = targetLabel;
-        //            if (SpecialReverse.ContainsKey(targetLabel)) folderName = SpecialReverse[targetLabel];
-        //            else if (targetLabel.Length == 1 && char.IsLetter(targetLabel[0])) folderName = char.IsLower(targetLabel[0]) ? "lower_" + targetLabel : "upper_" + targetLabel;
-
-        //            if (TemplateVectors.TryGetValue(folderName, out var templates))
-        //            {
-        //                foreach (var item in templates)
-        //                {
-        //                    //double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                    //double penalty = (arDiff * 0.5) + (Math.Abs(inputDensity - item.FillDensity) * 0.3);
-
-        //                    double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                    double densityDiff = Math.Abs(inputDensity - item.FillDensity);
-
-        //                    // Base penalty
-        //                    double penalty = (arDiff * 0.8) + (densityDiff * 0.4);
-
-        //                    // THE FIX: Exponentially punish shapes that have the wrong width.
-        //                    // If the engine compares a narrow '0' to a wide 'O' template, arDiff is large.
-        //                    // This multiplies the penalty, destroying the wrong character's score instantly!
-        //                    // Because it uses `item.AspectRatio` from the trained template, it adapts to ANY font.
-        //                    if (arDiff > 0.15)
-        //                    {
-        //                        penalty += (arDiff * 2.5);
-        //                    }
-
-        //                    double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
-
-        //                    if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
-
-        //                    // =============================================================
-        //                    // THE SPEED SHORTCUT: If it's a near-perfect match, STOP HERE.
-        //                    // This gives you the speed you want for correctly aligned text.
-        //                    // =============================================================
-        //                    if (finalScore >= 0.92) { skipGlobalSearch = true; break; }
-        //                }
-        //            }
-        //        }
-
-        //        // --- STEP 2: GLOBAL FALLBACK (Only if targeted match was weak) ---
-        //        if (!skipGlobalSearch)
-        //        {
-        //            ref FastTemplate flatRef = ref MemoryMarshal.GetArrayDataReference(flatArray);
-        //            for (int i = 0; i < flatArray.Length; i++)
-        //            {
-        //                ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
-        //                //double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                //double penalty = (arDiff * 0.5) + (Math.Abs(inputDensity - item.FillDensity) * 0.3);
-
-        //                double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                double densityDiff = Math.Abs(inputDensity - item.FillDensity);
-
-        //                // Base penalty
-        //                double penalty = (arDiff * 0.8) + (densityDiff * 0.4);
-
-        //                // THE FIX: Exponentially punish shapes that have the wrong width.
-        //                // If the engine compares a narrow '0' to a wide 'O' template, arDiff is large.
-        //                // This multiplies the penalty, destroying the wrong character's score instantly!
-        //                // Because it uses `item.AspectRatio` from the trained template, it adapts to ANY font.
-        //                if (arDiff > 0.15)
-        //                {
-        //                    penalty += (arDiff * 2.5);
-        //                }
-
-        //                if (1.0 - penalty < bestScore) continue;
-
-        //                double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
-        //                if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
-        //            }
-        //        }
-
-        //        // Clean up labels
-        //        if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
-        //        var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
-        //        if (specialEntry.Key != null) bestLabel = specialEntry.Key;
-
-        //        return (bestLabel, Math.Clamp(bestScore, 0, 1));
-        //    }
-        //    finally { if (charImg.Channels() == 3) gray.Dispose(); }
-        //}
-
-
-        //[MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        //private static (string label, double score) RecognizeImpl_working(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
-        //{
-        //    var flatArray = _globalFlatTemplates;
-        //    if (flatArray.Length == 0) return ("?", 0.0);
-
-        //    Mat gray = charImg.Channels() == 3 ? charImg.CvtColor(ColorConversionCodes.BGR2GRAY) : charImg;
-
-        //    try
-        //    {
-        //        double inputAR = (double)charImg.Width / charImg.Height;
-        //        double inputDensity = (double)Cv2.CountNonZero(gray) / (charImg.Width * charImg.Height);
-
-        //        Cv2.Resize(gray, ts.Resized, TemplateSize);
-        //        Cv2.Threshold(ts.Resized, ts.Bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
-
-        //        // 1. Convert to normalized array AND calculate input Center of Mass simultaneously for maximum speed
-        //        double inSumX = 0, inSumY = 0, inTotal = 0;
-        //        unsafe
-        //        {
-        //            byte* pSrc = (byte*)ts.Bin.DataPointer;
-        //            ref float dstRef = ref MemoryMarshal.GetArrayDataReference(ts.FloatArray);
-        //            double sumSq = 0.0;
-        //            for (int i = 0; i < NumPixels; i++)
-        //            {
-        //                float val = pSrc[i];
-        //                Unsafe.Add(ref dstRef, i) = val;
-        //                sumSq += val * val;
-
-        //                // Center of Mass math
-        //                int y = i / TemplateSize.Width;
-        //                int x = i % TemplateSize.Width;
-        //                inSumX += val * x;
-        //                inSumY += val * y;
-        //                inTotal += val;
-        //            }
-        //            float invNorm = (float)(1.0 / (Math.Sqrt(sumSq) + 1e-6));
-        //            for (int i = 0; i < NumPixels; i++) Unsafe.Add(ref dstRef, i) *= invNorm;
-        //        }
-
-        //        double inputCx = inTotal > 0 ? (inSumX / inTotal) / TemplateSize.Width : 0.5;
-        //        double inputCy = inTotal > 0 ? (inSumY / inTotal) / TemplateSize.Height : 0.5;
-
-        //        string bestLabel = "?";
-        //        double bestScore = -1.0;
-        //        bool skipGlobalSearch = false;
-
-        //        // --- STEP 1: TARGETED SPEED BOOST ---
-        //        // If the user provided a specific expected character (and it's NOT a generic mask like # or @)
-        //        if (!string.IsNullOrEmpty(targetLabel) && targetLabel != "#" && targetLabel != "@" && targetLabel != "*")
-        //        {
-        //            string folderName = targetLabel;
-        //            if (SpecialReverse.ContainsKey(targetLabel)) folderName = SpecialReverse[targetLabel];
-        //            else if (targetLabel.Length == 1 && char.IsLetter(targetLabel[0])) folderName = char.IsLower(targetLabel[0]) ? "lower_" + targetLabel : "upper_" + targetLabel;
-
-        //            if (TemplateVectors.TryGetValue(folderName, out var templates))
-        //            {
-        //                foreach (var item in templates)
-        //                {
-        //                    double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                    double densityDiff = Math.Abs(inputDensity - item.FillDensity);
-        //                    double cxDiff = Math.Abs(inputCx - item.Cx);
-        //                    double cyDiff = Math.Abs(inputCy - item.Cy);
-
-        //                    double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
-        //                    if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
-
-        //                    double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
-
-        //                    if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
-
-        //                    // The speed shortcut: If it's a near-perfect match, stop here.
-        //                    if (finalScore >= 0.92) { skipGlobalSearch = true; break; }
-        //                }
-        //            }
-        //        }
-
-        //        // --- STEP 2: GLOBAL FALLBACK ---
-        //        if (!skipGlobalSearch)
-        //        {
-        //            ref FastTemplate flatRef = ref MemoryMarshal.GetArrayDataReference(flatArray);
-        //            for (int i = 0; i < flatArray.Length; i++)
-        //            {
-        //                ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
-
-        //                // ========================================================
-        //                // FORMAT MASKING (Bulletproof filtering for # and @)
-        //                // Skips heavy math entirely if the mask doesn't match!
-        //                // ========================================================
-        //                if (targetLabel == "#" && !char.IsDigit(item.Label[0])) continue; // Ignore Letters
-        //                if (targetLabel == "@" && !char.IsLetter(item.Label[0])) continue; // Ignore Numbers
-
-        //                double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                double densityDiff = Math.Abs(inputDensity - item.FillDensity);
-        //                double cxDiff = Math.Abs(inputCx - item.Cx);
-        //                double cyDiff = Math.Abs(inputCy - item.Cy);
-
-        //                double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
-        //                if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
-
-        //                // INSTANT SPEED CHECK: If geometry penalty is too high, skip heavy dot product!
-        //                if (1.0 - penalty < bestScore) continue;
-
-        //                // Heavy math ONLY runs if it passes all the visual checks above
-        //                double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
-        //                if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
-        //            }
-        //        }
-
-        //        // Clean up labels
-        //        if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
-        //        var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
-        //        if (specialEntry.Key != null) bestLabel = specialEntry.Key;
-
-        //        return (bestLabel, Math.Clamp(bestScore, 0, 1));
-        //    }
-        //    finally { if (charImg.Channels() == 3) gray.Dispose(); }
-        //}
-
-
-
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private static (string label, double score) RecognizeImpl(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
         {
@@ -1008,8 +780,37 @@ namespace CsplCam.Library.Services
 
                     if (TemplateVectors.TryGetValue(folderName, out var templates))
                     {
-                        foreach (var item in templates)
+                        if (templates.Count == 0) return ("?", 0.0);
+
+                        //foreach (var item in templates)
+                        //{
+                        //    double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                        //    double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+                        //    double cxDiff = Math.Abs(inputCx - item.Cx);
+                        //    double cyDiff = Math.Abs(inputCy - item.Cy);
+
+                        //    double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+                        //    if (arDiff > 0.15) penalty += (arDiff * 2.5);
+
+                        //    double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+
+                        //    if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
+                        //}
+
+                        //convert into unsafe pointer for faster access
+                        
+                        //1.convert into span for direct acces
+                         var charTempates = CollectionsMarshal.AsSpan(templates);
+
+                        //convert into usafe array for direct access
+                        ref CharTemplate templateArray = ref MemoryMarshal.GetReference(charTempates);
+
+                        //3.start accessing items
+                        for (int i = 0; i < charTempates.Length; i++)
                         {
+                            //get actual chartemplate item
+                            ref CharTemplate item = ref Unsafe.Add(ref templateArray,i);
+
                             double arDiff = Math.Abs(inputAR - item.AspectRatio);
                             double densityDiff = Math.Abs(inputDensity - item.FillDensity);
                             double cxDiff = Math.Abs(inputCx - item.Cx);
@@ -1028,7 +829,14 @@ namespace CsplCam.Library.Services
                         // Safety: The user expects a character, but hasn't trained it yet. 
                         bestLabel = targetLabel;
                         bestScore = 0.0;
+
+                        //fall bakc to global serach
+                        skipGlobalSearch = false;
                     }
+
+                    //check for global search only if target label and best label is not matched
+                    if (bestLabel != targetLabel)
+                        skipGlobalSearch = false;
                 }
 
                 // --- STEP 2: GLOBAL FALLBACK OCR (Only runs for *, #, @, or empty Expected Text) ---
@@ -1065,154 +873,6 @@ namespace CsplCam.Library.Services
             }
             finally { if (charImg.Channels() == 3) gray.Dispose(); }
         }
-
-
-
-
-
-        //[MethodImpl(MethodImplOptions.AggressiveOptimization)]
-        //private static (string label, double score) RecognizeImpl(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
-        //{
-        //    var flatArray = _globalFlatTemplates;
-        //    if (flatArray.Length == 0) return ("?", 0.0);
-
-        //    Mat gray = charImg.Channels() == 3 ? charImg.CvtColor(ColorConversionCodes.BGR2GRAY) : charImg;
-
-        //    try
-        //    {
-        //        double inputAR = (double)charImg.Width / charImg.Height;
-        //        double inputDensity = (double)Cv2.CountNonZero(gray) / (charImg.Width * charImg.Height);
-
-        //        Cv2.Resize(gray, ts.Resized, TemplateSize);
-        //        Cv2.Threshold(ts.Resized, ts.Bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
-
-        //        unsafe
-        //        {
-        //            byte* pSrc = (byte*)ts.Bin.DataPointer;
-        //            ref float dstRef = ref MemoryMarshal.GetArrayDataReference(ts.FloatArray);
-        //            double sumSq = 0.0;
-        //            for (int i = 0; i < NumPixels; i++) { float val = pSrc[i]; Unsafe.Add(ref dstRef, i) = val; sumSq += val * val; }
-        //            float invNorm = (float)(1.0 / (Math.Sqrt(sumSq) + 1e-6));
-        //            for (int i = 0; i < NumPixels; i++) Unsafe.Add(ref dstRef, i) *= invNorm;
-        //        }
-
-        //        // ==========================================================
-        //        // BULLETPROOF GEOMETRY: CALCULATE INPUT CENTER OF MASS 
-        //        // This determines if the shape is Top/Bottom/Left/Right heavy
-        //        // ==========================================================
-        //        double inSumX = 0, inSumY = 0, inTotal = 0;
-        //        for (int y = 0; y < TemplateSize.Height; y++)
-        //        {
-        //            int rowOff = y * TemplateSize.Width;
-        //            for (int x = 0; x < TemplateSize.Width; x++)
-        //            {
-        //                float val = ts.FloatArray[rowOff + x];
-        //                inSumX += val * x;
-        //                inSumY += val * y;
-        //                inTotal += val;
-        //            }
-        //        }
-        //        double inputCx = inTotal > 0 ? (inSumX / inTotal) / TemplateSize.Width : 0.5;
-        //        double inputCy = inTotal > 0 ? (inSumY / inTotal) / TemplateSize.Height : 0.5;
-        //        // ==========================================================
-
-        //        string bestLabel = "?";
-        //        double bestScore = -1.0;
-        //        bool skipGlobalSearch = false;
-
-        //        // --- STEP 1: TARGETED SPEED BOOST ---
-        //        if (!string.IsNullOrEmpty(targetLabel))
-        //        {
-        //            string folderName = targetLabel;
-        //            if (SpecialReverse.ContainsKey(targetLabel)) folderName = SpecialReverse[targetLabel];
-        //            else if (targetLabel.Length == 1 && char.IsLetter(targetLabel[0])) folderName = char.IsLower(targetLabel[0]) ? "lower_" + targetLabel : "upper_" + targetLabel;
-
-        //            if (TemplateVectors.TryGetValue(folderName, out var templates))
-        //            {
-        //                foreach (var item in templates)
-        //                {
-        //                    // Calculate Template Center of Mass
-        //                    double tSumX = 0, tSumY = 0, tTotal = 0;
-        //                    for (int y = 0; y < TemplateSize.Height; y++)
-        //                    {
-        //                        int rowOff = y * TemplateSize.Width;
-        //                        for (int x = 0; x < TemplateSize.Width; x++)
-        //                        {
-        //                            float val = item.Vector[rowOff + x];
-        //                            tSumX += val * x; tSumY += val * y; tTotal += val;
-        //                        }
-        //                    }
-        //                    double tmplCx = tTotal > 0 ? (tSumX / tTotal) / TemplateSize.Width : 0.5;
-        //                    double tmplCy = tTotal > 0 ? (tSumY / tTotal) / TemplateSize.Height : 0.5;
-
-        //                    // Calculate Differences
-        //                    double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                    double densityDiff = Math.Abs(inputDensity - item.FillDensity);
-        //                    double cxDiff = Math.Abs(inputCx - tmplCx);
-        //                    double cyDiff = Math.Abs(inputCy - tmplCy);
-
-        //                    // The Ultimate Penalty: Punishes wrong Aspect Ratio AND wrong Center of Mass!
-        //                    double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
-        //                    if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
-
-        //                    double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
-
-        //                    if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
-        //                    if (finalScore >= 0.92) { skipGlobalSearch = true; break; }
-        //                }
-        //            }
-        //        }
-
-        //        // --- STEP 2: GLOBAL FALLBACK ---
-        //        if (!skipGlobalSearch)
-        //        {
-        //            ref FastTemplate flatRef = ref MemoryMarshal.GetArrayDataReference(flatArray);
-        //            for (int i = 0; i < flatArray.Length; i++)
-        //            {
-        //                ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
-
-        //                // Calculate Template Center of Mass
-        //                double tSumX = 0, tSumY = 0, tTotal = 0;
-        //                for (int y = 0; y < TemplateSize.Height; y++)
-        //                {
-        //                    int rowOff = y * TemplateSize.Width;
-        //                    for (int x = 0; x < TemplateSize.Width; x++)
-        //                    {
-        //                        float val = item.Vector[rowOff + x];
-        //                        tSumX += val * x; tSumY += val * y; tTotal += val;
-        //                    }
-        //                }
-        //                double tmplCx = tTotal > 0 ? (tSumX / tTotal) / TemplateSize.Width : 0.5;
-        //                double tmplCy = tTotal > 0 ? (tSumY / tTotal) / TemplateSize.Height : 0.5;
-
-        //                // Calculate Differences
-        //                double arDiff = Math.Abs(inputAR - item.AspectRatio);
-        //                double densityDiff = Math.Abs(inputDensity - item.FillDensity);
-        //                double cxDiff = Math.Abs(inputCx - tmplCx);
-        //                double cyDiff = Math.Abs(inputCy - tmplCy);
-
-        //                // The Ultimate Penalty
-        //                double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
-        //                if (arDiff > 0.15) penalty += (arDiff * 2.5); // Exponential kill-switch for 0 vs O
-
-        //                // Instant Speed Boost: If penalty is too high, skip the heavy FastDotProduct!
-        //                if (1.0 - penalty < bestScore) continue;
-
-        //                double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
-        //                if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
-        //            }
-        //        }
-
-        //        // Clean up labels
-        //        if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
-        //        var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
-        //        if (specialEntry.Key != null) bestLabel = specialEntry.Key;
-
-        //        return (bestLabel, Math.Clamp(bestScore, 0, 1));
-        //    }
-        //    finally { if (charImg.Channels() == 3) gray.Dispose(); }
-        //}
-
         private static BarcodeFormats GetBarCode(bool isAuto, string StrFomat)
         {
             if (isAuto || !Enum.TryParse(typeof(BarcodeFormats), StrFomat, out var format) || format == null) return BarcodeFormats.Any;
@@ -1894,24 +1554,6 @@ namespace CsplCam.Library.Services
                                     
                                     var (label, score) = RecognizeImpl(charImg, roi.Threshold, targetForThisChar, threadState);
 
-                                    //var (label, score) = RecognizeImpl(charImg, roi.Threshold, null , threadState);
-
-                                    //// =================================================================
-                                    //// THE FIX: Apply Geometric Heuristics BEFORE we accept the label
-                                    //// =================================================================
-                                    //if (label == "O" || label == "o" || label == "0" ||
-                                    //    label == "1" || label == "I" || label == "l" ||
-                                    //    label == "S" || label == "5")
-                                    //{
-                                    //    label = ApplySmartHeuristics(label, b, charImg, globalMedianH);
-                                    //}
-
-                                    //if (score <= 0.20)
-                                    //{
-                                    //    continue;
-                                    //    //return threadState;
-                                    //}
-
                                     Rect visualBox = Math.Abs(skewAngle) > 0.001 ? InverseDeskewRect(b, skewAngle, centerX, centerY) : b;
 
                                     fastResults[i] = new CharResult
@@ -1927,53 +1569,6 @@ namespace CsplCam.Library.Services
                             },
                             (threadState) => ReturnOcrState(threadState)
                         );
-
-                        //var sb = new StringBuilder(boxes.Count);
-                        //double minScore = double.MaxValue;
-
-
-                        //// =========================================================
-                        //// DYNAMIC HEIGHT CORRECTOR (NO HARDCODED PIXELS)
-                        //// Fixes Uppercase vs Lowercase based on the current image size
-                        //// =========================================================
-                        //if (fastResults.Length > 0)
-                        //{
-                        //    // Get median height of this specific text line (ignores noise)
-                        //    var heights = fastResults.Where(r => r != null).Select(r => r.Box.Height).OrderBy(h => h).ToList();
-                        //    double medianHeight = heights.Count > 0 ? heights[heights.Count / 2] : 20;
-
-                        //    for (int i = 0; i < fastResults.Length; i++)
-                        //    {
-                        //        if (fastResults[i] == null) continue;
-                        //        string txt = fastResults[i].Text;
-
-                        //        // If it is an O, o, or 0, check its relative height
-                        //        if (txt == "O" || txt == "o" || txt == "0")
-                        //        {
-                        //            // Lowercase 'o' is usually 60-80% the height of a normal letter.
-                        //            if (fastResults[i].Box.Height <= medianHeight * 0.82)
-                        //            {
-                        //                fastResults[i].Text = "o";
-                        //            }
-                        //            // If the engine guessed lowercase 'o', but it's actually tall, fix it to Uppercase 'O'
-                        //            else if (txt == "o")
-                        //            {
-                        //                fastResults[i].Text = "O";
-                        //            }
-                        //        }
-                        //    }
-                        //}
-                        //// =========================================================
-
-                        //for (int i = 0; i < fastResults.Length; i++)
-                        //{
-                        //    var res = fastResults[i];
-                        //    sb.Append(res.Text);
-                        //    roi.CharResults.Add(res);
-                        //    if (res.Score < minScore) minScore = res.Score;
-                        //}
-
-                        //==============================================================================
 
                         var sb = new StringBuilder(boxes.Count);
                         double minScore = double.MaxValue;
@@ -2104,6 +1699,22 @@ namespace CsplCam.Library.Services
                 if (rotatedCrop != null && rotatedCrop != crop && !rotatedCrop.IsDisposed) rotatedCrop.Dispose();
             }
         }
+
+        //public static (char missingChar,int index) FinMissingChar(ReadOnlySpan<char> originalValue,ReadOnlySpan<char> observed)
+        //{
+        //    //1.store the length of original value
+        //    int len = originalValue.Length;
+
+        //    //2.return if original have novalue
+        //    if (len == 0) return (default, -1);
+
+        //    //3.start scanning
+        //    int i = 0;
+        //    while(i < len)
+        //    {
+
+        //    }
+        //}
 
         //private static string IsResultPass(string expText, string decText)
         //{
