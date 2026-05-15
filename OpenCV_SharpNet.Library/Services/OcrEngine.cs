@@ -19,7 +19,7 @@ namespace CsplCam.Library.Services
     /// Provides OCR (Optical Character Recognition) functionalities, including character recognition, template management, and skew correction.
     /// Primary class for character recoginition tasks.it inlcudes methods for training,recognizaing etc etc. It also manages the character templates and provides utilities for image processing specific to OCR tasks.
     /// </summary>
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public static class OcrEngine
     {
         /// <summary>
@@ -38,6 +38,11 @@ namespace CsplCam.Library.Services
         /// </summary>
         private static readonly OpenCvSharp.Size TemplateSize = new(30, 30);
         private static readonly int NumPixels = TemplateSize.Width * TemplateSize.Height;
+
+        /// <summary>
+        /// user for final confifidence match of ocv template matching for accuracy boost as well as speed boost
+        /// </summary>
+        public static double OcvTargetMatchConfidence { get; set; } = 0.75;
 
         /// <summary>
         /// Angle in degrees to deskew the character crops during training and recognition. This is a global setting that applies to all ROIs. You can adjust it based on your specific use case and the typical skew you encounter in your images. A value of 20 degrees is a common starting point for many OCR applications, but you may want to experiment with it to find the optimal angle for your dataset.
@@ -526,51 +531,7 @@ namespace CsplCam.Library.Services
                         initialBoxes.Add(rect);
                     }
                 }
-
-                //R & D code 11052026
-                //foreach (var cnt in contours)
-                //{
-                //    var rect = Cv2.BoundingRect(cnt);
-
-                //    // User's flexible Min/Max Size limits are respected here
-                //    if (rect.Width >= effectiveMinW && rect.Height >= effectiveMinH && rect.Width <= roi.MaxBlobW && rect.Height <= roi.MaxBlobH)
-                //    {
-                //        if (IsNeglectGarabageChar)
-                //        {
-                //            // RULE 1: Ignore shapes touching the absolute edge of the camera view
-                //            if (rect.X <= 2 || rect.Y <= 2 || rect.Right >= imgW2 || rect.Bottom >= imgH2)
-                //                continue;
-
-                //            // RULE 2: Aspect Ratio Filter (Kills thin scratches & flat lines)
-                //            // Normal characters rarely have an aspect ratio below 0.15 or above 4.0
-                //            double aspectRatio = (double)rect.Width / rect.Height;
-                //            if (aspectRatio < 0.12 || aspectRatio > 5.0)
-                //                continue;
-
-                //            // RULE 3: Fill Density Filter (The Ultimate Garbage Killer)
-                //            // Measures how much "ink" vs "empty space" is inside the bounding box.
-                //            double contourArea = Cv2.ContourArea(cnt);
-                //            double boundingBoxArea = rect.Width * rect.Height;
-                //            double fillRatio = contourArea / boundingBoxArea;
-
-                //            // A. Empty Box/Diagonal Line Rule: 
-                //            // Real characters (even thin ones like 'l' or '1') fill at least 20% of their box.
-                //            // Diagonal scratches have wide boxes but zero area (fill ratio < 0.15).
-                //            if (fillRatio < 0.18)
-                //                continue;
-
-                //            // B. Solid Block Noise Rule:
-                //            // Large chunks of dirt/black background are solid blocks (fill ratio > 95%).
-                //            // Real letters have curves and holes. 
-                //            // We only apply this to shapes larger than 25 pixels to protect tiny periods (.).
-                //            if (fillRatio > 0.95 && boundingBoxArea > 25)
-                //                continue;
-                //        }
-
-                //        initialBoxes.Add(rect);
-                //    }
-                //}
-
+               
                 if (initialBoxes.Count == 0) return initialBoxes;
 
                 var solidBoxes = new List<Rect>(initialBoxes.Count);
@@ -657,34 +618,6 @@ namespace CsplCam.Library.Services
                 }
                 else if (roi.SegmentationMode == SegmentationMode.Industrial)
                     sortedBoxes.RemoveAll(b => b.Height < 3);
-
-
-                //// ==========================================================
-                //// THE ABSOLUTE FIX
-                //// ==========================================================
-                //if (IsNeglectGarabageChar)
-                //{
-                //    sortedBoxes.RemoveAll(box =>
-                //    {
-                //        double aspect = (double)box.Width / box.Height;
-
-                //        // 1. KILL SCRATCHES: A pure straight line is very narrow (Aspect < 0.25)
-                //        // Real characters like '1' or 'I' have serifs making them wider (> 0.33)
-                //        if (aspect < 0.25 || aspect > 5.0) return true;
-
-                //        // 2. KILL SHADOWS: If the box is wide but mostly empty inside
-                //        Rect safeBox = box.Intersect(new Rect(0, 0, th.Width, th.Height));
-                //        if (safeBox.Width > 0 && safeBox.Height > 0)
-                //        {
-                //            using Mat roiMat = new Mat(th, safeBox);
-                //            double fillDensity = (double)Cv2.CountNonZero(roiMat) / (safeBox.Width * safeBox.Height);
-                //            if (fillDensity < 0.20) return true;
-                //        }
-
-                //        return false;
-                //    });
-                //}
-                //// ==========================================================
 
                 return sortedBoxes;
             }
@@ -827,16 +760,65 @@ namespace CsplCam.Library.Services
                     else
                     {
                         // Safety: The user expects a character, but hasn't trained it yet. 
-                        bestLabel = targetLabel;
-                        bestScore = 0.0;
+                        //bestLabel = "?";
+                        //bestScore = 0.0;
 
-                        //fall bakc to global serach
+                        ////fall bakc to global serach
                         skipGlobalSearch = false;
                     }
 
-                    //check for global search only if target label and best label is not matched
-                    if (bestLabel != targetLabel)
-                        skipGlobalSearch = false;
+                    ////check for global search only if target label and best label is not matched
+                    //if (bestLabel != folderName)
+                    //    skipGlobalSearch = false;
+
+
+                    //// ====================================================================
+                    //// THE HYBRID FIX: "The Confidence Check"
+                    //// If the expected character is a VERY STRONG match (> 85%), 
+                    //// we trust it completely and skip the global search (Massive Speed Boost).
+                    //// If it's a weak match (like 52%), we DO NOT trust it. We force a global 
+                    //// search to see if another character is actually a better fit.
+                    //// ====================================================================
+                    //double confidenceThreshold = Math.Max(0.75, ThresholdRatio); // Use 85%, or the user's threshold if they set it higher.
+
+                    //if (!(bestScore >= confidenceThreshold))
+                    //{
+                    //    //skipGlobalSearch = true;
+                    //    // Safety: The user expects a character, but hasn't trained it yet. 
+                    //    bestLabel = "?";
+                    //    bestScore = 0.0;
+                    //}
+                    ////else
+                    ////{
+                    ////    // It is a weak match. Let global search run. 
+                    ////    // Notice we DO NOT reset bestScore! Global search will only 
+                    ////    // replace 'd' if it finds something higher than 0.52 (like 'G').
+                    ////    //skipGlobalSearch = false;
+                    ////}
+                    ///
+
+                    // ====================================================================
+                    // THE HYBRID FIX: "The Confidence Check"
+                    // If the expected character is a VERY STRONG match (> 85%), 
+                    // we trust it completely and skip the global search (Massive Speed Boost).
+                    // If it's a weak match (like 52%), we DO NOT trust it. We force a global 
+                    // search to see if another character is actually a better fit.
+                    // ====================================================================
+                    double confidenceThreshold = Math.Max(OcvTargetMatchConfidence, ThresholdRatio); // Use 85%, or the user's threshold if they set it higher.
+
+                    skipGlobalSearch = bestScore >= confidenceThreshold;
+
+                    //if (bestScore >= confidenceThreshold)
+                    //{
+                    //    skipGlobalSearch = true;
+                    //}
+                    //else
+                    //{
+                    //    // It is a weak match. Let global search run. 
+                    //    // Notice we DO NOT reset bestScore! Global search will only 
+                    //    // replace 'd' if it finds something higher than 0.52 (like 'G').
+                    //    skipGlobalSearch = false;
+                    //}
                 }
 
                 // --- STEP 2: GLOBAL FALLBACK OCR (Only runs for *, #, @, or empty Expected Text) ---
@@ -863,6 +845,98 @@ namespace CsplCam.Library.Services
                         double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
                         if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
                     }
+                }
+
+                if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
+                var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
+                if (specialEntry.Key != null) bestLabel = specialEntry.Key;
+
+                return (bestLabel, Math.Clamp(bestScore, 0, 1));
+            }
+            finally { if (charImg.Channels() == 3) gray.Dispose(); }
+        }
+
+
+        [MethodImpl(MethodImplOptions.AggressiveOptimization)]
+        private static (string label, double score) RecognizeImpl_New(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
+        {
+            var flatArray = _globalFlatTemplates;
+            if (flatArray.Length == 0) return ("?", 0.0);
+
+            Mat gray = charImg.Channels() == 3 ? charImg.CvtColor(ColorConversionCodes.BGR2GRAY) : charImg;
+
+            try
+            {
+                double inputAR = (double)charImg.Width / charImg.Height;
+                double inputDensity = (double)Cv2.CountNonZero(gray) / (charImg.Width * charImg.Height);
+
+                Cv2.Resize(gray, ts.Resized, TemplateSize);
+                Cv2.Threshold(ts.Resized, ts.Bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+                // --- Masks ONLY ---
+                bool isHash = targetLabel == "#";
+                bool isAt = targetLabel == "@";
+
+                double inSumX = 0, inSumY = 0, inTotal = 0;
+                unsafe
+                {
+                    byte* pSrc = (byte*)ts.Bin.DataPointer;
+                    ref float dstRef = ref MemoryMarshal.GetArrayDataReference(ts.FloatArray);
+                    double sumSq = 0.0;
+
+                    int x = 0, y = 0;
+                    int w = TemplateSize.Width;
+
+                    for (int i = 0; i < NumPixels; i++)
+                    {
+                        float val = pSrc[i];
+                        Unsafe.Add(ref dstRef, i) = val;
+                        sumSq += val * val;
+
+                        inSumX += val * x;
+                        inSumY += val * y;
+                        inTotal += val;
+
+                        x++;
+                        if (x >= w) { x = 0; y++; }
+                    }
+                    float invNorm = (float)(1.0 / (Math.Sqrt(sumSq) + 1e-6));
+                    for (int i = 0; i < NumPixels; i++) Unsafe.Add(ref dstRef, i) *= invNorm;
+                }
+
+                double inputCx = inTotal > 0 ? (inSumX / inTotal) / TemplateSize.Width : 0.5;
+                double inputCy = inTotal > 0 ? (inSumY / inTotal) / TemplateSize.Height : 0.5;
+
+                string bestLabel = "?";
+                double bestScore = -1.0;
+
+                // ====================================================================
+                // TRUE GLOBAL OCR
+                // Always search all templates to find the True Character.
+                // This guarantees the UI outputs 'G' even if the user incorrectly typed 'd'.
+                // ====================================================================
+                ref FastTemplate flatRef = ref MemoryMarshal.GetArrayDataReference(flatArray);
+                for (int i = 0; i < flatArray.Length; i++)
+                {
+                    ref FastTemplate item = ref Unsafe.Add(ref flatRef, i);
+
+                    // Skip templates only if the user explicitly used a Format Mask
+                    if (isHash && !char.IsDigit(item.Label[0])) continue;
+                    if (isAt && !char.IsLetter(item.Label[0])) continue;
+
+                    double arDiff = Math.Abs(inputAR - item.AspectRatio);
+                    double densityDiff = Math.Abs(inputDensity - item.FillDensity);
+
+                    double cxDiff = (item.Cx == 0 && item.Cy == 0) ? 0 : Math.Abs(inputCx - item.Cx);
+                    double cyDiff = (item.Cx == 0 && item.Cy == 0) ? 0 : Math.Abs(inputCy - item.Cy);
+
+                    double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+                    if (arDiff > 0.15) penalty += (arDiff * 2.5);
+
+                    if (1.0 - penalty < bestScore) continue;
+
+                    double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
+                    if (finalScore > bestScore) { bestScore = finalScore; bestLabel = item.Label; }
                 }
 
                 if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
@@ -915,100 +989,6 @@ namespace CsplCam.Library.Services
                 // =================================================================
                 if (roi.UseBruteForceGridRecovery)
                 {
-                    //// 1. GLOBAL PRE-PROCESSING (Do the heavy OpenCV math ONCE!)
-                    //using Mat binOtsuGlobal = new Mat();
-                    //Cv2.Threshold(graySrc, binOtsuGlobal, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
-
-                    //using Mat blurred = new Mat();
-                    //Cv2.GaussianBlur(graySrc, blurred, new OpenCvSharp.Size(3, 3), 0);
-
-                    //using Mat localEnhanced = new Mat();
-                    //using var clahe = Cv2.CreateCLAHE(clipLimit: 2.0, tileGridSize: new OpenCvSharp.Size(8, 8));
-                    //clahe.Apply(blurred, localEnhanced);
-
-                    //using Mat binAdaptiveGlobal = new Mat();
-                    //Cv2.AdaptiveThreshold(localEnhanced, binAdaptiveGlobal, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 45, 10);
-
-                    //// 2. SETUP TILE MATH
-                    //int tileW = Math.Min(300, crop.Width);
-                    //int step = tileW / 2; // 50% overlap
-                    //int pad = 20;
-
-                    //// Calculate exactly how many tiles we need
-                    //int numTiles = ((crop.Width - tileW) / step) + 1;
-                    //if (crop.Width > tileW && (crop.Width - tileW) % step != 0) numTiles++;
-                    //if (crop.Width <= tileW) numTiles = 1;
-
-                    //// Thread-safe bag to hold the results from the parallel cores
-                    //ConcurrentBag<CharResult> concurrentResults = new ConcurrentBag<CharResult>();
-
-                    //// =================================================================
-                    //// 3. PARALLEL TILE SCANNING (Uses all i7 CPU cores simultaneously!)
-                    //// =================================================================
-                    //Parallel.For(0, numTiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
-                    //{
-                    //    int currentX = i * step;
-                    //    if (currentX + tileW > crop.Width) currentX = crop.Width - tileW; // Snap to right edge
-
-                    //    // Slice the pre-processed global images instantly (Zero heavy math)
-                    //    using Mat tileRaw = new Mat(graySrc, new Rect(currentX, 0, tileW, crop.Height));
-                    //    using Mat tileOtsu = new Mat(binOtsuGlobal, new Rect(currentX, 0, tileW, crop.Height));
-                    //    using Mat tileAdaptive = new Mat(binAdaptiveGlobal, new Rect(currentX, 0, tileW, crop.Height));
-
-                    //    RoiObject tileRes = new RoiObject { CharResults = new List<CharResult>() };
-
-                    //    // ATTEMPT A: Raw
-                    //    using Mat paddedRaw = new Mat();
-                    //    Cv2.CopyMakeBorder(tileRaw, paddedRaw, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                    //    TryDecodeFast(paddedRaw, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
-
-                    //    // ATTEMPT B: Otsu
-                    //    using Mat paddedOtsu = new Mat();
-                    //    Cv2.CopyMakeBorder(tileOtsu, paddedOtsu, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                    //    TryDecodeFast(paddedOtsu, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
-
-                    //    // ATTEMPT C: Adaptive
-                    //    using Mat paddedAdaptive = new Mat();
-                    //    Cv2.CopyMakeBorder(tileAdaptive, paddedAdaptive, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                    //    TryDecodeFast(paddedAdaptive, _hardOpts, pad, 1.0, tileRes, tileW, crop.Height);
-
-                    //    // Dump local tile results into the thread-safe bag
-                    //    foreach (var found in tileRes.CharResults)
-                    //    {
-                    //        found.Box = new Rect(found.Box.X + currentX, found.Box.Y, found.Box.Width, found.Box.Height);
-                    //        if (found.Polygon != null)
-                    //        {
-                    //            for (int p = 0; p < 4; p++) found.Polygon[p].X += currentX;
-                    //        }
-                    //        concurrentResults.Add(found);
-                    //    }
-                    //});
-
-                    //// 4. DEDUPLICATE AND ASSEMBLE
-                    //foreach (var found in concurrentResults)
-                    //{
-                    //    // Ensure we don't add the same barcode twice if it was caught in an overlapping tile
-                    //    if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 20))
-                    //    {
-                    //        roi.CharResults.Add(found);
-                    //    }
-                    //}
-
-                    //// Assembly results
-                    //if (roi.CharResults.Count > 0)
-                    //{
-                    //    var sortedResults = roi.CharResults.OrderBy(r => r.Box.X).ToList();
-                    //    roi.CharResults.Clear();
-                    //    roi.CharResults.AddRange(sortedResults);
-
-                    //    roi.DecodedText = string.Join(" | ", roi.CharResults.Select(r => r.Text));
-                    //    return;
-                    //}
-
-                    //comment this for further processing of the image when gets failed
-                    //roi.DecodedText = "Failed";
-                    //return;
-
                     //call brute force method
                     BruteForceDecode(crop,roi);
 
@@ -1074,6 +1054,16 @@ namespace CsplCam.Library.Services
                 // If it worked, we are done! Return instantly.
                 //if (!string.IsNullOrEmpty(roi.DecodedText)) return;
 
+                // =================================================================
+                // TIER 3: EXTREME DPM & CURVED CYLINDER PATH
+                // Kills glare, merges laser dots, and stretches out cylindrical distortion
+                // =================================================================
+
+                // Note: I see you have an "Advanced Mode" checkbox in your UI. 
+                // If you have a variable for it, you can wrap this in: if(roi.IsAdvancedMode)
+                //TryDecodeExtremeDPM(graySrc, _hardOpts, roi);
+                //if (!string.IsNullOrEmpty(roi.DecodedText) && roi.DecodedText != "Failed") return;
+
                 // 6. PHARMACODE AUTO-DETECT FALLBACK
                 if (roi.isBarCodeFormatAuto)
                 {
@@ -1087,7 +1077,7 @@ namespace CsplCam.Library.Services
             finally { ReturnBcState(bcState); }
         }
 
-        public static void BruteForceDecode(Mat crop, RoiObject roi)
+        public static void BruteForceDecode_old(Mat crop, RoiObject roi)
         {
             if (crop == null || crop.Empty())
                 return;
@@ -1175,6 +1165,142 @@ namespace CsplCam.Library.Services
             }
         }
 
+        public static void BruteForceDecode(Mat crop, RoiObject roi)
+        {
+            if (crop == null || crop.Empty()) return;
+
+            Mat gray = new Mat();
+            if (crop.Channels() == 3) Cv2.CvtColor(crop, gray, ColorConversionCodes.BGR2GRAY);
+            else gray = crop.Clone();
+
+            using (gray)
+            {
+                // 1. GLOBAL PRE-PROCESSING
+                using Mat binOtsuGlobal = new Mat();
+                Cv2.Threshold(gray, binOtsuGlobal, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+                using Mat blurred = new Mat();
+                Cv2.GaussianBlur(gray, blurred, new OpenCvSharp.Size(3, 3), 0);
+
+                using Mat localEnhanced = new Mat();
+                using var clahe = Cv2.CreateCLAHE(clipLimit: 2.0, tileGridSize: new OpenCvSharp.Size(8, 8));
+                clahe.Apply(blurred, localEnhanced);
+
+                using Mat binAdaptiveGlobal = new Mat();
+                Cv2.AdaptiveThreshold(localEnhanced, binAdaptiveGlobal, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 45, 10);
+
+                // 2. SETUP TILE MATH
+                int tileW = Math.Min(300, gray.Width);
+                int step = Math.Max(1, tileW / 2);
+                int pad = 20;
+
+                int numTiles = gray.Width <= tileW ? 1 : ((gray.Width - tileW) / step) + 1;
+                if (gray.Width > tileW && (gray.Width - tileW) % step != 0) numTiles++;
+
+                ConcurrentBag<CharResult> concurrentResults = new ConcurrentBag<CharResult>();
+
+                // 3. MULTI-CORE PARALLEL TILE SCANNING
+                Parallel.For(0, numTiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+                {
+                    int currentX = i * step;
+                    if (currentX + tileW > gray.Width) currentX = gray.Width - tileW;
+
+                    using Mat tileRaw = new Mat(gray, new Rect(currentX, 0, tileW, gray.Height));
+                    using Mat tileOtsu = new Mat(binOtsuGlobal, new Rect(currentX, 0, tileW, gray.Height));
+                    using Mat tileAdaptive = new Mat(binAdaptiveGlobal, new Rect(currentX, 0, tileW, gray.Height));
+
+                    RoiObject tileRes = new RoiObject { CharResults = new List<CharResult>() };
+
+                    // --- STANDARD PASSES ---
+                    using Mat paddedRaw = new Mat();
+                    Cv2.CopyMakeBorder(tileRaw, paddedRaw, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    TryDecodeFast(paddedRaw, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
+
+                    using Mat paddedOtsu = new Mat();
+                    Cv2.CopyMakeBorder(tileOtsu, paddedOtsu, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    TryDecodeFast(paddedOtsu, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
+
+                    using Mat paddedAdaptive = new Mat();
+                    Cv2.CopyMakeBorder(tileAdaptive, paddedAdaptive, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+                    TryDecodeFast(paddedAdaptive, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
+
+                    // ====================================================================
+                    // --- NEW: DPM EXTREME PASS ---
+                    // If the standard passes failed on this specific tile, hit it with the sledgehammer!
+                    // ====================================================================
+                    if (tileRes.CharResults.Count == 0)
+                    {
+                        using Mat enhancedDpm = new Mat();
+                        using var claheDpm = Cv2.CreateCLAHE(clipLimit: 4.0, tileGridSize: new OpenCvSharp.Size(8, 8));
+                        claheDpm.Apply(paddedRaw, enhancedDpm); // Kills glare
+
+                        using Mat blurredDpm = new Mat();
+                        Cv2.GaussianBlur(enhancedDpm, blurredDpm, new OpenCvSharp.Size(3, 3), 0); // Merges DPM dots
+
+                        double[] stretches = { 1.0, 1.3, 1.6 }; // Un-wraps cylinders
+                        int[] blockSizes = { 15, 35, 55 };
+
+                        foreach (double stretch in stretches)
+                        {
+                            if (tileRes.CharResults.Count > 0) break; // Found it! Stop searching this tile.
+
+                            using Mat stretched = new Mat();
+                            if (stretch == 1.0) blurredDpm.CopyTo(stretched);
+                            else Cv2.Resize(blurredDpm, stretched, new OpenCvSharp.Size(blurredDpm.Width * stretch, blurredDpm.Height));
+
+                            foreach (int blockSize in blockSizes)
+                            {
+                                using Mat bin = new Mat();
+                                Cv2.AdaptiveThreshold(stretched, bin, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, blockSize, 10);
+
+                                // Normal Attempt
+                                TryDecodeFast(bin, _hardOpts, pad, stretch, tileRes, tileW, gray.Height);
+                                if (tileRes.CharResults.Count > 0) break;
+
+                                // Inverted Laser Etch Attempt
+                                using Mat inv = new Mat();
+                                Cv2.BitwiseNot(bin, inv);
+                                TryDecodeFast(inv, _hardOpts, pad, stretch, tileRes, tileW, gray.Height);
+                                if (tileRes.CharResults.Count > 0) break;
+                            }
+                        }
+                    }
+
+                    // 4. SHIFT COORDINATES TO GLOBAL ROI
+                    foreach (var found in tileRes.CharResults)
+                    {
+                        found.Box = new Rect(found.Box.X + currentX, found.Box.Y, found.Box.Width, found.Box.Height);
+                        if (found.Polygon != null)
+                        {
+                            for (int p = 0; p < 4; p++) found.Polygon[p].X += currentX;
+                        }
+                        if (found.ExactCorners != null)
+                        {
+                            for (int p = 0; p < found.ExactCorners.Length; p++) found.ExactCorners[p].X += currentX;
+                        }
+                        concurrentResults.Add(found);
+                    }
+                });
+
+                // 5. ASSEMBLE AND DEDUPLICATE
+                roi.CharResults.Clear();
+                foreach (var found in concurrentResults)
+                {
+                    // Ensure we don't add the same barcode twice if it was caught in an overlapping tile
+                    if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 40))
+                        roi.CharResults.Add(found);
+                }
+
+                if (roi.CharResults.Count > 0)
+                {
+                    var sortedResults = roi.CharResults.OrderBy(r => r.Box.X).ToList();
+                    roi.CharResults.Clear();
+                    roi.CharResults.AddRange(sortedResults);
+                    roi.DecodedText = string.Join(" | ", roi.CharResults.Select(r => r.Text));
+                }
+            }
+        }
+
         private static void TryDecodeCylindrical(Mat graySrc, RoiObject roi, int origW, int origH)
         {
             // Stretch the image horizontally by 30%, 60%, and 100% to undo the curve compression
@@ -1230,6 +1356,60 @@ namespace CsplCam.Library.Services
                     }
                 }
                 catch { }
+            }
+        }
+
+        private static void TryDecodeExtremeDPM(Mat grayCrop, ReaderOptions options, RoiObject roi)
+        {
+            // 1. CREATE QUIET ZONE
+            // ZXing will instantly fail if the barcode touches the edge of the image.
+            int pad = 20;
+            using Mat padded = new Mat();
+            Cv2.CopyMakeBorder(grayCrop, padded, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
+
+            // 2. KILL THE GLARE (CLAHE)
+            // Contrast Limited Adaptive Histogram Equalization flattens the lighting so the 
+            // bright middle and dark edges become uniform.
+            using Mat enhanced = new Mat();
+            using var clahe = Cv2.CreateCLAHE(clipLimit: 4.0, tileGridSize: new OpenCvSharp.Size(8, 8));
+            clahe.Apply(padded, enhanced);
+
+            // 3. MERGE THE DOTS (Gaussian Blur)
+            // DPM laser dots are disconnected. Blurring them slightly forces them to bleed 
+            // together into solid shapes that ZXing can actually read.
+            using Mat blurred = new Mat();
+            Cv2.GaussianBlur(enhanced, blurred, new OpenCvSharp.Size(3, 3), 0);
+
+            // 4. FIX THE CURVE (Cylindrical Un-wrapping)
+            // Because the metal is curved, the barcode looks squeezed horizontally.
+            // We will stretch the image horizontally (1.3x and 1.6x) to "flatten" the cylinder!
+            double[] stretches = { 1.0, 1.3, 1.6 };
+
+            foreach (double stretch in stretches)
+            {
+                using Mat stretched = new Mat();
+                if (stretch == 1.0) blurred.CopyTo(stretched);
+                else Cv2.Resize(blurred, stretched, new OpenCvSharp.Size(blurred.Width * stretch, blurred.Height));
+
+                // 5. SWEEP ADAPTIVE THRESHOLDS
+                // We don't know the exact size of the dots, so we sweep through 3 block sizes
+                int[] blockSizes = { 15, 35, 55 };
+
+                foreach (int blockSize in blockSizes)
+                {
+                    using Mat bin = new Mat();
+                    Cv2.AdaptiveThreshold(stretched, bin, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, blockSize, 10);
+
+                    // First Attempt: Normal Dark-on-Light
+                    TryDecodeFast(bin, options, pad, stretch, roi, grayCrop.Width, grayCrop.Height);
+                    if (!string.IsNullOrEmpty(roi.DecodedText) && roi.DecodedText != "Failed") return;
+
+                    // Second Attempt: Inverted Light-on-Dark (Very common in laser etching)
+                    using Mat inv = new Mat();
+                    Cv2.BitwiseNot(bin, inv);
+                    TryDecodeFast(inv, options, pad, stretch, roi, grayCrop.Width, grayCrop.Height);
+                    if (!string.IsNullOrEmpty(roi.DecodedText) && roi.DecodedText != "Failed") return;
+                }
             }
         }
 
