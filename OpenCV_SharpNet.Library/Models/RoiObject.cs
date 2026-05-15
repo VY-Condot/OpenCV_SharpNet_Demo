@@ -144,10 +144,19 @@ namespace CsplCam.Library.Models
         #endregion
 
         // Anchor Settings ---
-        public int AnchorTop { get; set; } = 500;
-        public int AnchorBottom { get; set; } = 500;
-        public int AnchorLeft { get; set; } = 500;
-        public int AnchorRight { get; set; } = 500;
+        public int AnchorTop { get; set; } = 800;
+        public int AnchorBottom { get; set; } = 800;
+        public int AnchorLeft { get; set; } = 800;
+        public int AnchorRight { get; set; } = 800;
+        
+        ///// <summary>
+        ///// set the min and max confidence of the anchor character (the character with the highest anchor confidence in the image).
+        ///// </summary>
+        //public struct AnchorConfidence
+        //{
+        //    public static double Min { get; set; } = 0.35;
+        //    public static double Max { get; set; } = 0.50;
+        //}
 
         // Visual pattern (Not saved to JSON)
         [System.Text.Json.Serialization.JsonIgnore]

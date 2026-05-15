@@ -249,82 +249,6 @@ namespace CsplCam.Library.Services
         // --------------------------------------------------------
         // 1. TEMPLATE LOADING 
         // --------------------------------------------------------
-        //public static void ReloadTemplates()
-        //{
-        //    var newDict = new Dictionary<string, List<CharTemplate>>();
-        //    var flatList = new List<FastTemplate>();
-
-        //    if (!Directory.Exists(DatasetRoot)) Directory.CreateDirectory(DatasetRoot);
-
-        //    foreach (var dir in Directory.GetDirectories(DatasetRoot))
-        //    {
-        //        string label = new DirectoryInfo(dir).Name;
-        //        if (!newDict.ContainsKey(label)) newDict[label] = new List<CharTemplate>();
-
-        //        foreach (var file in Directory.GetFiles(dir))
-        //        {
-        //            using Mat img = Cv2.ImRead(file, ImreadModes.Grayscale);
-        //            if (img.Empty()) continue;
-
-        //            double ar = (double)img.Width / img.Height;
-        //            double density = (double)Cv2.CountNonZero(img) / (img.Width * img.Height);
-
-        //            using Mat resized = new();
-        //            Cv2.Resize(img, resized, TemplateSize);
-        //            using Mat bin = new();
-        //            Cv2.Threshold(resized, bin, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
-        //            using Mat vec = new();
-        //            bin.ConvertTo(vec, MatType.CV_32F);
-        //            using Mat flat = vec.Reshape(1, 1);
-
-        //            // DOUBLE PRECISION NORM TO MATCH EXACT ACCURACY OF ORIGINAL CODE
-        //            double norm = Cv2.Norm(flat);
-
-        //            using Mat finalFlat = new Mat();
-        //            flat.ConvertTo(finalFlat, MatType.CV_32F, 1.0 / (norm + 1e-6));
-
-        //            float[] floatArray = new float[finalFlat.Total()];
-        //            Marshal.Copy(finalFlat.Data, floatArray, 0, floatArray.Length);
-
-        //            //newDict[label].Add(new CharTemplate { Vector = floatArray, AspectRatio = ar, FillDensity = density });
-
-        //            //flatList.Add(new FastTemplate { Label = label, Vector = floatArray, AspectRatio = ar, FillDensity = density });
-
-
-        //            // --- CALCULATE CENTER OF MASS ONCE DURING LOAD ---
-        //            double tSumX = 0, tSumY = 0, tTotal = 0;
-        //            for (int y = 0; y < TemplateSize.Height; y++)
-        //            {
-        //                int rowOff = y * TemplateSize.Width;
-        //                for (int x = 0; x < TemplateSize.Width; x++)
-        //                {
-        //                    float val = floatArray[rowOff + x];
-        //                    tSumX += val * x; tSumY += val * y; tTotal += val;
-        //                }
-        //            }
-        //            double tmplCx = tTotal > 0 ? (tSumX / tTotal) / TemplateSize.Width : 0.5;
-        //            double tmplCy = tTotal > 0 ? (tSumY / tTotal) / TemplateSize.Height : 0.5;
-        //            // -------------------------------------------------
-
-        //            // IMPORTANT: Add Cx and Cy to both your lists!
-        //            newDict[label].Add(new CharTemplate { Vector = floatArray, AspectRatio = ar, FillDensity = density, Cx = tmplCx, Cy = tmplCy });
-
-        //            flatList.Add(new FastTemplate { Label = label, Vector = floatArray, AspectRatio = ar, FillDensity = density, Cx = tmplCx, Cy = tmplCy });
-        //        }
-        //    }
-
-        //    var flatArray = flatList.ToArray();
-        //    var oldDict = TemplateVectors;
-
-        //    lock (_templateLock)
-        //    {
-        //        TemplateVectors = newDict;
-        //        _globalFlatTemplates = flatArray;
-        //    }
-        //    if (oldDict != null) oldDict.Clear();
-        //}
-
-
         public static void ReloadTemplates()
         {
             var newDict = new Dictionary<string, List<CharTemplate>>();
@@ -715,21 +639,6 @@ namespace CsplCam.Library.Services
                     {
                         if (templates.Count == 0) return ("?", 0.0);
 
-                        //foreach (var item in templates)
-                        //{
-                        //    double arDiff = Math.Abs(inputAR - item.AspectRatio);
-                        //    double densityDiff = Math.Abs(inputDensity - item.FillDensity);
-                        //    double cxDiff = Math.Abs(inputCx - item.Cx);
-                        //    double cyDiff = Math.Abs(inputCy - item.Cy);
-
-                        //    double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
-                        //    if (arDiff > 0.15) penalty += (arDiff * 2.5);
-
-                        //    double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
-
-                        //    if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
-                        //}
-
                         //convert into unsafe pointer for faster access
                         
                         //1.convert into span for direct acces
@@ -767,36 +676,6 @@ namespace CsplCam.Library.Services
                         skipGlobalSearch = false;
                     }
 
-                    ////check for global search only if target label and best label is not matched
-                    //if (bestLabel != folderName)
-                    //    skipGlobalSearch = false;
-
-
-                    //// ====================================================================
-                    //// THE HYBRID FIX: "The Confidence Check"
-                    //// If the expected character is a VERY STRONG match (> 85%), 
-                    //// we trust it completely and skip the global search (Massive Speed Boost).
-                    //// If it's a weak match (like 52%), we DO NOT trust it. We force a global 
-                    //// search to see if another character is actually a better fit.
-                    //// ====================================================================
-                    //double confidenceThreshold = Math.Max(0.75, ThresholdRatio); // Use 85%, or the user's threshold if they set it higher.
-
-                    //if (!(bestScore >= confidenceThreshold))
-                    //{
-                    //    //skipGlobalSearch = true;
-                    //    // Safety: The user expects a character, but hasn't trained it yet. 
-                    //    bestLabel = "?";
-                    //    bestScore = 0.0;
-                    //}
-                    ////else
-                    ////{
-                    ////    // It is a weak match. Let global search run. 
-                    ////    // Notice we DO NOT reset bestScore! Global search will only 
-                    ////    // replace 'd' if it finds something higher than 0.52 (like 'G').
-                    ////    //skipGlobalSearch = false;
-                    ////}
-                    ///
-
                     // ====================================================================
                     // THE HYBRID FIX: "The Confidence Check"
                     // If the expected character is a VERY STRONG match (> 85%), 
@@ -808,17 +687,6 @@ namespace CsplCam.Library.Services
 
                     skipGlobalSearch = bestScore >= confidenceThreshold;
 
-                    //if (bestScore >= confidenceThreshold)
-                    //{
-                    //    skipGlobalSearch = true;
-                    //}
-                    //else
-                    //{
-                    //    // It is a weak match. Let global search run. 
-                    //    // Notice we DO NOT reset bestScore! Global search will only 
-                    //    // replace 'd' if it finds something higher than 0.52 (like 'G').
-                    //    skipGlobalSearch = false;
-                    //}
                 }
 
                 // --- STEP 2: GLOBAL FALLBACK OCR (Only runs for *, #, @, or empty Expected Text) ---
@@ -1077,6 +945,117 @@ namespace CsplCam.Library.Services
             finally { ReturnBcState(bcState); }
         }
 
+        public static void BruteForceDecode(Mat crop, RoiObject roi)
+        {
+            if (crop == null || crop.Empty()) return;
+
+            // 1. FAST PRE-PROCESS
+            using Mat gray = new Mat();
+            if (crop.Channels() == 3) Cv2.CvtColor(crop, gray, ColorConversionCodes.BGR2GRAY);
+            else crop.CopyTo(gray);
+
+            // 2. THE USER-PROOF FIX: ADD MASSIVE QUIET ZONE (PADDING)
+            // Industrial users draw tight boxes. ZXing needs white space. 
+            // We add 60 pixels of white space around the entire ROI first.
+            int globalPad = 60;
+            using Mat paddedContainer = new Mat();
+            Cv2.CopyMakeBorder(gray, paddedContainer, globalPad, globalPad, globalPad, globalPad, BorderTypes.Constant, Scalar.White);
+
+            roi.CharResults.Clear();
+            ConcurrentBag<CharResult> concurrentResults = new ConcurrentBag<CharResult>();
+
+            //// 3. TIER 1: FULL ROI CHECK (Zero Math - 2ms)
+            //// This fixes the bug where Advanced Mode misses the "easy" codes.
+            //TryDecodeFast(paddedContainer, _hardOpts, 0, 1.0, roi, paddedContainer.Width, paddedContainer.Height);
+            //if (roi.CharResults.Count > 0)
+            //{
+            //    // Move these initial results to our bag and clear roi results for the tiling phase
+            //    foreach (var r in roi.CharResults) concurrentResults.Add(r);
+            //    roi.CharResults.Clear();
+            //}
+
+            // 4. TILE MATH
+            int tileW = Math.Min(450, paddedContainer.Width);
+            int step = (int)(tileW * 0.6); // 40% overlap for safety
+            int numTiles = ((paddedContainer.Width - tileW) / step) + 1;
+            if (paddedContainer.Width > tileW && (paddedContainer.Width - tileW) % step != 0) numTiles++;
+            if (paddedContainer.Width <= tileW) numTiles = 1;
+
+            // 5. PARALLEL MULTI-PASS SCANNING
+            Parallel.For(0, numTiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
+            {
+                int currentX = i * step;
+                if (currentX + tileW > paddedContainer.Width) currentX = paddedContainer.Width - tileW;
+
+                using Mat tileRaw = new Mat(paddedContainer, new Rect(currentX, 0, tileW, paddedContainer.Height));
+                RoiObject tileRes = new RoiObject { CharResults = new List<CharResult>() };
+
+                // --- PASS A: ENHANCED GRAY (Kills glare, keeps small QR detail) ---
+                using Mat enhanced = new Mat();
+                using (var clahe = Cv2.CreateCLAHE(clipLimit: 3.0, tileGridSize: new OpenCvSharp.Size(8, 8)))
+                    clahe.Apply(tileRaw, enhanced);
+
+                TryDecodeFast(enhanced, _hardOpts, 0, 1.0, tileRes, tileW, paddedContainer.Height);
+
+                // --- PASS B: ADAPTIVE (Pierces shadows) ---
+                if (tileRes.CharResults.Count == 0)
+                {
+                    using Mat bin = new Mat();
+                    Cv2.AdaptiveThreshold(enhanced, bin, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 35, 10);
+                    TryDecodeFast(bin, _hardOpts, 0, 1.0, tileRes, tileW, paddedContainer.Height);
+                }
+
+                // --- PASS C: DPM SLEDGEHAMMER (Only if enabled AND previous failed) ---
+                // We use dilation ONLY here to join laser dots.
+                if (tileRes.CharResults.Count == 0 && roi.UseBruteForceGridRecovery)
+                {
+                    using Mat dilated = new Mat();
+                    using Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(3, 3));
+                    Cv2.Dilate(tileRaw, dilated, kernel); // Makes laser dots touch
+                    TryDecodeFast(dilated, _hardOpts, 0, 1.0, tileRes, tileW, paddedContainer.Height);
+                }
+
+                // 6. MAP COORDINATES BACK TO UI SPACE
+                foreach (var found in tileRes.CharResults)
+                {
+                    found.Box = new Rect((found.Box.X + currentX) - globalPad, found.Box.Y - globalPad, found.Box.Width, found.Box.Height);
+                    if (found.Polygon != null)
+                    {
+                        for (int p = 0; p < 4; p++)
+                        {
+                            found.Polygon[p].X = (found.Polygon[p].X + currentX) - globalPad;
+                            found.Polygon[p].Y = found.Polygon[p].Y - globalPad;
+                        }
+                    }
+                    concurrentResults.Add(found);
+                }
+            });
+
+            // 7. DEDUPLICATE (If a barcode was found in multiple tiles)
+            roi.CharResults.Clear();
+            foreach (var found in concurrentResults)
+            {
+                if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 40))
+                {
+                    roi.CharResults.Add(found);
+                }
+            }
+
+
+            // 8. FINAL ASSEMBLY
+            if (roi.CharResults.Count > 0)
+            {
+                var sorted = roi.CharResults.OrderBy(r => r.Box.X).ToList();
+                roi.CharResults.Clear();
+                roi.CharResults.AddRange(sorted);
+                roi.DecodedText = string.Join(" | ", roi.CharResults.Select(r => r.Text));
+            }
+            else
+            {
+                roi.DecodedText = "Failed";
+            }
+        }
+
         public static void BruteForceDecode_old(Mat crop, RoiObject roi)
         {
             if (crop == null || crop.Empty())
@@ -1152,142 +1131,6 @@ namespace CsplCam.Library.Services
                 foreach (var found in concurrentResults)
                 {
                     if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 20))
-                        roi.CharResults.Add(found);
-                }
-
-                if (roi.CharResults.Count > 0)
-                {
-                    var sortedResults = roi.CharResults.OrderBy(r => r.Box.X).ToList();
-                    roi.CharResults.Clear();
-                    roi.CharResults.AddRange(sortedResults);
-                    roi.DecodedText = string.Join(" | ", roi.CharResults.Select(r => r.Text));
-                }
-            }
-        }
-
-        public static void BruteForceDecode(Mat crop, RoiObject roi)
-        {
-            if (crop == null || crop.Empty()) return;
-
-            Mat gray = new Mat();
-            if (crop.Channels() == 3) Cv2.CvtColor(crop, gray, ColorConversionCodes.BGR2GRAY);
-            else gray = crop.Clone();
-
-            using (gray)
-            {
-                // 1. GLOBAL PRE-PROCESSING
-                using Mat binOtsuGlobal = new Mat();
-                Cv2.Threshold(gray, binOtsuGlobal, 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
-
-                using Mat blurred = new Mat();
-                Cv2.GaussianBlur(gray, blurred, new OpenCvSharp.Size(3, 3), 0);
-
-                using Mat localEnhanced = new Mat();
-                using var clahe = Cv2.CreateCLAHE(clipLimit: 2.0, tileGridSize: new OpenCvSharp.Size(8, 8));
-                clahe.Apply(blurred, localEnhanced);
-
-                using Mat binAdaptiveGlobal = new Mat();
-                Cv2.AdaptiveThreshold(localEnhanced, binAdaptiveGlobal, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, 45, 10);
-
-                // 2. SETUP TILE MATH
-                int tileW = Math.Min(300, gray.Width);
-                int step = Math.Max(1, tileW / 2);
-                int pad = 20;
-
-                int numTiles = gray.Width <= tileW ? 1 : ((gray.Width - tileW) / step) + 1;
-                if (gray.Width > tileW && (gray.Width - tileW) % step != 0) numTiles++;
-
-                ConcurrentBag<CharResult> concurrentResults = new ConcurrentBag<CharResult>();
-
-                // 3. MULTI-CORE PARALLEL TILE SCANNING
-                Parallel.For(0, numTiles, new ParallelOptions { MaxDegreeOfParallelism = Environment.ProcessorCount }, i =>
-                {
-                    int currentX = i * step;
-                    if (currentX + tileW > gray.Width) currentX = gray.Width - tileW;
-
-                    using Mat tileRaw = new Mat(gray, new Rect(currentX, 0, tileW, gray.Height));
-                    using Mat tileOtsu = new Mat(binOtsuGlobal, new Rect(currentX, 0, tileW, gray.Height));
-                    using Mat tileAdaptive = new Mat(binAdaptiveGlobal, new Rect(currentX, 0, tileW, gray.Height));
-
-                    RoiObject tileRes = new RoiObject { CharResults = new List<CharResult>() };
-
-                    // --- STANDARD PASSES ---
-                    using Mat paddedRaw = new Mat();
-                    Cv2.CopyMakeBorder(tileRaw, paddedRaw, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                    TryDecodeFast(paddedRaw, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
-
-                    using Mat paddedOtsu = new Mat();
-                    Cv2.CopyMakeBorder(tileOtsu, paddedOtsu, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                    TryDecodeFast(paddedOtsu, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
-
-                    using Mat paddedAdaptive = new Mat();
-                    Cv2.CopyMakeBorder(tileAdaptive, paddedAdaptive, pad, pad, pad, pad, BorderTypes.Constant, Scalar.White);
-                    TryDecodeFast(paddedAdaptive, _hardOpts, pad, 1.0, tileRes, tileW, gray.Height);
-
-                    // ====================================================================
-                    // --- NEW: DPM EXTREME PASS ---
-                    // If the standard passes failed on this specific tile, hit it with the sledgehammer!
-                    // ====================================================================
-                    if (tileRes.CharResults.Count == 0)
-                    {
-                        using Mat enhancedDpm = new Mat();
-                        using var claheDpm = Cv2.CreateCLAHE(clipLimit: 4.0, tileGridSize: new OpenCvSharp.Size(8, 8));
-                        claheDpm.Apply(paddedRaw, enhancedDpm); // Kills glare
-
-                        using Mat blurredDpm = new Mat();
-                        Cv2.GaussianBlur(enhancedDpm, blurredDpm, new OpenCvSharp.Size(3, 3), 0); // Merges DPM dots
-
-                        double[] stretches = { 1.0, 1.3, 1.6 }; // Un-wraps cylinders
-                        int[] blockSizes = { 15, 35, 55 };
-
-                        foreach (double stretch in stretches)
-                        {
-                            if (tileRes.CharResults.Count > 0) break; // Found it! Stop searching this tile.
-
-                            using Mat stretched = new Mat();
-                            if (stretch == 1.0) blurredDpm.CopyTo(stretched);
-                            else Cv2.Resize(blurredDpm, stretched, new OpenCvSharp.Size(blurredDpm.Width * stretch, blurredDpm.Height));
-
-                            foreach (int blockSize in blockSizes)
-                            {
-                                using Mat bin = new Mat();
-                                Cv2.AdaptiveThreshold(stretched, bin, 255, AdaptiveThresholdTypes.GaussianC, ThresholdTypes.Binary, blockSize, 10);
-
-                                // Normal Attempt
-                                TryDecodeFast(bin, _hardOpts, pad, stretch, tileRes, tileW, gray.Height);
-                                if (tileRes.CharResults.Count > 0) break;
-
-                                // Inverted Laser Etch Attempt
-                                using Mat inv = new Mat();
-                                Cv2.BitwiseNot(bin, inv);
-                                TryDecodeFast(inv, _hardOpts, pad, stretch, tileRes, tileW, gray.Height);
-                                if (tileRes.CharResults.Count > 0) break;
-                            }
-                        }
-                    }
-
-                    // 4. SHIFT COORDINATES TO GLOBAL ROI
-                    foreach (var found in tileRes.CharResults)
-                    {
-                        found.Box = new Rect(found.Box.X + currentX, found.Box.Y, found.Box.Width, found.Box.Height);
-                        if (found.Polygon != null)
-                        {
-                            for (int p = 0; p < 4; p++) found.Polygon[p].X += currentX;
-                        }
-                        if (found.ExactCorners != null)
-                        {
-                            for (int p = 0; p < found.ExactCorners.Length; p++) found.ExactCorners[p].X += currentX;
-                        }
-                        concurrentResults.Add(found);
-                    }
-                });
-
-                // 5. ASSEMBLE AND DEDUPLICATE
-                roi.CharResults.Clear();
-                foreach (var found in concurrentResults)
-                {
-                    // Ensure we don't add the same barcode twice if it was caught in an overlapping tile
-                    if (!roi.CharResults.Any(r => r.Text == found.Text && Math.Abs(r.Box.X - found.Box.X) < 40))
                         roi.CharResults.Add(found);
                 }
 
@@ -2468,42 +2311,6 @@ namespace CsplCam.Library.Services
         // =========================================================================
         // FULLY RESTORED: ANCHOR AND PREVIEW FUNCTIONS
         // =========================================================================
-
-        //public static Mat GenerateRoiControlPreview(Mat currentFullImage, RoiObject roi)
-        //{
-        //    CvRect safeBox = roi.Box.Intersect(new CvRect(0, 0, currentFullImage.Width, currentFullImage.Height));
-        //    if (safeBox.Width <= 0 || safeBox.Height <= 0) return null;
-
-        //    using Mat crop = new Mat(currentFullImage, safeBox);
-        //    Mat rotatedCrop = new Mat();
-
-        //    try
-        //    {
-        //        RotateImage(crop, out rotatedCrop, roi.RotationAngle);
-
-        //        if (roi.MorphOp == MorphOperation.None) return rotatedCrop.Clone();
-
-        //        using Mat gray = new Mat();
-        //        if (rotatedCrop.Channels() == 4) Cv2.CvtColor(rotatedCrop, gray, ColorConversionCodes.BGRA2GRAY);
-        //        else if (rotatedCrop.Channels() == 3) Cv2.CvtColor(rotatedCrop, gray, ColorConversionCodes.BGR2GRAY);
-        //        else rotatedCrop.CopyTo(gray);
-
-        //        Mat processedRoi = new Mat();
-        //        ProcessImageForMode(gray, processedRoi, roi.SegmentationMode);
-
-        //        if (roi.MorphKernelWidth > 0 && roi.MorphKernelHeight > 0 && roi.MorphIterations > 0)
-        //        {
-        //            MorphologyProcessor.Apply(processedRoi, roi.MorphOp, roi.MorphKernelWidth, roi.MorphKernelHeight, roi.MorphIterations);
-        //        }
-
-        //        return processedRoi;
-        //    }
-        //    finally
-        //    {
-        //        if (rotatedCrop != null && !rotatedCrop.IsDisposed) rotatedCrop.Dispose();
-        //    }
-        //}
-
         public static Mat GenerateRoiControlPreview(Mat currentFullImage, RoiObject roi)
         {
             CvRect safeBox = roi.Box.Intersect(new CvRect(0, 0, currentFullImage.Width, currentFullImage.Height));
@@ -2636,7 +2443,6 @@ namespace CsplCam.Library.Services
                 Cv2.MinMaxLoc(res, out double minVal, out double maxVal, out OpenCvSharp.Point minLoc, out OpenCvSharp.Point maxLoc);
 
                 //decrese the thersold to increase the accurcy
-                //double threshold = useEdge ? 0.4 : 0.65;  -- not in use
                 //double threshold = useEdge ? 0.35 : 0.50;
 
                 double threshold = useEdge ? AnchorConfidence.Min : AnchorConfidence.Max;
