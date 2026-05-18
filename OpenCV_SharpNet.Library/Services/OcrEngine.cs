@@ -1704,16 +1704,71 @@ namespace CsplCam.Library.Services
                 localSw.Stop();
                 roi.TimeTakenForDecoding = localSw.Elapsed;
 
-                int offsetX = safeBox.X - roi.Box.X, offsetY = safeBox.Y - roi.Box.Y;
-                if (offsetX != 0 || offsetY != 0)
+                //int offsetX = safeBox.X - roi.Box.X, offsetY = safeBox.Y - roi.Box.Y;
+                //if (offsetX != 0 || offsetY != 0)
+                //{
+                //    for (int i = 0; i < roi.CharResults.Count; i++)
+                //    {
+                //        var cr = roi.CharResults[i];
+                //        cr.Box = new Rect(cr.Box.X + offsetX, cr.Box.Y + offsetY, cr.Box.Width, cr.Box.Height);
+                //        roi.CharResults[i] = cr;
+                //    }
+                //}
+
+
+
+                // ====================================================================
+                // 2. COORDINATE MAPPING & FINAL IMAGE CLAMPING
+                // This shifts coordinates from the 'Crop' back to the 'User UI' and 
+                // ensures NO POINTS exist outside the physical image pixels.
+                // ====================================================================
+                int offsetX = safeBox.X - roi.Box.X;
+                int offsetY = safeBox.Y - roi.Box.Y;
+                int imgW = currentImage.Width;
+                int imgH = currentImage.Height;
+
+                for (int i = 0; i < roi.CharResults.Count; i++)
                 {
-                    for (int i = 0; i < roi.CharResults.Count; i++)
+                    var cr = roi.CharResults[i];
+
+                    // --- A. Remap & Clamp Polygon (The Green Box) ---
+                    if (cr.Polygon != null)
                     {
-                        var cr = roi.CharResults[i];
-                        cr.Box = new Rect(cr.Box.X + offsetX, cr.Box.Y + offsetY, cr.Box.Width, cr.Box.Height);
-                        roi.CharResults[i] = cr;
+                        for (int p = 0; p < 4; p++)
+                        {
+                            // Calculate Absolute pixel on full image, snap to [0, ImageEdge]
+                            int absX = Math.Clamp(roi.Box.X + cr.Polygon[p].X + offsetX, 0, imgW - 1);
+                            int absY = Math.Clamp(roi.Box.Y + cr.Polygon[p].Y + offsetY, 0, imgH - 1);
+
+                            // Remap back to ROI-relative so your UI Paint function works
+                            cr.Polygon[p].X = absX - roi.Box.X;
+                            cr.Polygon[p].Y = absY - roi.Box.Y;
+                        }
                     }
+
+                    // --- B. Remap & Clamp ExactCorners (For GS1 QC) ---
+                    if (cr.ExactCorners != null)
+                    {
+                        for (int p = 0; p < cr.ExactCorners.Length; p++)
+                        {
+                            float absX = Math.Clamp(roi.Box.X + cr.ExactCorners[p].X + offsetX, 0, imgW - 1);
+                            float absY = Math.Clamp(roi.Box.Y + cr.ExactCorners[p].Y + offsetY, 0, imgH - 1);
+                            cr.ExactCorners[p].X = absX - roi.Box.X;
+                            cr.ExactCorners[p].Y = absY - roi.Box.Y;
+                        }
+                    }
+
+                    // --- C. Remap & Clamp Bounding Box ---
+                    int finalAbsX = Math.Clamp(roi.Box.X + cr.Box.X + offsetX, 0, imgW - 1);
+                    int finalAbsY = Math.Clamp(roi.Box.Y + cr.Box.Y + offsetY, 0, imgH - 1);
+                    int finalW = Math.Min(cr.Box.Width, imgW - finalAbsX);
+                    int finalH = Math.Min(cr.Box.Height, imgH - finalAbsY);
+
+                    cr.Box = new Rect(finalAbsX - roi.Box.X, finalAbsY - roi.Box.Y, finalW, finalH);
+
+                    roi.CharResults[i] = cr;
                 }
+
             }
             finally
             {
