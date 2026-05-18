@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             TblMain = new TableLayoutPanel();
             TblBodyMain = new TableLayoutPanel();
             SplitConImageViewAndButton = new SplitContainer();
@@ -181,9 +181,9 @@
             TblPnlButtons.Location = new Point(0, 0);
             TblPnlButtons.Name = "TblPnlButtons";
             TblPnlButtons.RowCount = 4;
-            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 184F));
-            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 134F));
-            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 182F));
+            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 192F));
+            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 141F));
+            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 189F));
             TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             TblPnlButtons.Size = new Size(129, 569);
@@ -196,9 +196,9 @@
             grpConfigs.Dock = DockStyle.Fill;
             grpConfigs.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             grpConfigs.ForeColor = Color.FromArgb(80, 80, 80);
-            grpConfigs.Location = new Point(4, 324);
+            grpConfigs.Location = new Point(4, 339);
             grpConfigs.Name = "grpConfigs";
-            grpConfigs.Size = new Size(121, 176);
+            grpConfigs.Size = new Size(121, 183);
             grpConfigs.TabIndex = 3;
             grpConfigs.TabStop = false;
             grpConfigs.Text = "Config";
@@ -212,7 +212,7 @@
             flowPnlConfig.Dock = DockStyle.Fill;
             flowPnlConfig.Location = new Point(3, 23);
             flowPnlConfig.Name = "flowPnlConfig";
-            flowPnlConfig.Size = new Size(115, 150);
+            flowPnlConfig.Size = new Size(115, 157);
             flowPnlConfig.TabIndex = 0;
             // 
             // BtnSaveRoi
@@ -222,7 +222,7 @@
             BtnSaveRoi.FlatStyle = FlatStyle.Flat;
             BtnSaveRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnSaveRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnSaveRoi.Image = Properties.Resources.icons8_save_30__1_;
+            BtnSaveRoi.Image = (Image)resources.GetObject("BtnSaveRoi.Image");
             BtnSaveRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnSaveRoi.Location = new Point(3, 3);
             BtnSaveRoi.Name = "BtnSaveRoi";
@@ -242,7 +242,7 @@
             BtnLoadRoi.FlatStyle = FlatStyle.Flat;
             BtnLoadRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnLoadRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnLoadRoi.Image = Properties.Resources.icons8_upload_30;
+            BtnLoadRoi.Image = (Image)resources.GetObject("BtnLoadRoi.Image");
             BtnLoadRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnLoadRoi.Location = new Point(3, 53);
             BtnLoadRoi.Name = "BtnLoadRoi";
@@ -262,7 +262,7 @@
             BtnShowTamplate.FlatStyle = FlatStyle.Flat;
             BtnShowTamplate.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnShowTamplate.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnShowTamplate.Image = Properties.Resources.icons8_show_property_30;
+            BtnShowTamplate.Image = (Image)resources.GetObject("BtnShowTamplate.Image");
             BtnShowTamplate.ImageAlign = ContentAlignment.MiddleLeft;
             BtnShowTamplate.Location = new Point(3, 103);
             BtnShowTamplate.Name = "BtnShowTamplate";
@@ -282,9 +282,9 @@
             grpTrainAndDecode.Dock = DockStyle.Fill;
             grpTrainAndDecode.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             grpTrainAndDecode.ForeColor = Color.FromArgb(80, 80, 80);
-            grpTrainAndDecode.Location = new Point(4, 189);
+            grpTrainAndDecode.Location = new Point(4, 197);
             grpTrainAndDecode.Name = "grpTrainAndDecode";
-            grpTrainAndDecode.Size = new Size(121, 128);
+            grpTrainAndDecode.Size = new Size(121, 135);
             grpTrainAndDecode.TabIndex = 2;
             grpTrainAndDecode.TabStop = false;
             grpTrainAndDecode.Text = "Train && Decode";
@@ -297,7 +297,7 @@
             flowPnlTrainAndDecode.Dock = DockStyle.Fill;
             flowPnlTrainAndDecode.Location = new Point(3, 23);
             flowPnlTrainAndDecode.Name = "flowPnlTrainAndDecode";
-            flowPnlTrainAndDecode.Size = new Size(115, 102);
+            flowPnlTrainAndDecode.Size = new Size(115, 109);
             flowPnlTrainAndDecode.TabIndex = 0;
             // 
             // BtnTrainSelROI
@@ -306,7 +306,7 @@
             BtnTrainSelROI.FlatStyle = FlatStyle.Flat;
             BtnTrainSelROI.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnTrainSelROI.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnTrainSelROI.Image = Properties.Resources.icons8_machine_learning_30;
+            BtnTrainSelROI.Image = (Image)resources.GetObject("BtnTrainSelROI.Image");
             BtnTrainSelROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnTrainSelROI.Location = new Point(3, 3);
             BtnTrainSelROI.Name = "BtnTrainSelROI";
@@ -325,7 +325,7 @@
             BtnDecodeAllROI.FlatStyle = FlatStyle.Flat;
             BtnDecodeAllROI.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnDecodeAllROI.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnDecodeAllROI.Image = Properties.Resources.icons8_ocr_30;
+            BtnDecodeAllROI.Image = (Image)resources.GetObject("BtnDecodeAllROI.Image");
             BtnDecodeAllROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnDecodeAllROI.Location = new Point(3, 53);
             BtnDecodeAllROI.Name = "BtnDecodeAllROI";
@@ -347,7 +347,7 @@
             GrpRoiTypes.ForeColor = Color.FromArgb(80, 80, 80);
             GrpRoiTypes.Location = new Point(4, 4);
             GrpRoiTypes.Name = "GrpRoiTypes";
-            GrpRoiTypes.Size = new Size(121, 178);
+            GrpRoiTypes.Size = new Size(121, 186);
             GrpRoiTypes.TabIndex = 1;
             GrpRoiTypes.TabStop = false;
             GrpRoiTypes.Text = "ROI Types";
@@ -361,7 +361,7 @@
             flowLayOutPnlRoiTypes.Dock = DockStyle.Fill;
             flowLayOutPnlRoiTypes.Location = new Point(3, 23);
             flowLayOutPnlRoiTypes.Name = "flowLayOutPnlRoiTypes";
-            flowLayOutPnlRoiTypes.Size = new Size(115, 152);
+            flowLayOutPnlRoiTypes.Size = new Size(115, 160);
             flowLayOutPnlRoiTypes.TabIndex = 0;
             // 
             // BtnAddRoi
@@ -371,7 +371,7 @@
             BtnAddRoi.FlatStyle = FlatStyle.Flat;
             BtnAddRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnAddRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnAddRoi.Image = Properties.Resources.icons8_text_30;
+            BtnAddRoi.Image = (Image)resources.GetObject("BtnAddRoi.Image");
             BtnAddRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnAddRoi.Location = new Point(3, 3);
             BtnAddRoi.Name = "BtnAddRoi";
@@ -391,7 +391,7 @@
             BtnAddBarCodeRoi.FlatStyle = FlatStyle.Flat;
             BtnAddBarCodeRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnAddBarCodeRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnAddBarCodeRoi.Image = Properties.Resources.icons8_qr_code_30;
+            BtnAddBarCodeRoi.Image = (Image)resources.GetObject("BtnAddBarCodeRoi.Image");
             BtnAddBarCodeRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnAddBarCodeRoi.Location = new Point(3, 53);
             BtnAddBarCodeRoi.Name = "BtnAddBarCodeRoi";
@@ -411,7 +411,7 @@
             BtnAddTempateROI.FlatStyle = FlatStyle.Flat;
             BtnAddTempateROI.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnAddTempateROI.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnAddTempateROI.Image = Properties.Resources.icons8_template_30;
+            BtnAddTempateROI.Image = (Image)resources.GetObject("BtnAddTempateROI.Image");
             BtnAddTempateROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnAddTempateROI.Location = new Point(3, 103);
             BtnAddTempateROI.Name = "BtnAddTempateROI";
@@ -625,7 +625,7 @@
             CmbSegments.FormattingEnabled = true;
             CmbSegments.Location = new Point(11, 29);
             CmbSegments.Name = "CmbSegments";
-            CmbSegments.Size = new Size(349, 28);
+            CmbSegments.Size = new Size(122, 28);
             CmbSegments.TabIndex = 0;
             // 
             // TblPnlImageList
@@ -652,7 +652,7 @@
             BtnLoadImage.Dock = DockStyle.Fill;
             BtnLoadImage.FlatStyle = FlatStyle.Flat;
             BtnLoadImage.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            BtnLoadImage.Image = Properties.Resources.icons8_add_image_60;
+            BtnLoadImage.Image = (Image)resources.GetObject("BtnLoadImage.Image");
             BtnLoadImage.Location = new Point(4, 4);
             BtnLoadImage.Name = "BtnLoadImage";
             BtnLoadImage.Size = new Size(120, 103);
@@ -701,7 +701,7 @@
             BtnNextImage.Dock = DockStyle.Fill;
             BtnNextImage.FlatStyle = FlatStyle.Flat;
             BtnNextImage.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            BtnNextImage.Image = Properties.Resources.icons8_next_30;
+            BtnNextImage.Image = (Image)resources.GetObject("BtnNextImage.Image");
             BtnNextImage.ImageAlign = ContentAlignment.MiddleLeft;
             BtnNextImage.Location = new Point(3, 9);
             BtnNextImage.Name = "BtnNextImage";
@@ -720,7 +720,7 @@
             BtnPreviousImage.Dock = DockStyle.Fill;
             BtnPreviousImage.FlatStyle = FlatStyle.Flat;
             BtnPreviousImage.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            BtnPreviousImage.Image = Properties.Resources.icons8_back_to_30;
+            BtnPreviousImage.Image = (Image)resources.GetObject("BtnPreviousImage.Image");
             BtnPreviousImage.ImageAlign = ContentAlignment.MiddleLeft;
             BtnPreviousImage.Location = new Point(3, 54);
             BtnPreviousImage.Name = "BtnPreviousImage";
@@ -750,7 +750,7 @@
             // 
             toolStripMenu.Font = new Font("Palatino Linotype", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             toolStripMenu.Name = "toolStripMenu";
-            toolStripMenu.Size = new Size(1035, 24);
+            toolStripMenu.Size = new Size(1249, 24);
             toolStripMenu.Spring = true;
             toolStripMenu.Text = "Selection Info";
             // 
@@ -760,6 +760,7 @@
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             toolStripStatusLabel1.Size = new Size(80, 24);
             toolStripStatusLabel1.Text = "Document";
+            toolStripStatusLabel1.Visible = false;
             toolStripStatusLabel1.Click += ToolStripStatusLabel1_Click;
             // 
             // tsslUserManual
@@ -769,6 +770,7 @@
             tsslUserManual.Name = "tsslUserManual";
             tsslUserManual.Size = new Size(95, 24);
             tsslUserManual.Text = "User Manual";
+            tsslUserManual.Visible = false;
             tsslUserManual.Click += TsslUserManual_Click;
             // 
             // toolStripVersion

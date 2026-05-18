@@ -30,6 +30,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ROIControl));
             TblPNlMain = new TableLayoutPanel();
             GrpBoxMorph = new GroupBox();
             tableLayoutPanel1 = new TableLayoutPanel();
@@ -353,6 +354,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             chkIsUseReferance.Size = new Size(149, 34);
             chkIsUseReferance.TabIndex = 10;
             chkIsUseReferance.Text = "Use Ref. Roi";
+            chkIsUseReferance.CheckedChanged += ChkIsUseReferance_CheckedChanged;
             // 
             // TblPnlBottom
             // 
@@ -377,6 +379,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             BtnDecodeROI.Dock = DockStyle.Fill;
             BtnDecodeROI.Font = new Font("Calibri", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnDecodeROI.ForeColor = Color.Transparent;
+            BtnDecodeROI.Image = (Image)resources.GetObject("BtnDecodeROI.Image");
             BtnDecodeROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnDecodeROI.Location = new Point(139, 3);
             BtnDecodeROI.Name = "BtnDecodeROI";
@@ -395,6 +398,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             btnCharResult.Dock = DockStyle.Fill;
             btnCharResult.Font = new Font("Calibri", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnCharResult.ForeColor = Color.Transparent;
+            btnCharResult.Image = (Image)resources.GetObject("btnCharResult.Image");
             btnCharResult.ImageAlign = ContentAlignment.MiddleLeft;
             btnCharResult.Location = new Point(302, 3);
             btnCharResult.Name = "btnCharResult";

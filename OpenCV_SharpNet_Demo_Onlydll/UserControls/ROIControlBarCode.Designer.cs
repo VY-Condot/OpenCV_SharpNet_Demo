@@ -450,7 +450,6 @@ namespace OpenCV_SharpNet_Demo.UserControls
         private ComboBox cmbRotationAngle;
         private CheckBox chkAnchor;
         private CheckBox chkIsUseReferance;
-        private OpenCV_SharpNet_Demo.UserControls.PanZoomViewer pzPreview;
         private ComboBox cmbBarcodeFormat;
         private Label lblBarcodeFormat;
         private GroupBox grpBoxAdvancedMode;
@@ -458,5 +457,6 @@ namespace OpenCV_SharpNet_Demo.UserControls
         //private CheckBox chkIsBarcodeFormatAuto;
         private CheckBox chkBarcodeAdvancedMode;
         private CheckBox chkBarcodeFormatAuto;
+        private PanZoomViewer pzPreview;
     }
 }

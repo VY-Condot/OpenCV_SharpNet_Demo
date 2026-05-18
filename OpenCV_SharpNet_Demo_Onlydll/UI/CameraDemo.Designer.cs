@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CameraDemo));
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CameraDemo));
             TblMain = new TableLayoutPanel();
             TblBodyMain = new TableLayoutPanel();
             SplitConImageViewAndButton = new SplitContainer();
@@ -158,7 +158,7 @@
             TblMain.Location = new Point(0, 28);
             TblMain.Name = "TblMain";
             TblMain.RowCount = 3;
-            TblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 162F));
+            TblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 153F));
             TblMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             TblMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 30F));
             TblMain.Size = new Size(1321, 772);
@@ -172,11 +172,11 @@
             TblBodyMain.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 18F));
             TblBodyMain.Controls.Add(SplitConImageViewAndButton, 0, 0);
             TblBodyMain.Dock = DockStyle.Fill;
-            TblBodyMain.Location = new Point(3, 165);
+            TblBodyMain.Location = new Point(3, 156);
             TblBodyMain.Name = "TblBodyMain";
             TblBodyMain.RowCount = 1;
             TblBodyMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblBodyMain.Size = new Size(1315, 574);
+            TblBodyMain.Size = new Size(1315, 583);
             TblBodyMain.TabIndex = 1;
             // 
             // SplitConImageViewAndButton
@@ -193,7 +193,7 @@
             // SplitConImageViewAndButton.Panel2
             // 
             SplitConImageViewAndButton.Panel2.Controls.Add(splitConBodyMain);
-            SplitConImageViewAndButton.Size = new Size(1307, 566);
+            SplitConImageViewAndButton.Size = new Size(1307, 575);
             SplitConImageViewAndButton.SplitterDistance = 137;
             SplitConImageViewAndButton.TabIndex = 0;
             // 
@@ -209,11 +209,11 @@
             TblPnlButtons.Location = new Point(0, 0);
             TblPnlButtons.Name = "TblPnlButtons";
             TblPnlButtons.RowCount = 4;
-            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 184F));
-            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 135F));
-            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 184F));
+            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 193F));
+            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 141F));
+            TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Absolute, 190F));
             TblPnlButtons.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlButtons.Size = new Size(135, 564);
+            TblPnlButtons.Size = new Size(135, 573);
             TblPnlButtons.TabIndex = 0;
             // 
             // grpConfigs
@@ -221,9 +221,9 @@
             grpConfigs.Controls.Add(flowPnlConfig);
             grpConfigs.Dock = DockStyle.Fill;
             grpConfigs.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            grpConfigs.Location = new Point(3, 322);
+            grpConfigs.Location = new Point(3, 337);
             grpConfigs.Name = "grpConfigs";
-            grpConfigs.Size = new Size(129, 178);
+            grpConfigs.Size = new Size(129, 184);
             grpConfigs.TabIndex = 2;
             grpConfigs.TabStop = false;
             grpConfigs.Text = "Config";
@@ -237,7 +237,7 @@
             flowPnlConfig.Dock = DockStyle.Fill;
             flowPnlConfig.Location = new Point(3, 23);
             flowPnlConfig.Name = "flowPnlConfig";
-            flowPnlConfig.Size = new Size(123, 152);
+            flowPnlConfig.Size = new Size(123, 158);
             flowPnlConfig.TabIndex = 0;
             // 
             // BtnSaveRoi
@@ -247,7 +247,7 @@
             BtnSaveRoi.FlatStyle = FlatStyle.Flat;
             BtnSaveRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnSaveRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnSaveRoi.Image = Properties.Resources.icons8_save_30__1_;
+            BtnSaveRoi.Image = (Image)resources.GetObject("BtnSaveRoi.Image");
             BtnSaveRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnSaveRoi.Location = new Point(3, 3);
             BtnSaveRoi.Name = "BtnSaveRoi";
@@ -267,7 +267,7 @@
             BtnLoadRoi.FlatStyle = FlatStyle.Flat;
             BtnLoadRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnLoadRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnLoadRoi.Image = Properties.Resources.icons8_upload_30;
+            BtnLoadRoi.Image = (Image)resources.GetObject("BtnLoadRoi.Image");
             BtnLoadRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnLoadRoi.Location = new Point(3, 53);
             BtnLoadRoi.Name = "BtnLoadRoi";
@@ -287,7 +287,7 @@
             BtnShowTamplate.FlatStyle = FlatStyle.Flat;
             BtnShowTamplate.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnShowTamplate.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnShowTamplate.Image = Properties.Resources.icons8_show_property_30;
+            BtnShowTamplate.Image = (Image)resources.GetObject("BtnShowTamplate.Image");
             BtnShowTamplate.ImageAlign = ContentAlignment.MiddleLeft;
             BtnShowTamplate.Location = new Point(3, 103);
             BtnShowTamplate.Name = "BtnShowTamplate";
@@ -305,9 +305,9 @@
             grpTrainAndDecode.Controls.Add(flowPnlTrainAndDecode);
             grpTrainAndDecode.Dock = DockStyle.Fill;
             grpTrainAndDecode.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            grpTrainAndDecode.Location = new Point(3, 187);
+            grpTrainAndDecode.Location = new Point(3, 196);
             grpTrainAndDecode.Name = "grpTrainAndDecode";
-            grpTrainAndDecode.Size = new Size(129, 129);
+            grpTrainAndDecode.Size = new Size(129, 135);
             grpTrainAndDecode.TabIndex = 1;
             grpTrainAndDecode.TabStop = false;
             grpTrainAndDecode.Text = "Train && Decode";
@@ -320,7 +320,7 @@
             flowPnlTrainAndDecode.Dock = DockStyle.Fill;
             flowPnlTrainAndDecode.Location = new Point(3, 23);
             flowPnlTrainAndDecode.Name = "flowPnlTrainAndDecode";
-            flowPnlTrainAndDecode.Size = new Size(123, 103);
+            flowPnlTrainAndDecode.Size = new Size(123, 109);
             flowPnlTrainAndDecode.TabIndex = 0;
             // 
             // BtnTrainSelROI
@@ -328,7 +328,7 @@
             BtnTrainSelROI.BackColor = Color.LightCyan;
             BtnTrainSelROI.FlatStyle = FlatStyle.Flat;
             BtnTrainSelROI.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            BtnTrainSelROI.Image = Properties.Resources.icons8_machine_learning_30;
+            BtnTrainSelROI.Image = (Image)resources.GetObject("BtnTrainSelROI.Image");
             BtnTrainSelROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnTrainSelROI.Location = new Point(3, 3);
             BtnTrainSelROI.Name = "BtnTrainSelROI";
@@ -346,7 +346,7 @@
             BtnDecodeAllROI.BackColor = Color.LightCyan;
             BtnDecodeAllROI.FlatStyle = FlatStyle.Flat;
             BtnDecodeAllROI.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            BtnDecodeAllROI.Image = Properties.Resources.icons8_ocr_30;
+            BtnDecodeAllROI.Image = (Image)resources.GetObject("BtnDecodeAllROI.Image");
             BtnDecodeAllROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnDecodeAllROI.Location = new Point(3, 53);
             BtnDecodeAllROI.Name = "BtnDecodeAllROI";
@@ -366,7 +366,7 @@
             GrpRoiTypes.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             GrpRoiTypes.Location = new Point(3, 3);
             GrpRoiTypes.Name = "GrpRoiTypes";
-            GrpRoiTypes.Size = new Size(129, 178);
+            GrpRoiTypes.Size = new Size(129, 187);
             GrpRoiTypes.TabIndex = 0;
             GrpRoiTypes.TabStop = false;
             GrpRoiTypes.Text = "ROI Types";
@@ -380,7 +380,7 @@
             flowLayOutPnlRoiTypes.Dock = DockStyle.Fill;
             flowLayOutPnlRoiTypes.Location = new Point(3, 23);
             flowLayOutPnlRoiTypes.Name = "flowLayOutPnlRoiTypes";
-            flowLayOutPnlRoiTypes.Size = new Size(123, 152);
+            flowLayOutPnlRoiTypes.Size = new Size(123, 161);
             flowLayOutPnlRoiTypes.TabIndex = 0;
             // 
             // BtnAddRoi
@@ -390,7 +390,7 @@
             BtnAddRoi.FlatStyle = FlatStyle.Flat;
             BtnAddRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnAddRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnAddRoi.Image = Properties.Resources.icons8_text_30;
+            BtnAddRoi.Image = (Image)resources.GetObject("BtnAddRoi.Image");
             BtnAddRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnAddRoi.Location = new Point(3, 3);
             BtnAddRoi.Name = "BtnAddRoi";
@@ -410,7 +410,7 @@
             BtnAddBarCodeRoi.FlatStyle = FlatStyle.Flat;
             BtnAddBarCodeRoi.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnAddBarCodeRoi.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnAddBarCodeRoi.Image = Properties.Resources.icons8_qr_code_30;
+            BtnAddBarCodeRoi.Image = (Image)resources.GetObject("BtnAddBarCodeRoi.Image");
             BtnAddBarCodeRoi.ImageAlign = ContentAlignment.MiddleLeft;
             BtnAddBarCodeRoi.Location = new Point(3, 53);
             BtnAddBarCodeRoi.Name = "BtnAddBarCodeRoi";
@@ -430,7 +430,7 @@
             BtnAddTempateROI.FlatStyle = FlatStyle.Flat;
             BtnAddTempateROI.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             BtnAddTempateROI.ForeColor = Color.FromArgb(32, 32, 32);
-            BtnAddTempateROI.Image = Properties.Resources.icons8_template_30;
+            BtnAddTempateROI.Image = (Image)resources.GetObject("BtnAddTempateROI.Image");
             BtnAddTempateROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnAddTempateROI.Location = new Point(3, 103);
             BtnAddTempateROI.Name = "BtnAddTempateROI";
@@ -457,7 +457,7 @@
             // splitConBodyMain.Panel2
             // 
             splitConBodyMain.Panel2.Controls.Add(TblPnlSettingAndRoiData);
-            splitConBodyMain.Size = new Size(1166, 566);
+            splitConBodyMain.Size = new Size(1166, 575);
             splitConBodyMain.SplitterDistance = 799;
             splitConBodyMain.TabIndex = 1;
             // 
@@ -476,8 +476,8 @@
             // SplitContainerImageView.Panel2
             // 
             SplitContainerImageView.Panel2.Controls.Add(dgvDecodeTextRec);
-            SplitContainerImageView.Size = new Size(799, 566);
-            SplitContainerImageView.SplitterDistance = 442;
+            SplitContainerImageView.Size = new Size(799, 575);
+            SplitContainerImageView.SplitterDistance = 449;
             SplitContainerImageView.TabIndex = 0;
             // 
             // ImageCanvas
@@ -486,7 +486,7 @@
             ImageCanvas.Dock = DockStyle.Fill;
             ImageCanvas.Location = new Point(0, 0);
             ImageCanvas.Name = "ImageCanvas";
-            ImageCanvas.Size = new Size(797, 440);
+            ImageCanvas.Size = new Size(797, 447);
             ImageCanvas.TabIndex = 0;
             ImageCanvas.TabStop = false;
             ImageCanvas.Paint += ImageCanvas_Paint;
@@ -526,7 +526,7 @@
             dgvDecodeTextRec.Name = "dgvDecodeTextRec";
             dgvDecodeTextRec.RowHeadersVisible = false;
             dgvDecodeTextRec.RowHeadersWidth = 51;
-            dgvDecodeTextRec.Size = new Size(797, 118);
+            dgvDecodeTextRec.Size = new Size(797, 120);
             dgvDecodeTextRec.TabIndex = 1;
             // 
             // DisRoiType
@@ -597,7 +597,7 @@
             TblPnlSettingAndRoiData.RowCount = 2;
             TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Absolute, 83F));
             TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlSettingAndRoiData.Size = new Size(361, 564);
+            TblPnlSettingAndRoiData.Size = new Size(361, 573);
             TblPnlSettingAndRoiData.TabIndex = 1;
             // 
             // FlowPnlRoiData
@@ -606,7 +606,7 @@
             FlowPnlRoiData.Dock = DockStyle.Fill;
             FlowPnlRoiData.Location = new Point(3, 86);
             FlowPnlRoiData.Name = "FlowPnlRoiData";
-            FlowPnlRoiData.Size = new Size(355, 475);
+            FlowPnlRoiData.Size = new Size(355, 484);
             FlowPnlRoiData.TabIndex = 0;
             // 
             // TblBlobSettings
@@ -659,7 +659,7 @@
             TblPnlImageList.Name = "TblPnlImageList";
             TblPnlImageList.RowCount = 1;
             TblPnlImageList.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlImageList.Size = new Size(1315, 156);
+            TblPnlImageList.Size = new Size(1315, 147);
             TblPnlImageList.TabIndex = 2;
             // 
             // TblDeviceConfig
@@ -676,7 +676,7 @@
             TblDeviceConfig.Name = "TblDeviceConfig";
             TblDeviceConfig.RowCount = 1;
             TblDeviceConfig.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblDeviceConfig.Size = new Size(993, 148);
+            TblDeviceConfig.Size = new Size(993, 139);
             TblDeviceConfig.TabIndex = 1;
             // 
             // GrpSetParam
@@ -686,7 +686,7 @@
             GrpSetParam.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             GrpSetParam.Location = new Point(374, 3);
             GrpSetParam.Name = "GrpSetParam";
-            GrpSetParam.Size = new Size(563, 142);
+            GrpSetParam.Size = new Size(563, 133);
             GrpSetParam.TabIndex = 2;
             GrpSetParam.TabStop = false;
             GrpSetParam.Text = "Parameter";
@@ -716,7 +716,7 @@
             TblParameter.RowStyles.Add(new RowStyle(SizeType.Percent, 41.48936F));
             TblParameter.RowStyles.Add(new RowStyle(SizeType.Percent, 14.8936167F));
             TblParameter.RowStyles.Add(new RowStyle(SizeType.Percent, 43.61702F));
-            TblParameter.Size = new Size(557, 116);
+            TblParameter.Size = new Size(557, 107);
             TblParameter.TabIndex = 0;
             // 
             // LblExposerTime
@@ -727,7 +727,7 @@
             LblExposerTime.Location = new Point(3, 3);
             LblExposerTime.Margin = new Padding(3);
             LblExposerTime.Name = "LblExposerTime";
-            LblExposerTime.Size = new Size(108, 42);
+            LblExposerTime.Size = new Size(108, 38);
             LblExposerTime.TabIndex = 0;
             LblExposerTime.Text = "Exposure Time";
             LblExposerTime.TextAlign = ContentAlignment.MiddleLeft;
@@ -741,7 +741,7 @@
             tbExposure.Location = new Point(117, 3);
             tbExposure.Multiline = true;
             tbExposure.Name = "tbExposure";
-            tbExposure.Size = new Size(54, 42);
+            tbExposure.Size = new Size(54, 38);
             tbExposure.TabIndex = 1;
             // 
             // LblGain
@@ -752,7 +752,7 @@
             LblGain.Location = new Point(177, 3);
             LblGain.Margin = new Padding(3);
             LblGain.Name = "LblGain";
-            LblGain.Size = new Size(37, 42);
+            LblGain.Size = new Size(37, 38);
             LblGain.TabIndex = 2;
             LblGain.Text = "Gain";
             LblGain.TextAlign = ContentAlignment.MiddleLeft;
@@ -766,7 +766,7 @@
             tbGain.Location = new Point(220, 3);
             tbGain.Multiline = true;
             tbGain.Name = "tbGain";
-            tbGain.Size = new Size(54, 42);
+            tbGain.Size = new Size(54, 38);
             tbGain.TabIndex = 4;
             // 
             // LblFrameRate
@@ -777,7 +777,7 @@
             LblFrameRate.Location = new Point(280, 3);
             LblFrameRate.Margin = new Padding(3);
             LblFrameRate.Name = "LblFrameRate";
-            LblFrameRate.Size = new Size(85, 42);
+            LblFrameRate.Size = new Size(85, 38);
             LblFrameRate.TabIndex = 3;
             LblFrameRate.Text = "Frame Rate";
             LblFrameRate.TextAlign = ContentAlignment.MiddleLeft;
@@ -791,7 +791,7 @@
             tbFrameRate.Location = new Point(371, 3);
             tbFrameRate.Multiline = true;
             tbFrameRate.Name = "tbFrameRate";
-            tbFrameRate.Size = new Size(54, 42);
+            tbFrameRate.Size = new Size(54, 38);
             tbFrameRate.TabIndex = 5;
             // 
             // bnGetParam
@@ -802,9 +802,9 @@
             bnGetParam.FlatStyle = FlatStyle.Flat;
             bnGetParam.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnGetParam.ForeColor = Color.FromArgb(32, 32, 32);
-            bnGetParam.Location = new Point(117, 68);
+            bnGetParam.Location = new Point(117, 62);
             bnGetParam.Name = "bnGetParam";
-            bnGetParam.Size = new Size(157, 45);
+            bnGetParam.Size = new Size(157, 42);
             bnGetParam.TabIndex = 3;
             bnGetParam.Text = "Get Parameter";
             bnGetParam.UseCompatibleTextRendering = true;
@@ -819,9 +819,9 @@
             bnSetParam.FlatStyle = FlatStyle.Flat;
             bnSetParam.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnSetParam.ForeColor = Color.FromArgb(32, 32, 32);
-            bnSetParam.Location = new Point(280, 68);
+            bnSetParam.Location = new Point(280, 62);
             bnSetParam.Name = "bnSetParam";
-            bnSetParam.Size = new Size(145, 45);
+            bnSetParam.Size = new Size(145, 42);
             bnSetParam.TabIndex = 7;
             bnSetParam.Text = "Set Parameter";
             bnSetParam.UseCompatibleTextRendering = true;
@@ -835,7 +835,7 @@
             GrpImageAq.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             GrpImageAq.Location = new Point(3, 3);
             GrpImageAq.Name = "GrpImageAq";
-            GrpImageAq.Size = new Size(365, 142);
+            GrpImageAq.Size = new Size(365, 133);
             GrpImageAq.TabIndex = 0;
             GrpImageAq.TabStop = false;
             GrpImageAq.Text = "Image Acquisition";
@@ -859,7 +859,7 @@
             TblImageAq.RowStyles.Add(new RowStyle(SizeType.Percent, 30.8510647F));
             TblImageAq.RowStyles.Add(new RowStyle(SizeType.Percent, 39.361702F));
             TblImageAq.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            TblImageAq.Size = new Size(359, 116);
+            TblImageAq.Size = new Size(359, 107);
             TblImageAq.TabIndex = 0;
             // 
             // bnTriggerMode
@@ -869,7 +869,7 @@
             bnTriggerMode.Font = new Font("Segoe UI", 9F);
             bnTriggerMode.Location = new Point(182, 3);
             bnTriggerMode.Name = "bnTriggerMode";
-            bnTriggerMode.Size = new Size(174, 28);
+            bnTriggerMode.Size = new Size(174, 26);
             bnTriggerMode.TabIndex = 1;
             bnTriggerMode.Text = "Trigger Mode";
             bnTriggerMode.UseVisualStyleBackColor = true;
@@ -883,7 +883,7 @@
             bnContinuesMode.Font = new Font("Segoe UI", 9F);
             bnContinuesMode.Location = new Point(3, 3);
             bnContinuesMode.Name = "bnContinuesMode";
-            bnContinuesMode.Size = new Size(173, 28);
+            bnContinuesMode.Size = new Size(173, 26);
             bnContinuesMode.TabIndex = 0;
             bnContinuesMode.TabStop = true;
             bnContinuesMode.Text = "Continuous";
@@ -897,12 +897,12 @@
             bnStopGrab.FlatStyle = FlatStyle.Flat;
             bnStopGrab.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnStopGrab.ForeColor = Color.FromArgb(32, 32, 32);
-            bnStopGrab.Image = Properties.Resources.icons8_shutdown_30;
+            bnStopGrab.Image = (Image)resources.GetObject("bnStopGrab.Image");
             bnStopGrab.ImageAlign = ContentAlignment.MiddleLeft;
-            bnStopGrab.Location = new Point(182, 72);
+            bnStopGrab.Location = new Point(182, 67);
             bnStopGrab.Name = "bnStopGrab";
             bnStopGrab.Padding = new Padding(8, 0, 0, 0);
-            bnStopGrab.Size = new Size(98, 41);
+            bnStopGrab.Size = new Size(98, 37);
             bnStopGrab.TabIndex = 4;
             bnStopGrab.Text = "Stop";
             bnStopGrab.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -917,12 +917,12 @@
             bnStartGrab.FlatStyle = FlatStyle.Flat;
             bnStartGrab.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnStartGrab.ForeColor = Color.FromArgb(32, 32, 32);
-            bnStartGrab.Image = Properties.Resources.icons8_turn_on_30;
+            bnStartGrab.Image = (Image)resources.GetObject("bnStartGrab.Image");
             bnStartGrab.ImageAlign = ContentAlignment.MiddleLeft;
-            bnStartGrab.Location = new Point(78, 72);
+            bnStartGrab.Location = new Point(78, 67);
             bnStartGrab.Name = "bnStartGrab";
             bnStartGrab.Padding = new Padding(8, 0, 0, 0);
-            bnStartGrab.Size = new Size(98, 41);
+            bnStartGrab.Size = new Size(98, 37);
             bnStartGrab.TabIndex = 3;
             bnStartGrab.Text = "Start";
             bnStartGrab.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -934,7 +934,7 @@
             // 
             cbSoftTrigger.AutoSize = true;
             cbSoftTrigger.Font = new Font("Segoe UI", 9F);
-            cbSoftTrigger.Location = new Point(3, 37);
+            cbSoftTrigger.Location = new Point(3, 35);
             cbSoftTrigger.Name = "cbSoftTrigger";
             cbSoftTrigger.Size = new Size(161, 26);
             cbSoftTrigger.TabIndex = 5;
@@ -950,9 +950,9 @@
             bnTriggerExec.FlatStyle = FlatStyle.Flat;
             bnTriggerExec.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnTriggerExec.ForeColor = Color.FromArgb(32, 32, 32);
-            bnTriggerExec.Location = new Point(182, 37);
+            bnTriggerExec.Location = new Point(182, 35);
             bnTriggerExec.Name = "bnTriggerExec";
-            bnTriggerExec.Size = new Size(174, 29);
+            bnTriggerExec.Size = new Size(174, 26);
             bnTriggerExec.TabIndex = 6;
             bnTriggerExec.Text = "Trigger Once";
             bnTriggerExec.UseCompatibleTextRendering = true;
@@ -966,7 +966,7 @@
             grpDeviceConnection.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             grpDeviceConnection.Location = new Point(4, 4);
             grpDeviceConnection.Name = "grpDeviceConnection";
-            grpDeviceConnection.Size = new Size(307, 148);
+            grpDeviceConnection.Size = new Size(307, 139);
             grpDeviceConnection.TabIndex = 2;
             grpDeviceConnection.TabStop = false;
             grpDeviceConnection.Text = "Device Connection";
@@ -985,7 +985,7 @@
             TblSearchDevice.RowStyles.Add(new RowStyle(SizeType.Absolute, 53F));
             TblSearchDevice.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));
             TblSearchDevice.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblSearchDevice.Size = new Size(301, 122);
+            TblSearchDevice.Size = new Size(301, 113);
             TblSearchDevice.TabIndex = 0;
             // 
             // cbDeviceList
@@ -1023,7 +1023,7 @@
             bnEnum.FlatStyle = FlatStyle.Flat;
             bnEnum.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnEnum.ForeColor = Color.FromArgb(32, 32, 32);
-            bnEnum.Image = Properties.Resources.icons8_bullet_camera_30;
+            bnEnum.Image = (Image)resources.GetObject("bnEnum.Image");
             bnEnum.ImageAlign = ContentAlignment.MiddleLeft;
             bnEnum.Location = new Point(3, 3);
             bnEnum.Name = "bnEnum";
@@ -1042,7 +1042,7 @@
             bnOpen.FlatStyle = FlatStyle.Flat;
             bnOpen.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnOpen.ForeColor = Color.FromArgb(32, 32, 32);
-            bnOpen.Image = Properties.Resources.icons8_connect_30;
+            bnOpen.Image = (Image)resources.GetObject("bnOpen.Image");
             bnOpen.ImageAlign = ContentAlignment.MiddleLeft;
             bnOpen.Location = new Point(102, 3);
             bnOpen.Name = "bnOpen";
@@ -1061,7 +1061,7 @@
             bnClose.FlatStyle = FlatStyle.Flat;
             bnClose.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             bnClose.ForeColor = Color.FromArgb(32, 32, 32);
-            bnClose.Image = Properties.Resources.icons8_disconnected_30;
+            bnClose.Image = (Image)resources.GetObject("bnClose.Image");
             bnClose.ImageAlign = ContentAlignment.MiddleLeft;
             bnClose.Location = new Point(201, 3);
             bnClose.Name = "bnClose";
@@ -1090,7 +1090,7 @@
             // 
             toolStripMenu.Font = new Font("Palatino Linotype", 10.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             toolStripMenu.Name = "toolStripMenu";
-            toolStripMenu.Size = new Size(1074, 24);
+            toolStripMenu.Size = new Size(1249, 24);
             toolStripMenu.Spring = true;
             toolStripMenu.Text = "Selection Info";
             // 
@@ -1100,6 +1100,7 @@
             toolStripStatusLabel1.Name = "toolStripStatusLabel1";
             toolStripStatusLabel1.Size = new Size(80, 24);
             toolStripStatusLabel1.Text = "Document";
+            toolStripStatusLabel1.Visible = false;
             toolStripStatusLabel1.Click += ToolStripStatusLabel1_Click;
             // 
             // tsslUserManual
@@ -1109,6 +1110,7 @@
             tsslUserManual.Name = "tsslUserManual";
             tsslUserManual.Size = new Size(95, 24);
             tsslUserManual.Text = "User Manual";
+            tsslUserManual.Visible = false;
             tsslUserManual.Click += TsslUserManual_Click;
             // 
             // toolStripVersion

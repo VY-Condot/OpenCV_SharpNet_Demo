@@ -10,7 +10,7 @@
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <Version>1.0.0</Version>
     <PackageId>$(AssemblyName)</PackageId>
-    <AssemblyName>OpenCV_SharpNet_Demo</AssemblyName>
+    <AssemblyName>CsplCamOCR</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,7 +37,7 @@
 
   <ItemGroup>
     <Reference Include="CsplCam.Library">
-      <HintPath>..\..\OpenCV_SharpNet\OpenCV_SharpNet.Library\bin\Release\net8.0\Confused\CsplCam.Library.dll</HintPath>
+      <HintPath>..\..\OpenCV_SharpNet\OpenCV_SharpNet.Library\bin\Release\net8.0\CsplCam.Library.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.WindowsRuntime">
       <HintPath>..\System.Runtime.WindowsRuntime.dll</HintPath>
@@ -64,21 +64,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="AI.DataSet\detect.caffemodel">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="AI.DataSet\detect.prototxt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="AI.DataSet\ESPCN_x2.pb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="AI.DataSet\sr.caffemodel">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="AI.DataSet\sr.prototxt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Documents\SystemDocumentation.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -88,7 +73,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not exist &quot;$(TargetDir)CSPL_OCRLibs&quot; mkdir &quot;$(TargetDir)CSPL_OCRLibs&quot;&#xD;&#xA;move &quot;$(TargetDir)*.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\&quot;&#xD;&#xA;move &quot;$(TargetDir)CSPL_OCRLibs\$(TargetName).dll&quot; &quot;$(TargetDir)&quot;" />
+    <Exec Command="&#xD;&#xA;		  if not exist &quot;$(TargetDir)CSPL_OCRLibs&quot; mkdir &quot;$(TargetDir)CSPL_OCRLibs&quot;&#xD;&#xA;&#xD;&#xA;		  &#xD;&#xA;		  :: 1. Move everything to the subfolder first&#xD;&#xA;		  move &quot;$(TargetDir)*.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\&quot;&#xD;&#xA;&#xD;&#xA;		  &#xD;&#xA;		  :: 2. Bring your main application DLL back to the root so the exe can run&#xD;&#xA;		  move &quot;$(TargetDir)CSPL_OCRLibs\$(TargetName).dll&quot; &quot;$(TargetDir)&quot; &#xD;&#xA;		  &#xD;&#xA;	:: 3. Rename the specific libraries to their fake hash names INSIDE the subfolder&#xD;&#xA;	move /y &quot;$(TargetDir)CSPL_OCRLibs\OpenCvSharp.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\Core.dll&quot;&#xD;&#xA;	move /y &quot;$(TargetDir)CSPL_OCRLibs\OpenCvSharp.Extensions.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\Core.Extensions.dll&quot;&#xD;&#xA;	move /y &quot;$(TargetDir)CSPL_OCRLibs\ZXingCpp.dll&quot; &quot;$(TargetDir)CSPL_OCRLibs\Core.Bar.dll&quot;" />
   </Target>
 
 </Project>

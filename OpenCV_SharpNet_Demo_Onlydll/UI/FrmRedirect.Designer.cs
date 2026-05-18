@@ -39,8 +39,8 @@
             StatusStripMenu = new StatusStrip();
             toolStripMenu = new ToolStripStatusLabel();
             toolStripDocument = new ToolStripStatusLabel();
-            toolStripVersion = new ToolStripStatusLabel();
             tsslUserManual = new ToolStripStatusLabel();
+            toolStripVersion = new ToolStripStatusLabel();
             tblMain.SuspendLayout();
             StatusStripMenu.SuspendLayout();
             SuspendLayout();
@@ -194,14 +194,8 @@
             toolStripDocument.Name = "toolStripDocument";
             toolStripDocument.Size = new Size(114, 23);
             toolStripDocument.Text = "Dev Document";
+            toolStripDocument.Visible = false;
             toolStripDocument.Click += ToolStripDocument_Click;
-            // 
-            // toolStripVersion
-            // 
-            toolStripVersion.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            toolStripVersion.Name = "toolStripVersion";
-            toolStripVersion.Size = new Size(65, 23);
-            toolStripVersion.Text = "Version";
             // 
             // tsslUserManual
             // 
@@ -210,7 +204,15 @@
             tsslUserManual.Name = "tsslUserManual";
             tsslUserManual.Size = new Size(103, 23);
             tsslUserManual.Text = "User Manual";
+            tsslUserManual.Visible = false;
             tsslUserManual.Click += TsslUserManual_Click;
+            // 
+            // toolStripVersion
+            // 
+            toolStripVersion.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            toolStripVersion.Name = "toolStripVersion";
+            toolStripVersion.Size = new Size(65, 23);
+            toolStripVersion.Text = "Version";
             // 
             // FrmRedirect
             // 

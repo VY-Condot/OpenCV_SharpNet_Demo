@@ -101,7 +101,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
                 // OPTIMIZATION: Suspend Layout during heavy UI shifts
                 // =========================================================
                 TblPNlMain.SuspendLayout();
-                
+
                 if (!TxtExpected.Focused && roi.ExpectedText != TxtExpected.Text)
                     TxtExpected.Text = roi.ExpectedText;
 
@@ -310,7 +310,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
                 e.Cancel = true;
             }
         }
-       
+
         private void BtnCharResult_Click(object sender, EventArgs e)
         {
             if (BoundedROI is null || BoundedROI.CharResults is null) return;

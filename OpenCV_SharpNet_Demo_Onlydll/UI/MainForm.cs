@@ -138,6 +138,7 @@ namespace OpenCV_SharpNet_Demo
             System.Threading.ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
             CmbSegments.DataSource = Enum.GetValues(typeof(SegmentationMode));
+            CmbSegments.SelectedItem = SegmentationMode.Industrial;
             CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
 
             if (OcrEngine.TemplateVectors.Count == 0) OcrEngine.ReloadTemplates();

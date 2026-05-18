@@ -2131,6 +2131,8 @@ namespace OpenCV_SharpNet_Demo
             // Populate Enums
             CmbSegments.DataSource = Enum.GetValues(typeof(SegmentationMode)); // <--- NEW
 
+            CmbSegments.SelectedItem = SegmentationMode.Industrial;
+
             // Events
             CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
 
