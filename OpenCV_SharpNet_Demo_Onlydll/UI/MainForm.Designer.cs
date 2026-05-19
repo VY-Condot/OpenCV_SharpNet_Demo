@@ -62,9 +62,6 @@
             DecodeTime = new DataGridViewTextBoxColumn();
             TblPnlSettingAndRoiData = new TableLayoutPanel();
             FlowPnlRoiData = new FlowLayoutPanel();
-            TblBlobSettings = new TableLayoutPanel();
-            GrpBoxSegMentMode = new GroupBox();
-            CmbSegments = new ComboBox();
             TblPnlImageList = new TableLayoutPanel();
             BtnLoadImage = new Button();
             LstImageList = new ListBox();
@@ -105,8 +102,6 @@
             ((System.ComponentModel.ISupportInitialize)ImageCanvas).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDecodeTextRec).BeginInit();
             TblPnlSettingAndRoiData.SuspendLayout();
-            TblBlobSettings.SuspendLayout();
-            GrpBoxSegMentMode.SuspendLayout();
             TblPnlImageList.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             StatusStripMenu.SuspendLayout();
@@ -440,7 +435,7 @@
             // 
             splitConBodyMain.Panel2.Controls.Add(TblPnlSettingAndRoiData);
             splitConBodyMain.Size = new Size(1172, 571);
-            splitConBodyMain.SplitterDistance = 775;
+            splitConBodyMain.SplitterDistance = 818;
             splitConBodyMain.TabIndex = 2;
             // 
             // SplitContainerImageView
@@ -459,7 +454,7 @@
             // SplitContainerImageView.Panel2
             // 
             SplitContainerImageView.Panel2.Controls.Add(dgvDecodeTextRec);
-            SplitContainerImageView.Size = new Size(775, 571);
+            SplitContainerImageView.Size = new Size(818, 571);
             SplitContainerImageView.SplitterDistance = 454;
             SplitContainerImageView.TabIndex = 0;
             // 
@@ -469,7 +464,7 @@
             ImageCanvas.Dock = DockStyle.Fill;
             ImageCanvas.Location = new Point(0, 0);
             ImageCanvas.Name = "ImageCanvas";
-            ImageCanvas.Size = new Size(773, 452);
+            ImageCanvas.Size = new Size(816, 452);
             ImageCanvas.TabIndex = 0;
             ImageCanvas.TabStop = false;
             ImageCanvas.Paint += ImageCanvas_Paint;
@@ -511,7 +506,7 @@
             dgvDecodeTextRec.Name = "dgvDecodeTextRec";
             dgvDecodeTextRec.RowHeadersVisible = false;
             dgvDecodeTextRec.RowHeadersWidth = 51;
-            dgvDecodeTextRec.Size = new Size(773, 111);
+            dgvDecodeTextRec.Size = new Size(816, 111);
             dgvDecodeTextRec.TabIndex = 1;
             // 
             // DisRoiType
@@ -573,60 +568,24 @@
             // 
             TblPnlSettingAndRoiData.ColumnCount = 1;
             TblPnlSettingAndRoiData.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TblPnlSettingAndRoiData.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 18F));
-            TblPnlSettingAndRoiData.Controls.Add(FlowPnlRoiData, 0, 1);
-            TblPnlSettingAndRoiData.Controls.Add(TblBlobSettings, 0, 0);
+            TblPnlSettingAndRoiData.Controls.Add(FlowPnlRoiData, 0, 0);
             TblPnlSettingAndRoiData.Dock = DockStyle.Fill;
             TblPnlSettingAndRoiData.Location = new Point(0, 0);
             TblPnlSettingAndRoiData.Name = "TblPnlSettingAndRoiData";
-            TblPnlSettingAndRoiData.RowCount = 2;
-            TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Absolute, 79F));
+            TblPnlSettingAndRoiData.RowCount = 1;
             TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlSettingAndRoiData.Size = new Size(391, 569);
+            TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
+            TblPnlSettingAndRoiData.Size = new Size(348, 569);
             TblPnlSettingAndRoiData.TabIndex = 1;
             // 
             // FlowPnlRoiData
             // 
             FlowPnlRoiData.AutoScroll = true;
             FlowPnlRoiData.Dock = DockStyle.Fill;
-            FlowPnlRoiData.Location = new Point(3, 82);
+            FlowPnlRoiData.Location = new Point(3, 3);
             FlowPnlRoiData.Name = "FlowPnlRoiData";
-            FlowPnlRoiData.Size = new Size(385, 484);
+            FlowPnlRoiData.Size = new Size(342, 563);
             FlowPnlRoiData.TabIndex = 0;
-            // 
-            // TblBlobSettings
-            // 
-            TblBlobSettings.ColumnCount = 1;
-            TblBlobSettings.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TblBlobSettings.Controls.Add(GrpBoxSegMentMode, 0, 0);
-            TblBlobSettings.Dock = DockStyle.Fill;
-            TblBlobSettings.Location = new Point(3, 3);
-            TblBlobSettings.Name = "TblBlobSettings";
-            TblBlobSettings.RowCount = 1;
-            TblBlobSettings.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblBlobSettings.RowStyles.Add(new RowStyle(SizeType.Absolute, 73F));
-            TblBlobSettings.Size = new Size(385, 73);
-            TblBlobSettings.TabIndex = 1;
-            TblBlobSettings.Visible = false;
-            // 
-            // GrpBoxSegMentMode
-            // 
-            GrpBoxSegMentMode.Controls.Add(CmbSegments);
-            GrpBoxSegMentMode.Dock = DockStyle.Fill;
-            GrpBoxSegMentMode.Location = new Point(3, 3);
-            GrpBoxSegMentMode.Name = "GrpBoxSegMentMode";
-            GrpBoxSegMentMode.Size = new Size(379, 67);
-            GrpBoxSegMentMode.TabIndex = 0;
-            GrpBoxSegMentMode.TabStop = false;
-            GrpBoxSegMentMode.Text = "Segmentation Mode";
-            // 
-            // CmbSegments
-            // 
-            CmbSegments.FormattingEnabled = true;
-            CmbSegments.Location = new Point(11, 29);
-            CmbSegments.Name = "CmbSegments";
-            CmbSegments.Size = new Size(122, 28);
-            CmbSegments.TabIndex = 0;
             // 
             // TblPnlImageList
             // 
@@ -862,8 +821,6 @@
             ((System.ComponentModel.ISupportInitialize)ImageCanvas).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvDecodeTextRec).EndInit();
             TblPnlSettingAndRoiData.ResumeLayout(false);
-            TblBlobSettings.ResumeLayout(false);
-            GrpBoxSegMentMode.ResumeLayout(false);
             TblPnlImageList.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             StatusStripMenu.ResumeLayout(false);
@@ -902,9 +859,6 @@
         private DataGridView dgvDecodeTextRec;
         private TableLayoutPanel TblPnlSettingAndRoiData;
         private FlowLayoutPanel FlowPnlRoiData;
-        private TableLayoutPanel TblBlobSettings;
-        private GroupBox GrpBoxSegMentMode;
-        private ComboBox CmbSegments;
         private DataGridViewTextBoxColumn DisRoiType;
         private DataGridViewTextBoxColumn DecodedText;
         private DataGridViewTextBoxColumn Result;

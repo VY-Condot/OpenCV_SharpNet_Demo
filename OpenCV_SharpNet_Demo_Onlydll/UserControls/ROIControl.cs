@@ -47,6 +47,8 @@ namespace OpenCV_SharpNet_Demo.UserControls
             //EnableDoubleBuffering(TblImageAndRepo);
 
             cmbRotationAngle.DataSource = Enum.GetValues(typeof(RotationAngles));
+            CmbSegments.DataSource = Enum.GetValues(typeof(SegmentationMode));
+            CmbSegments.SelectedItem = SegmentationMode.Industrial;
 
             //click events
             Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
@@ -341,6 +343,13 @@ namespace OpenCV_SharpNet_Demo.UserControls
             if (string.IsNullOrWhiteSpace(TxtDecoded.Text)) return;
 
             TxtExpected.Text = TxtDecoded.Text;
+        }
+
+        private void CmbSegments_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isBinding || BoundedROI == null) return;
+            BoundedROI.SegmentationMode = (SegmentationMode)CmbSegments.SelectedItem;
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

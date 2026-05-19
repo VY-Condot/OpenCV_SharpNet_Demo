@@ -1,9 +1,13 @@
-using CsplCam.Library.Enums;
+ï»¿using CsplCam.Library.Enums;
+using CsplCam.Library.Interfaces;
 using CsplCam.Library.Models;
+using CsplCam.Library.Models.GS1_QC;
+using CsplCam.Library.Services;
+using CsplCam.Library.Services.AI;
 using OpenCV_SharpNet_Demo.Services;
 using OpenCV_SharpNet_Demo.UI;
 using OpenCV_SharpNet_Demo.UserControls;
-using CsplCam.Library.Models.GS1_QC;
+using OpenCV_SharpNet_Demo_Onlydll.UI;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
 using System.ComponentModel;
@@ -12,13 +16,9 @@ using System.Runtime;
 using System.Text.Json;
 using CvRect = OpenCvSharp.Rect;
 using Point = System.Drawing.Point;
-
 // Aliases
 using SysPoint = System.Drawing.Point;
 using SysRect = System.Drawing.Rectangle;
-using CsplCam.Library.Interfaces;
-using CsplCam.Library.Services;
-using CsplCam.Library.Services.AI;
 
 namespace OpenCV_SharpNet_Demo
 {
@@ -137,9 +137,9 @@ namespace OpenCV_SharpNet_Demo
             System.Diagnostics.Process.GetCurrentProcess().PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
             System.Threading.ThreadPool.SetMinThreads(Environment.ProcessorCount * 2, Environment.ProcessorCount * 2);
 
-            CmbSegments.DataSource = Enum.GetValues(typeof(SegmentationMode));
-            CmbSegments.SelectedItem = SegmentationMode.Industrial;
-            CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
+            //CmbSegments.DataSource = Enum.GetValues(typeof(SegmentationMode));
+            //CmbSegments.SelectedItem = SegmentationMode.Industrial;
+            //CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
 
             if (OcrEngine.TemplateVectors.Count == 0) OcrEngine.ReloadTemplates();
             TemplateManager.LoadTemplates();
@@ -243,9 +243,28 @@ namespace OpenCV_SharpNet_Demo
 
         private void ClearRoiControl()
         {
-            TblBlobSettings.Visible = false;
+            //TblBlobSettings.Visible = false;
             FlowPnlRoiData.Controls.Clear();
         }
+
+        //private void RefreshRightPanel()
+        //{
+        //    if (selectedRoi is null || (selectedRoi.Type != RoiType.Text && selectedRoi.Type != RoiType.Barcode && selectedRoi.Type != RoiType.TemplateMatch))
+        //    {
+        //        FlowPnlRoiData.Controls.Clear();
+        //        return;
+        //    }
+
+        //    TblBlobSettings.Visible = true;
+
+        //    if (FlowPnlRoiData.Controls.Count != rois.Count) RebuildRoiList();
+        //    //else UpdateRoiSelectionVisuals();
+
+        //    //var scrollControl = FlowPnlRoiData.Controls.Cast<ROIControl>().FirstOrDefault(x => x.BoundedROI == selectedRoi);
+
+        //    //var scrollControl = FlowPnlRoiData.Controls.Cast<IRoiControl>().FirstOrDefault(x => x.BoundedROI == selectedRoi);
+        //    //if (scrollControl != null) FlowPnlRoiData.ScrollControlIntoView((Control)scrollControl);
+        //}
 
         private void RefreshRightPanel()
         {
@@ -255,39 +274,128 @@ namespace OpenCV_SharpNet_Demo
                 return;
             }
 
-            TblBlobSettings.Visible = true;
+            //TblBlobSettings.Visible = true;
 
+            // Call Rebuild if needed, otherwise just update visuals so the buttons highlight correctly
             if (FlowPnlRoiData.Controls.Count != rois.Count) RebuildRoiList();
             else UpdateRoiSelectionVisuals();
-
-            //var scrollControl = FlowPnlRoiData.Controls.Cast<ROIControl>().FirstOrDefault(x => x.BoundedROI == selectedRoi);
-
-            var scrollControl = FlowPnlRoiData.Controls.Cast<IRoiControl>().FirstOrDefault(x => x.BoundedROI == selectedRoi);
-            if (scrollControl != null) FlowPnlRoiData.ScrollControlIntoView((Control)scrollControl);
         }
+
+        //private void UpdateRoiSelectionVisuals()
+        //{
+        //    for (int i = 0; i < FlowPnlRoiData.Controls.Count; i++)
+        //    {
+        //        if (FlowPnlRoiData.Controls[i] is IRoiControl ctrl)  //FlowPnlRoiData.Controls[i] is ROIControl ctrl
+        //        {
+        //            bool isSelected = (ctrl.BoundedROI == selectedRoi);
+        //            ctrl.SetSelectionState(isSelected);
+        //            ctrl.BindData(ctrl.BoundedROI, isSelected);
+        //        }
+        //    }
+        //}
 
         private void UpdateRoiSelectionVisuals()
         {
-            for (int i = 0; i < FlowPnlRoiData.Controls.Count; i++)
+            // Search through Buttons, retrieve IRoiControl from the Tag, and highlight/update
+            foreach (Control c in FlowPnlRoiData.Controls)
             {
-                if (FlowPnlRoiData.Controls[i] is IRoiControl ctrl)  //FlowPnlRoiData.Controls[i] is ROIControl ctrl
+                if (c is Button btn && btn.Tag is IRoiControl ctrl)
                 {
                     bool isSelected = (ctrl.BoundedROI == selectedRoi);
                     ctrl.SetSelectionState(isSelected);
                     ctrl.BindData(ctrl.BoundedROI, isSelected);
+                    btn.BackColor = isSelected ? Color.LightSkyBlue : Color.WhiteSmoke;
                 }
             }
         }
 
         private void RebuildRoiList()
         {
+            //FlowPnlRoiData.SuspendLayout();
+            //FlowPnlRoiData.Controls.Clear();
+
+            //foreach (var roi in rois)
+            //{
+            //    //IRoiControl roiCtrl = roi.Type == RoiType.Barcode ? new ROIControlBarCode() : new ROIControl();
+
+            //    IRoiControl roiCtrl = roi.Type switch
+            //    {
+            //        RoiType.Text => new ROIControl(),
+            //        RoiType.Barcode => new ROIControlBarCode(),
+            //        RoiType.TemplateMatch => new RoiControlTemplate(),
+            //        _ => new ROIControl()
+            //    };
+
+
+            //    roiCtrl.BindData(roi, (selectedRoi == roi));
+            //    UpdateSidePanelPreview(roiCtrl, roi);
+
+            //    roiCtrl.SelectionClick += (s, e) =>
+            //    {
+            //        selectedRoi = roi;
+            //        RefreshRightPanel();
+            //        ImageCanvas.Invalidate();
+            //    };
+
+            //    roiCtrl.SettingsChanged += (s, e) =>
+            //    {
+            //        ValidateAndFixBoxOrientation(roi);
+            //        UpdateSidePanelPreview(roiCtrl, roi);
+            //        ImageCanvas.Invalidate();
+            //    };
+
+            //    roiCtrl.OpenAnchorSettingsWindow += (s, e) => OpenAnchorSettingWindow(roi, rOIControl: roiCtrl);
+            //    roiCtrl.OpenRoiReferenceWindow += (s, e) => OpenRoiReferenceWindow(roi);
+
+            //    roiCtrl.DecodeRequested += (s, e) =>
+            //    {
+            //        totalTimeTaken = 0;
+            //        selectedRoi = roi;
+
+            //        GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
+            //        GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+
+            //        roi.CharResults?.Clear();
+            //        OcrEngine.DecodeRoi(currentImage, roi);
+            //        totalTimeTaken += roi.TimeTakenForDecoding.TotalMilliseconds;
+
+            //        GCSettings.LatencyMode = GCLatencyMode.Interactive;
+            //        GC.Collect(0, GCCollectionMode.Optimized, false); // FAST SYNC GC
+
+            //        lstGs1Res.Add(roi.Gs1QcResult);
+
+            //        SetDataInDataGridView(roi);
+
+            //        DisplaySelectInfo(DisplayInfo.TimeTaken);
+
+            //        RefreshRightPanel();
+            //        ImageCanvas.Invalidate();
+            //    };
+
+            //    //FlowPnlRoiData.Controls.Add((Control)roiCtrl);
+            //    btnRoiControl = new Button() { Text = roi.Name, Tag = roiCtrl };
+            //    btnRoiControl.Click += btnRoiControl_Click;
+            //    FlowPnlRoiData.Controls.Add(btnRoiControl);
+
+
+            //    // In RebuildRoiList, after creating the button:
+            //    //btnRoiControl = new Button() { Text = roi.Name, Tag = roiCtrl };
+            //    //btnRoiControl.Click += btnRoiControl_Click;
+            //    //FlowPnlRoiData.Controls.Add(btnRoiControl);
+
+            //    //// Store a reference for later updates
+            //    //btnRoiControl.Tag = new { Control = roiCtrl, RoiData = roi };
+            //}
+            //FlowPnlRoiData.ResumeLayout();
+
+
+
+
             FlowPnlRoiData.SuspendLayout();
             FlowPnlRoiData.Controls.Clear();
 
             foreach (var roi in rois)
             {
-                //IRoiControl roiCtrl = roi.Type == RoiType.Barcode ? new ROIControlBarCode() : new ROIControl();
-
                 IRoiControl roiCtrl = roi.Type switch
                 {
                     RoiType.Text => new ROIControl(),
@@ -296,24 +404,12 @@ namespace OpenCV_SharpNet_Demo
                     _ => new ROIControl()
                 };
 
-
                 roiCtrl.BindData(roi, (selectedRoi == roi));
                 UpdateSidePanelPreview(roiCtrl, roi);
 
-                roiCtrl.SelectionClick += (s, e) =>
-                {
-                    selectedRoi = roi;
-                    RefreshRightPanel();
-                    ImageCanvas.Invalidate();
-                };
-
-                roiCtrl.SettingsChanged += (s, e) =>
-                {
-                    ValidateAndFixBoxOrientation(roi);
-                    UpdateSidePanelPreview(roiCtrl, roi);
-                    ImageCanvas.Invalidate();
-                };
-
+                // Your original Event Subscriptions...
+                roiCtrl.SelectionClick += (s, e) => { selectedRoi = roi; RefreshRightPanel(); ImageCanvas.Invalidate(); };
+                roiCtrl.SettingsChanged += (s, e) => { ValidateAndFixBoxOrientation(roi); UpdateSidePanelPreview(roiCtrl, roi); ImageCanvas.Invalidate(); };
                 roiCtrl.OpenAnchorSettingsWindow += (s, e) => OpenAnchorSettingWindow(roi, rOIControl: roiCtrl);
                 roiCtrl.OpenRoiReferenceWindow += (s, e) => OpenRoiReferenceWindow(roi);
 
@@ -330,22 +426,147 @@ namespace OpenCV_SharpNet_Demo
                     totalTimeTaken += roi.TimeTakenForDecoding.TotalMilliseconds;
 
                     GCSettings.LatencyMode = GCLatencyMode.Interactive;
-                    GC.Collect(0, GCCollectionMode.Optimized, false); // FAST SYNC GC
+                    GC.Collect(0, GCCollectionMode.Optimized, false);
 
                     lstGs1Res.Add(roi.Gs1QcResult);
-
                     SetDataInDataGridView(roi);
-
                     DisplaySelectInfo(DisplayInfo.TimeTaken);
 
                     RefreshRightPanel();
                     ImageCanvas.Invalidate();
                 };
 
-                FlowPnlRoiData.Controls.Add((Control)roiCtrl);
+                // UI UX: Button Setup
+                btnRoiControl = new Button()
+                {
+                    Text = roi.Name,
+                    Tag = roiCtrl,
+                    Width = FlowPnlRoiData.Width - 25,
+                    Height = 40,
+                    BackColor = (selectedRoi == roi) ? Color.LightSkyBlue : Color.WhiteSmoke
+                };
+                btnRoiControl.Click += btnRoiControl_Click;
+                FlowPnlRoiData.Controls.Add(btnRoiControl);
             }
             FlowPnlRoiData.ResumeLayout();
         }
+
+        //private void btnRoiControl_Click(object? sender, EventArgs e)
+        //{
+        //    var btn = sender as Button;
+        //    var roiCtrl = (IRoiControl)btn.Tag;
+        //    //UserControlWindow userControlWindow = new UserControlWindow((IRoiControl)btn.Tag);
+        //    //userControlWindow.ShowDialog();
+
+
+        //    var userControlWindow = new UserControlWindow(roiCtrl);
+
+        //    userControlWindow.BindData(roiCtrl.BoundedROI, true);
+
+        //    userControlWindow.SelectionClick += (s, ev) =>
+        //    {
+        //        selectedRoi = roiCtrl.BoundedROI;
+        //        RefreshRightPanel();
+        //        ImageCanvas.Invalidate();
+        //    };
+
+        //    userControlWindow.SettingsChanged += (s, ev) =>
+        //    {
+        //        ValidateAndFixBoxOrientation(roiCtrl.BoundedROI);
+        //        UpdateSidePanelPreview(roiCtrl, roiCtrl.BoundedROI);
+        //        ImageCanvas.Invalidate();
+        //    };
+
+        //    userControlWindow.DecodeRequested += (s, ev) =>
+        //    {
+        //        // reuse your existing decode logic
+        //        //DecodeRoiAndRefresh(roiCtrl.BoundedROI);
+
+        //        OcrEngine.DecodeRoi(currentImage, roiCtrl.BoundedROI);
+        //    };
+
+
+        //    //roiCtrl.BindData(roi, (selectedRoi == roi));
+
+        //    userControlWindow.ShowDialog();
+        //}
+
+        private void btnRoiControl_Click(object? sender, EventArgs e)
+        {
+            //var btn = sender as Button;
+            //var roiCtrl = (IRoiControl)btn.Tag;
+
+            //var userControlWindow = new UserControlWindow(roiCtrl);
+
+            //userControlWindow.BindData(roiCtrl.BoundedROI, true);
+
+            //// SYNC 1: When user modifies ROI in the window, update the main form
+            //userControlWindow.SettingsChanged += (s, ev) =>
+            //{
+            //    // Update the preview in the side panel
+            //    ValidateAndFixBoxOrientation(roiCtrl.BoundedROI);
+            //    UpdateSidePanelPreview(roiCtrl, roiCtrl.BoundedROI);
+
+            //    // Refresh canvas to show changes
+            //    ImageCanvas.Invalidate();
+            //};
+
+            //// SYNC 2: When user clicks to select in the window
+            //userControlWindow.SelectionClick += (s, ev) =>
+            //{
+            //    selectedRoi = roiCtrl.BoundedROI;
+            //    RefreshRightPanel();
+            //    ImageCanvas.Invalidate();
+            //};
+
+            //// SYNC 3: When user requests decode in the window
+            //userControlWindow.DecodeRequested += (s, ev) =>
+            //{
+            //    if (currentImage != null)
+            //    {
+            //        OcrEngine.DecodeRoi(currentImage, roiCtrl.BoundedROI);
+            //        SetDataInDataGridView(roiCtrl.BoundedROI);
+            //        DisplaySelectInfo(DisplayInfo.TimeTaken);
+            //        UpdateSidePanelPreview(roiCtrl, roiCtrl.BoundedROI);
+            //        ImageCanvas.Invalidate();
+            //    }
+            //};
+
+            //// SYNC 4: After window closes, refresh the main panel in case changes were made
+            //RefreshRightPanel();
+            //ImageCanvas.Invalidate();
+
+            //userControlWindow.ShowDialog();
+
+            var btn = sender as Button;
+            var roiCtrl = (IRoiControl)btn.Tag;
+
+            // Optional: Select the ROI visually on the canvas when opening settings
+            selectedRoi = roiCtrl.BoundedROI;
+            RefreshRightPanel();
+            ImageCanvas.Invalidate();
+
+            // Open the pop-up window
+            var userControlWindow = new UserControlWindow(roiCtrl);
+            
+            userControlWindow.BindData(roiCtrl.BoundedROI, true);
+
+            // ðŸŸ¢ FIX: Generate the preview right before opening the window
+            UpdateSidePanelPreview(roiCtrl, roiCtrl.BoundedROI);
+
+            // Note: No need to attach DecodeRequested or SettingsChanged events here anymore! 
+            // MainForm ALREADY attached them in RebuildRoiList directly to `roiCtrl`.
+
+            userControlWindow.Show(this);
+
+            // Ensure UI is cleanly updated when the dialog closes
+            RefreshRightPanel();
+            ImageCanvas.Invalidate();
+        }
+
+        //dictionary for holding button and control
+        //Dictionary<Button, IRoiControl> buttonControlPair = new();
+        Button btnRoiControl = null;
 
         private void OpenRoiReferenceWindow(RoiObject roiObject)
         {
@@ -866,10 +1087,24 @@ namespace OpenCV_SharpNet_Demo
             //    if (activeCtrl != null) UpdateSidePanelPreview(activeCtrl, selectedRoi);
             //}
 
+            //if (wasModifyingRoi && selectedRoi != null && currentImage != null)
+            //{
+            //    //var activeCtrl = FlowPnlRoiData.Controls.OfType<IRoiControl>().FirstOrDefault(c => c.BoundedROI == selectedRoi);
+
+            //    var activeCtrl = FlowPnlRoiData.Controls.OfType<IRoiControl>().FirstOrDefault(c => c.BoundedROI == selectedRoi);
+
+            //    if (activeCtrl != null) UpdateSidePanelPreview(activeCtrl, selectedRoi);
+            //}
+
             if (wasModifyingRoi && selectedRoi != null && currentImage != null)
             {
-                var activeCtrl = FlowPnlRoiData.Controls.OfType<IRoiControl>().FirstOrDefault(c => c.BoundedROI == selectedRoi);
-                if (activeCtrl != null) UpdateSidePanelPreview(activeCtrl, selectedRoi);
+                // We must look for the Button, and pull the Control out of its Tag
+                var activeBtn = FlowPnlRoiData.Controls.OfType<Button>().FirstOrDefault(b => (b.Tag as IRoiControl)?.BoundedROI == selectedRoi);
+
+                if (activeBtn != null && activeBtn.Tag is IRoiControl activeCtrl)
+                {
+                    UpdateSidePanelPreview(activeCtrl, selectedRoi);
+                }
             }
 
             currentMode = MouseMode.None;
@@ -929,10 +1164,10 @@ namespace OpenCV_SharpNet_Demo
                         RefreshRightPanel();
                         ImageCanvas.Invalidate();
                     };
-                    rotateItem.DropDownItems.Add("0° (Left->Right)", CreateMenuIcon("ANGLE_0"), (s, args) => changeRotation(RotationAngles.Zero));
-                    rotateItem.DropDownItems.Add("90° (Top->Bottom)", CreateMenuIcon("ANGLE_90"), (s, args) => changeRotation(RotationAngles.Ninety));
-                    rotateItem.DropDownItems.Add("180° (Right->Left)", CreateMenuIcon("ANGLE_180"), (s, args) => changeRotation(RotationAngles.OneEighty));
-                    rotateItem.DropDownItems.Add("270° (Bottom->Top)", CreateMenuIcon("ANGLE_270"), (s, args) => changeRotation(RotationAngles.TwoSeventy));
+                    rotateItem.DropDownItems.Add("0Â° (Left->Right)", CreateMenuIcon("ANGLE_0"), (s, args) => changeRotation(RotationAngles.Zero));
+                    rotateItem.DropDownItems.Add("90Â° (Top->Bottom)", CreateMenuIcon("ANGLE_90"), (s, args) => changeRotation(RotationAngles.Ninety));
+                    rotateItem.DropDownItems.Add("180Â° (Right->Left)", CreateMenuIcon("ANGLE_180"), (s, args) => changeRotation(RotationAngles.OneEighty));
+                    rotateItem.DropDownItems.Add("270Â° (Bottom->Top)", CreateMenuIcon("ANGLE_270"), (s, args) => changeRotation(RotationAngles.TwoSeventy));
                     contextMenu.Items.Add(rotateItem);
                 }
 
@@ -1794,7 +2029,7 @@ namespace OpenCV_SharpNet_Demo
         private void CmbSegments_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (selectedRoi == null) return;
-            selectedRoi.SegmentationMode = (SegmentationMode)CmbSegments.SelectedItem;
+            //selectedRoi.SegmentationMode = (SegmentationMode)CmbSegments.SelectedItem;
         }
 
         //private void UpdateSidePanelPreview(ROIControl targetCtrl, RoiObject targetRoi)
@@ -1850,6 +2085,14 @@ namespace OpenCV_SharpNet_Demo
         {
             SplitContainerImageView.Panel2Collapsed = !SplitContainerImageView.Panel2Collapsed;
             hideGridRecToolStripMenuItem.Text = SplitContainerImageView.Panel2Collapsed ? "Show Grid Records" : "Hide Grid Records"; //change text
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            var activeCtrl = FlowPnlRoiData.Controls.OfType<IRoiControl>().FirstOrDefault(c => c.BoundedROI == selectedRoi);
+
+            UserControlWindow userControlWindow = new UserControlWindow(activeCtrl);
+            userControlWindow.ShowDialog();
         }
     }
 }
