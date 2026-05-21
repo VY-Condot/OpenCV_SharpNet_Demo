@@ -13,6 +13,8 @@ namespace OpenCV_SharpNet_Demo.UserControls
         //GET ROI OBJECT
         public RoiObject BoundedROI { get; private set; }
 
+        public Size? ControlSize { get; set; }
+
         // --- FLAG ---
         private bool _isBinding = false;
 
@@ -54,6 +56,8 @@ namespace OpenCV_SharpNet_Demo.UserControls
             //click events
             Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+
+            ControlSize = new Size(Width, Height);
         }
 
         // =================================================================
@@ -210,7 +214,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
 
         private void chkDoOCR_CheckedChanged(object sender, EventArgs e)
         {
-            BoundedROI.ShowOverlay = chkDoOCR.Checked;
+            //BoundedROI.ShowOverlay = chkDoOCR.Checked;
         }
 
         public void SetSelectionState(bool isSelected)
@@ -383,6 +387,13 @@ namespace OpenCV_SharpNet_Demo.UserControls
             {
                 cmbBarcodeFormat.SelectedItem = string.Empty;
             }
+        }
+
+        private void ChkGradingRepo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+
+            BoundedROI.IsRunGS1QcCheck = chkGradingRepo.Checked;
         }
     }
 }

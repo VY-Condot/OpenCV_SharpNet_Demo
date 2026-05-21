@@ -60,7 +60,7 @@
             RoiAngle = new DataGridViewTextBoxColumn();
             ExecutionTime = new DataGridViewTextBoxColumn();
             DecodeTime = new DataGridViewTextBoxColumn();
-            TblPnlSettingAndRoiData = new TableLayoutPanel();
+            grpRoiControls = new GroupBox();
             FlowPnlRoiData = new FlowLayoutPanel();
             TblPnlImageList = new TableLayoutPanel();
             BtnLoadImage = new Button();
@@ -101,7 +101,7 @@
             SplitContainerImageView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ImageCanvas).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDecodeTextRec).BeginInit();
-            TblPnlSettingAndRoiData.SuspendLayout();
+            grpRoiControls.SuspendLayout();
             TblPnlImageList.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             StatusStripMenu.SuspendLayout();
@@ -433,9 +433,9 @@
             // 
             // splitConBodyMain.Panel2
             // 
-            splitConBodyMain.Panel2.Controls.Add(TblPnlSettingAndRoiData);
+            splitConBodyMain.Panel2.Controls.Add(grpRoiControls);
             splitConBodyMain.Size = new Size(1172, 571);
-            splitConBodyMain.SplitterDistance = 818;
+            splitConBodyMain.SplitterDistance = 979;
             splitConBodyMain.TabIndex = 2;
             // 
             // SplitContainerImageView
@@ -454,7 +454,7 @@
             // SplitContainerImageView.Panel2
             // 
             SplitContainerImageView.Panel2.Controls.Add(dgvDecodeTextRec);
-            SplitContainerImageView.Size = new Size(818, 571);
+            SplitContainerImageView.Size = new Size(979, 571);
             SplitContainerImageView.SplitterDistance = 454;
             SplitContainerImageView.TabIndex = 0;
             // 
@@ -464,7 +464,7 @@
             ImageCanvas.Dock = DockStyle.Fill;
             ImageCanvas.Location = new Point(0, 0);
             ImageCanvas.Name = "ImageCanvas";
-            ImageCanvas.Size = new Size(816, 452);
+            ImageCanvas.Size = new Size(977, 452);
             ImageCanvas.TabIndex = 0;
             ImageCanvas.TabStop = false;
             ImageCanvas.Paint += ImageCanvas_Paint;
@@ -506,7 +506,7 @@
             dgvDecodeTextRec.Name = "dgvDecodeTextRec";
             dgvDecodeTextRec.RowHeadersVisible = false;
             dgvDecodeTextRec.RowHeadersWidth = 51;
-            dgvDecodeTextRec.Size = new Size(816, 111);
+            dgvDecodeTextRec.Size = new Size(977, 111);
             dgvDecodeTextRec.TabIndex = 1;
             // 
             // DisRoiType
@@ -564,27 +564,25 @@
             DecodeTime.ReadOnly = true;
             DecodeTime.Width = 136;
             // 
-            // TblPnlSettingAndRoiData
+            // grpRoiControls
             // 
-            TblPnlSettingAndRoiData.ColumnCount = 1;
-            TblPnlSettingAndRoiData.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TblPnlSettingAndRoiData.Controls.Add(FlowPnlRoiData, 0, 0);
-            TblPnlSettingAndRoiData.Dock = DockStyle.Fill;
-            TblPnlSettingAndRoiData.Location = new Point(0, 0);
-            TblPnlSettingAndRoiData.Name = "TblPnlSettingAndRoiData";
-            TblPnlSettingAndRoiData.RowCount = 1;
-            TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            TblPnlSettingAndRoiData.Size = new Size(348, 569);
-            TblPnlSettingAndRoiData.TabIndex = 1;
+            grpRoiControls.Controls.Add(FlowPnlRoiData);
+            grpRoiControls.Dock = DockStyle.Fill;
+            grpRoiControls.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            grpRoiControls.Location = new Point(0, 0);
+            grpRoiControls.Name = "grpRoiControls";
+            grpRoiControls.Size = new Size(187, 569);
+            grpRoiControls.TabIndex = 1;
+            grpRoiControls.TabStop = false;
+            grpRoiControls.Text = "ROI Controls";
             // 
             // FlowPnlRoiData
             // 
             FlowPnlRoiData.AutoScroll = true;
             FlowPnlRoiData.Dock = DockStyle.Fill;
-            FlowPnlRoiData.Location = new Point(3, 3);
+            FlowPnlRoiData.Location = new Point(3, 23);
             FlowPnlRoiData.Name = "FlowPnlRoiData";
-            FlowPnlRoiData.Size = new Size(342, 563);
+            FlowPnlRoiData.Size = new Size(181, 543);
             FlowPnlRoiData.TabIndex = 0;
             // 
             // TblPnlImageList
@@ -820,7 +818,7 @@
             SplitContainerImageView.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)ImageCanvas).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvDecodeTextRec).EndInit();
-            TblPnlSettingAndRoiData.ResumeLayout(false);
+            grpRoiControls.ResumeLayout(false);
             TblPnlImageList.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             StatusStripMenu.ResumeLayout(false);
@@ -857,7 +855,6 @@
         private SplitContainer SplitContainerImageView;
         private PictureBox ImageCanvas;
         private DataGridView dgvDecodeTextRec;
-        private TableLayoutPanel TblPnlSettingAndRoiData;
         private FlowLayoutPanel FlowPnlRoiData;
         private DataGridViewTextBoxColumn DisRoiType;
         private DataGridViewTextBoxColumn DecodedText;
@@ -880,5 +877,6 @@
         private ToolStripMenuItem hideMenuoolStripMenuItem;
         private ToolStripMenuItem hideResultWinToolStripMenuItem;
         private ToolStripMenuItem hideGridRecToolStripMenuItem;
+        public GroupBox grpRoiControls;
     }
 }

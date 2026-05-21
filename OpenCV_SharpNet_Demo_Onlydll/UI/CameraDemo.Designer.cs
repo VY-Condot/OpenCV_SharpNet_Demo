@@ -60,11 +60,8 @@
             RoiAngle = new DataGridViewTextBoxColumn();
             ExecutionTime = new DataGridViewTextBoxColumn();
             DecodeTime = new DataGridViewTextBoxColumn();
-            TblPnlSettingAndRoiData = new TableLayoutPanel();
+            GrpRoiControls = new GroupBox();
             FlowPnlRoiData = new FlowLayoutPanel();
-            TblBlobSettings = new TableLayoutPanel();
-            GrpBoxSegMentMode = new GroupBox();
-            CmbSegments = new ComboBox();
             TblPnlImageList = new TableLayoutPanel();
             TblDeviceConfig = new TableLayoutPanel();
             GrpSetParam = new GroupBox();
@@ -131,9 +128,7 @@
             SplitContainerImageView.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ImageCanvas).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgvDecodeTextRec).BeginInit();
-            TblPnlSettingAndRoiData.SuspendLayout();
-            TblBlobSettings.SuspendLayout();
-            GrpBoxSegMentMode.SuspendLayout();
+            GrpRoiControls.SuspendLayout();
             TblPnlImageList.SuspendLayout();
             TblDeviceConfig.SuspendLayout();
             GrpSetParam.SuspendLayout();
@@ -456,9 +451,9 @@
             // 
             // splitConBodyMain.Panel2
             // 
-            splitConBodyMain.Panel2.Controls.Add(TblPnlSettingAndRoiData);
+            splitConBodyMain.Panel2.Controls.Add(GrpRoiControls);
             splitConBodyMain.Size = new Size(1166, 575);
-            splitConBodyMain.SplitterDistance = 799;
+            splitConBodyMain.SplitterDistance = 977;
             splitConBodyMain.TabIndex = 1;
             // 
             // SplitContainerImageView
@@ -476,7 +471,7 @@
             // SplitContainerImageView.Panel2
             // 
             SplitContainerImageView.Panel2.Controls.Add(dgvDecodeTextRec);
-            SplitContainerImageView.Size = new Size(799, 575);
+            SplitContainerImageView.Size = new Size(977, 575);
             SplitContainerImageView.SplitterDistance = 449;
             SplitContainerImageView.TabIndex = 0;
             // 
@@ -486,7 +481,7 @@
             ImageCanvas.Dock = DockStyle.Fill;
             ImageCanvas.Location = new Point(0, 0);
             ImageCanvas.Name = "ImageCanvas";
-            ImageCanvas.Size = new Size(797, 447);
+            ImageCanvas.Size = new Size(975, 447);
             ImageCanvas.TabIndex = 0;
             ImageCanvas.TabStop = false;
             ImageCanvas.Paint += ImageCanvas_Paint;
@@ -526,7 +521,7 @@
             dgvDecodeTextRec.Name = "dgvDecodeTextRec";
             dgvDecodeTextRec.RowHeadersVisible = false;
             dgvDecodeTextRec.RowHeadersWidth = 51;
-            dgvDecodeTextRec.Size = new Size(797, 120);
+            dgvDecodeTextRec.Size = new Size(975, 120);
             dgvDecodeTextRec.TabIndex = 1;
             // 
             // DisRoiType
@@ -584,66 +579,26 @@
             DecodeTime.ReadOnly = true;
             DecodeTime.Width = 136;
             // 
-            // TblPnlSettingAndRoiData
+            // GrpRoiControls
             // 
-            TblPnlSettingAndRoiData.ColumnCount = 1;
-            TblPnlSettingAndRoiData.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TblPnlSettingAndRoiData.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 18F));
-            TblPnlSettingAndRoiData.Controls.Add(FlowPnlRoiData, 0, 1);
-            TblPnlSettingAndRoiData.Controls.Add(TblBlobSettings, 0, 0);
-            TblPnlSettingAndRoiData.Dock = DockStyle.Fill;
-            TblPnlSettingAndRoiData.Location = new Point(0, 0);
-            TblPnlSettingAndRoiData.Name = "TblPnlSettingAndRoiData";
-            TblPnlSettingAndRoiData.RowCount = 2;
-            TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Absolute, 83F));
-            TblPnlSettingAndRoiData.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlSettingAndRoiData.Size = new Size(361, 573);
-            TblPnlSettingAndRoiData.TabIndex = 1;
+            GrpRoiControls.Controls.Add(FlowPnlRoiData);
+            GrpRoiControls.Dock = DockStyle.Fill;
+            GrpRoiControls.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            GrpRoiControls.Location = new Point(0, 0);
+            GrpRoiControls.Name = "GrpRoiControls";
+            GrpRoiControls.Size = new Size(183, 573);
+            GrpRoiControls.TabIndex = 1;
+            GrpRoiControls.TabStop = false;
+            GrpRoiControls.Text = "RoiControls";
             // 
             // FlowPnlRoiData
             // 
             FlowPnlRoiData.AutoScroll = true;
             FlowPnlRoiData.Dock = DockStyle.Fill;
-            FlowPnlRoiData.Location = new Point(3, 86);
+            FlowPnlRoiData.Location = new Point(3, 23);
             FlowPnlRoiData.Name = "FlowPnlRoiData";
-            FlowPnlRoiData.Size = new Size(355, 484);
+            FlowPnlRoiData.Size = new Size(177, 547);
             FlowPnlRoiData.TabIndex = 0;
-            // 
-            // TblBlobSettings
-            // 
-            TblBlobSettings.ColumnCount = 1;
-            TblBlobSettings.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TblBlobSettings.Controls.Add(GrpBoxSegMentMode, 0, 0);
-            TblBlobSettings.Dock = DockStyle.Fill;
-            TblBlobSettings.Location = new Point(3, 3);
-            TblBlobSettings.Name = "TblBlobSettings";
-            TblBlobSettings.RowCount = 1;
-            TblBlobSettings.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblBlobSettings.RowStyles.Add(new RowStyle(SizeType.Absolute, 77F));
-            TblBlobSettings.Size = new Size(355, 77);
-            TblBlobSettings.TabIndex = 1;
-            TblBlobSettings.Visible = false;
-            // 
-            // GrpBoxSegMentMode
-            // 
-            GrpBoxSegMentMode.Controls.Add(CmbSegments);
-            GrpBoxSegMentMode.Dock = DockStyle.Fill;
-            GrpBoxSegMentMode.Location = new Point(3, 3);
-            GrpBoxSegMentMode.Name = "GrpBoxSegMentMode";
-            GrpBoxSegMentMode.Size = new Size(349, 71);
-            GrpBoxSegMentMode.TabIndex = 0;
-            GrpBoxSegMentMode.TabStop = false;
-            GrpBoxSegMentMode.Text = "Segmentation Mode";
-            // 
-            // CmbSegments
-            // 
-            CmbSegments.Font = new Font("Segoe UI", 9F);
-            CmbSegments.FormattingEnabled = true;
-            CmbSegments.Location = new Point(6, 31);
-            CmbSegments.Name = "CmbSegments";
-            CmbSegments.Size = new Size(321, 28);
-            CmbSegments.TabIndex = 0;
-            CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
             // 
             // TblPnlImageList
             // 
@@ -1246,9 +1201,7 @@
             SplitContainerImageView.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)ImageCanvas).EndInit();
             ((System.ComponentModel.ISupportInitialize)dgvDecodeTextRec).EndInit();
-            TblPnlSettingAndRoiData.ResumeLayout(false);
-            TblBlobSettings.ResumeLayout(false);
-            GrpBoxSegMentMode.ResumeLayout(false);
+            GrpRoiControls.ResumeLayout(false);
             TblPnlImageList.ResumeLayout(false);
             TblDeviceConfig.ResumeLayout(false);
             GrpSetParam.ResumeLayout(false);
@@ -1273,7 +1226,6 @@
         private TableLayoutPanel TblMain;
         private TableLayoutPanel TblBodyMain;
         private SplitContainer SplitConImageViewAndButton;
-        private TableLayoutPanel TblPnlSettingAndRoiData;
         private FlowLayoutPanel FlowPnlRoiData;
         private TableLayoutPanel TblPnlButtons;
         private Button BtnTrainSelROI;
@@ -1281,9 +1233,6 @@
         private Button BtnShowTamplate;
         private Button BtnDecodeAllROI;
         private PictureBox ImageCanvas;
-        private TableLayoutPanel TblBlobSettings;
-        private GroupBox GrpBoxSegMentMode;
-        private ComboBox CmbSegments;
         private Button BtnAddBarCodeRoi;
         private TableLayoutPanel TblPnlImageList;
         private Button BtnLoadRoi;
@@ -1347,5 +1296,6 @@
         private ToolStripMenuItem hideMenuoolStripMenuItem;
         private ToolStripMenuItem hideResultWinToolStripMenuItem;
         private ToolStripMenuItem hideGridRecToolStripMenuItem;
+        public GroupBox GrpRoiControls;
     }
 }

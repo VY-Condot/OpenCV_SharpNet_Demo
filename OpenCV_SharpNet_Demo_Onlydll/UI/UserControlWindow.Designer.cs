@@ -28,14 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UserControlWindow));
             SuspendLayout();
             // 
             // UserControlWindow
             // 
-            AutoScaleDimensions = new SizeF(120F, 120F);
-            AutoScaleMode = AutoScaleMode.Dpi;
-            ClientSize = new Size(579, 690);
+            AutoScaleDimensions = new SizeF(8F, 20F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(579, 753);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Name = "UserControlWindow";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "UserControlWindow";
             Load += UserControlWindow_Load;
             ResumeLayout(false);

@@ -34,11 +34,15 @@ namespace OpenCV_SharpNet_Demo.UserControls
             //click events
             Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+
+            ControlSize = new Size(Width, Height);
         }
 
 
         //GET ROI OBJECT
         public RoiObject BoundedROI { get; private set; }
+
+        public Size? ControlSize { get; set; }
 
         // --- FLAG ---
         private bool _isBinding = false;

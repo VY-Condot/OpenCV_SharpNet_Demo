@@ -139,7 +139,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             // tableLayoutPanel2
             // 
             tableLayoutPanel2.ColumnCount = 2;
-            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 274F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 298F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
@@ -160,7 +160,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             CmbSegments.Location = new Point(3, 8);
             CmbSegments.Margin = new Padding(3, 8, 3, 3);
             CmbSegments.Name = "CmbSegments";
-            CmbSegments.Size = new Size(268, 28);
+            CmbSegments.Size = new Size(292, 28);
             CmbSegments.TabIndex = 3;
             CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
             // 
@@ -815,7 +815,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
             pzPreview.Location = new Point(3, 585);
             pzPreview.Name = "pzPreview";
             pzPreview.Size = new Size(591, 95);
-            pzPreview.TabIndex = 7;
+            pzPreview.TabIndex = 9;
             // 
             // ROIControl
             // 
@@ -901,9 +901,9 @@ namespace OpenCV_SharpNet_Demo.UserControls
         private TableLayoutPanel TblPnlBottom;
         private Button BtnDecodeROI;
         private Button btnCharResult;
-        private PanZoomViewer pzPreview;
         private GroupBox GrpBoxSegMentMode;
         private TableLayoutPanel tableLayoutPanel2;
         private ComboBox CmbSegments;
+        private PanZoomViewer pzPreview;
     }
 }

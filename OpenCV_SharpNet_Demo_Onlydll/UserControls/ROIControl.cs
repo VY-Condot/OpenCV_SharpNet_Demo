@@ -13,6 +13,7 @@ namespace OpenCV_SharpNet_Demo.UserControls
     {
         //GET ROI OBJECT
         public RoiObject BoundedROI { get; private set; }
+        public Size? ControlSize { get; set; }
 
         // --- FLAG ---
         private bool _isBinding = false;
@@ -54,6 +55,9 @@ namespace OpenCV_SharpNet_Demo.UserControls
             Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpBlobFilter.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+
+            //assign the size
+            ControlSize = new Size(this.Width, this.Height);
         }
 
         // =================================================================
