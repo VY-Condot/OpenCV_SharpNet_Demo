@@ -13,6 +13,9 @@ namespace CsplCam.Library.Models
     public class RoiObject
     {
         public int Id { get; set; }
+
+        public int RejectionId { get; set; }
+
         public string? Name { get; set; }
         public Rect Box { get; set; }
         public RoiType Type { get; set; }
