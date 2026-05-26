@@ -1,7 +1,6 @@
 using CsplCam.Library.Enums;
 using CsplCam.Library.Models;
 using OpenCV_SharpNet.UI.Services;
-using OpenCV_SharpNet.UI.UserControls;
 using CsplCam.Library.Models.GS1_QC;
 using OpenCvSharp;
 using OpenCvSharp.Extensions;
@@ -18,6 +17,7 @@ using SysRect = System.Drawing.Rectangle;
 using CsplCam.Library.Interfaces;
 using CsplCam.Library.Services;
 using CsplCam.Library.Services.AI;
+using OpenCV_SharpNet.UserControls;
 
 namespace OpenCV_SharpNet.UI
 {

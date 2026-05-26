@@ -14,6 +14,26 @@ namespace CsplCam.Library.Services.GS1_QC_Check
     [DebuggerStepThrough]
     public class GS1_QC_Check : IGS1_QC_Check
     {
+
+        /// <summary>
+        /// for defining the size of the barcode and wrapping
+        /// </summary>
+        public int WrapSize { get; set; } = 400;
+
+        #region public properties for user value for grading systems including all grades
+
+        public enum Grades 
+        {
+            A = 4,
+            B = 3,
+            C = 2,
+            D = 1,
+            F = 0
+        }
+
+        #endregion
+
+
         public GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded)
         {
             try
@@ -34,7 +54,10 @@ namespace CsplCam.Library.Services.GS1_QC_Check
                 double avgHeight = (hLeft + hRight) / 2.0;
 
                 double axialNonUniformity = Math.Abs((avgWidth / Math.Max(1.0, avgHeight)) - 1.0);
-                int gradeAN = axialNonUniformity <= 0.06 ? 4 : axialNonUniformity <= 0.08 ? 3 : axialNonUniformity <= 0.10 ? 2 : axialNonUniformity <= 0.12 ? 1 : 0;
+
+                //Grading systems number scoring based on define properties
+                //axialNonUniformity 
+                int gradeAN = axialNonUniformity <= 0.06 ? (int)Grades.A : axialNonUniformity <= 0.08 ? (int)Grades.B : axialNonUniformity <= 0.10 ? (int)Grades.C : axialNonUniformity <= 0.12 ? (int)Grades.D : (int)Grades.F;
 
                 double d1 = PointDistance(cw[0], cw[2]);
                 double d2 = PointDistance(cw[1], cw[3]);
@@ -42,7 +65,7 @@ namespace CsplCam.Library.Services.GS1_QC_Check
                 // =========================================================================
                 // 2. EXTRACTION FIX (Isolate the barcode to eliminate text)
                 // =========================================================================
-                int warpSize = 400;
+                int warpSize = WrapSize;
                 Point2f[] dstPts = { new Point2f(0, 0), new Point2f(warpSize, 0), new Point2f(warpSize, warpSize), new Point2f(0, warpSize) };
 
                 using Mat cleanBarcode = new Mat();
@@ -59,7 +82,10 @@ namespace CsplCam.Library.Services.GS1_QC_Check
                 int gridSize = GetClosestStandardGridSize(estSize);
 
                 double gnCells = Math.Abs((d1 / Math.Max(1.0, d2)) - 1.0) * gridSize;
-                int gradeGN = gnCells <= 0.38 ? 4 : gnCells <= 0.50 ? 3 : gnCells <= 0.63 ? 2 : gnCells <= 0.75 ? 1 : 0;
+
+                //Grading systems number scoring based on define properties
+                //gridNonUniformity
+                int gradeGN = gnCells <= 0.38 ? (int)Grades.A : gnCells <= 0.50 ? (int)Grades.B : gnCells <= 0.63 ? (int)Grades.C : gnCells <= 0.75 ? (int)Grades.D : (int)Grades.F;
 
                 // =========================================================================
                 // 4. OPTIMIZED SAMPLING & VIRTUAL ROTATION 
@@ -133,7 +159,10 @@ namespace CsplCam.Library.Services.GS1_QC_Check
                 foreach (double val in bestCellR) { if (val > rMax) rMax = val; if (val < rMin) rMin = val; }
 
                 double scPercent = ((rMax - rMin) / 255.0) * 100.0;
-                int gradeSC = scPercent >= 70 ? 4 : scPercent >= 55 ? 3 : scPercent >= 40 ? 2 : scPercent >= 20 ? 1 : 0;
+
+                //Grading systems number scoring based on define properties
+                //symbolic contrast & modulation
+                int gradeSC = scPercent >= 70 ? (int)Grades.A : scPercent >= 55 ? (int)Grades.B : scPercent >= 40 ? (int)Grades.C : scPercent >= 20 ? (int)Grades.D : (int)Grades.F;
 
                 double symbolContrast = Math.Max(1.0, rMax - rMin);
                 List<double> modValues = new List<double>((gridSize - 2) * (gridSize - 2));
@@ -160,7 +189,7 @@ namespace CsplCam.Library.Services.GS1_QC_Check
                 // =========================================================================
                 // 6. FINAL GRADES
                 // =========================================================================
-                int gradeFPD = bestFpdErrors == 0 ? 4 : bestFpdErrors <= 1 ? 3 : bestFpdErrors <= 2 ? 2 : bestFpdErrors <= 3 ? 1 : 0;
+                int gradeFPD = bestFpdErrors == 0 ? (int)Grades.A : bestFpdErrors <= 1 ? (int)Grades.B : bestFpdErrors <= 2 ? (int)Grades.C : bestFpdErrors <= 3 ? (int)Grades.D : (int)Grades.F;
                 int gradeDecode = isDecoded ? 4 : 0;
                 int gradeUEC = visualErrors <= 2 ? 4 : 2;
 

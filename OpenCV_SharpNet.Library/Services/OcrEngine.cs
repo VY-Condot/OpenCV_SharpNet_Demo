@@ -3,7 +3,6 @@ using CsplCam.Library.Models;
 using CsplCam.Library.Services._1D_BarCode;
 using OpenCvSharp;
 using System.Collections.Concurrent;
-using System.Configuration;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -188,6 +187,12 @@ namespace CsplCam.Library.Services
         /// <returns></returns>
         public static Mat GetMatObject(Mat image,CvRect roiArea) => new Mat(image, roiArea);
 
+        /// <summary>
+        /// Function for trained the speacific image area for character recoginition
+        /// </summary>
+        /// <param name="image">image on which roi is drawn.</param>
+        /// <param name="selectedRoi">retangle area which drawn on image</param>
+        /// <returns></returns>
         public static List<Mat> TrainRoi(Mat image, RoiObject selectedRoi)
         {
             List<Mat> crops = new List<Mat>();
@@ -249,6 +254,9 @@ namespace CsplCam.Library.Services
         // --------------------------------------------------------
         // 1. TEMPLATE LOADING 
         // --------------------------------------------------------
+        /// <summary>
+        /// funcation which is responsible for loading character dataset templates
+        /// </summary>
         public static void ReloadTemplates()
         {
             var newDict = new Dictionary<string, List<CharTemplate>>();
@@ -341,6 +349,11 @@ namespace CsplCam.Library.Services
             if (oldDict != null) oldDict.Clear();
         }
 
+        /// <summary>
+        /// The purpose of this method is to save an image (charImg) with a specific label (label) to a designated folder.
+        /// </summary>
+        /// <param name="charImg">recognised char image</param>
+        /// <param name="label">recognised character</param>
         public static void SaveTemplate(Mat charImg, string label)
         {
             string folderName = label;
@@ -359,6 +372,12 @@ namespace CsplCam.Library.Services
         // --------------------------------------------------------
         // 2. SEGMENTATION 
         // --------------------------------------------------------
+        /// <summary>
+        /// The purpose of this method is to segment an image (gray) into a binary image (binaryOut) based on a specific segmentation mode (mode).
+        /// </summary>
+        /// <param name="gray">images which u want to process</param>
+        /// <param name="binaryOut">final image after processing</param>
+        /// <param name="mode">mode of processing</param>
         public static void ProcessImageForMode(Mat gray, Mat binaryOut, SegmentationMode mode)
         {
             switch (mode)
@@ -408,6 +427,12 @@ namespace CsplCam.Library.Services
 
 
         // Exact restored Math logic for character alignment accuracy
+        /// <summary>
+        /// core method to find the dark pixels of the characters from the image
+        /// </summary>
+        /// <param name="srcImg">image which u want to process</param>
+        /// <param name="roi">meta data of region of interest</param>
+        /// <returns></returns>
         public static List<Rect> GetCharacterBoxes(Mat srcImg, RoiObject roi)
         {
             Mat gray = srcImg;
@@ -551,6 +576,13 @@ namespace CsplCam.Library.Services
             }
         }
 
+        /// <summary>
+        /// Rotate image upto specific angle
+        /// </summary>
+        /// <param name="srcImg">incoming image for processing</param>
+        /// <param name="dstImg">output image after processing of rotation</param>
+        /// <param name="rotationAngles">rotatio angle upti which image will be rotated</param>
+        /// <param name="deepCopyForZero">if true then deep copy will be done</param>
         public static void RotateImage(Mat srcImg, out Mat dstImg, RotationAngles rotationAngles, bool deepCopyForZero = false)
         {
             switch (rotationAngles)
@@ -569,6 +601,14 @@ namespace CsplCam.Library.Services
             finally { ReturnOcrState(ts); }
         }
 
+        /// <summary>
+        /// the core function which is reponsible for character recognition based on contours and template matching
+        /// </summary>
+        /// <param name="charImg">image for processing</param>
+        /// <param name="ThresholdRatio">minimum thresold for ignoring the garbage characters</param>
+        /// <param name="targetLabel">expected character to be recognised.default is null</param>
+        /// <param name="ts">thread is used for parallel processing</param>
+        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveOptimization)]
         private static (string label, double score) RecognizeImpl(Mat charImg, double ThresholdRatio, string targetLabel, OcrThreadState ts)
         {
@@ -628,9 +668,6 @@ namespace CsplCam.Library.Services
                 // --- STEP 1: TARGETED OCV VERIFICATION (Ultra Fast) ---
                 if (hasSpecificTarget)
                 {
-                    // THE FIX: If the user provided a specific letter/number, NEVER search the whole dataset!
-                    skipGlobalSearch = true;
-
                     string folderName = targetLabel;
                     if (SpecialReverse.ContainsKey(targetLabel)) folderName = SpecialReverse[targetLabel];
                     else if (targetLabel.Length == 1 && char.IsLetter(targetLabel[0])) folderName = char.IsLower(targetLabel[0]) ? "lower_" + targetLabel : "upper_" + targetLabel;
@@ -663,8 +700,29 @@ namespace CsplCam.Library.Services
 
                             double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
 
-                            if (finalScore > bestScore) { bestScore = finalScore; bestLabel = folderName; }
+                            if (finalScore > bestScore) 
+                            { 
+                                bestScore = finalScore; 
+                                bestLabel = folderName; 
+                            }
                         }
+
+                        // ====================================================================
+                        // THE HYBRID FIX: "The Confidence Check"
+                        // If the expected character is a VERY STRONG match (> 85%), 
+                        // we trust it completely and skip the global search (Massive Speed Boost).
+                        // If it's a weak match (like 52%), we DO NOT trust it. We force a global 
+                        // search to see if another character is actually a better fit.
+                        // ====================================================================
+                        double confidenceThreshold = Math.Max(OcvTargetMatchConfidence, ThresholdRatio); // Use 85%, or the user's threshold if they set it higher.
+
+                        //check global search based on confidence
+                        skipGlobalSearch = bestScore >= confidenceThreshold;
+
+                        ////// THE FIX: If the user provided a specific letter/number, NEVER search the whole dataset!
+                        ////skipGlobalSearch = true;
+                        //if(!skipGlobalSearch && bestLabel.ToUpper().Equals(folderName.ToUpper()))
+                        //    skipGlobalSearch = true;
                     }
                     else
                     {
@@ -676,17 +734,20 @@ namespace CsplCam.Library.Services
                         skipGlobalSearch = false;
                     }
 
-                    // ====================================================================
-                    // THE HYBRID FIX: "The Confidence Check"
-                    // If the expected character is a VERY STRONG match (> 85%), 
-                    // we trust it completely and skip the global search (Massive Speed Boost).
-                    // If it's a weak match (like 52%), we DO NOT trust it. We force a global 
-                    // search to see if another character is actually a better fit.
-                    // ====================================================================
-                    double confidenceThreshold = Math.Max(OcvTargetMatchConfidence, ThresholdRatio); // Use 85%, or the user's threshold if they set it higher.
+                    //// only run when the global search is true  
+                    //if (skipGlobalSearch)
+                    //{
+                    //    // ====================================================================
+                    //    // THE HYBRID FIX: "The Confidence Check"
+                    //    // If the expected character is a VERY STRONG match (> 85%), 
+                    //    // we trust it completely and skip the global search (Massive Speed Boost).
+                    //    // If it's a weak match (like 52%), we DO NOT trust it. We force a global 
+                    //    // search to see if another character is actually a better fit.
+                    //    // ====================================================================
+                    //    double confidenceThreshold = Math.Max(OcvTargetMatchConfidence, ThresholdRatio); // Use 85%, or the user's threshold if they set it higher.
 
-                    skipGlobalSearch = bestScore >= confidenceThreshold;
-
+                    //    skipGlobalSearch = bestScore >= confidenceThreshold;
+                    //}
                 }
 
                 // --- STEP 2: GLOBAL FALLBACK OCR (Only runs for *, #, @, or empty Expected Text) ---
@@ -715,9 +776,22 @@ namespace CsplCam.Library.Services
                     }
                 }
 
-                if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) bestLabel = bestLabel.Substring(6);
+                if (bestLabel.StartsWith("lower_") || bestLabel.StartsWith("upper_")) 
+                    bestLabel = bestLabel.Substring(6);
                 var specialEntry = SpecialReverse.FirstOrDefault(x => x.Value == bestLabel);
                 if (specialEntry.Key != null) bestLabel = specialEntry.Key;
+
+
+                // ====================================================================
+                // THE CASE-SENSITIVITY FIX (Your brilliant observation!)
+                // Because a 30x30 'S' and 's' are mathematically identical, the engine 
+                // might guess the wrong case. If the letter matches but the case is wrong, 
+                // we force it to match the Expected Text case!
+                // ====================================================================
+                if (hasSpecificTarget && string.Equals(bestLabel, targetLabel, StringComparison.OrdinalIgnoreCase))
+                {
+                    bestLabel = targetLabel;
+                }
 
                 return (bestLabel, Math.Clamp(bestScore, 0, 1));
             }
@@ -821,6 +895,11 @@ namespace CsplCam.Library.Services
             return (BarcodeFormats)format;
         }
 
+        /// <summary>
+        /// function used to read barcode only.implemented multiple fall back mechanism to read barcodes in even harder
+        /// </summary>
+        /// <param name="crop">crop image with barcode</param>
+        /// <param name="roi">meta data of roi</param>
         public static void ReadBarcode(Mat crop, RoiObject roi)
         {
             if (crop.Empty()) return;
@@ -945,6 +1024,11 @@ namespace CsplCam.Library.Services
             finally { ReturnBcState(bcState); }
         }
 
+        /// <summary>
+        /// adavanced barcode processing which uses the brute force grid recovery mode by dividing the barcode image into multiple section
+        /// </summary>
+        /// <param name="crop">image to be process</param>
+        /// <param name="roi">meta data of the image</param>
         public static void BruteForceDecode(Mat crop, RoiObject roi)
         {
             if (crop == null || crop.Empty()) return;
@@ -1260,6 +1344,16 @@ namespace CsplCam.Library.Services
         //============================================================================
         //added on 22-04-2026
         //==========================================================================
+        /// <summary>
+        /// function used to read barcode only.implemented multiple fall back mechanism to read barcodes in even harder
+        /// </summary>
+        /// <param name="img">image for processing</param>
+        /// <param name="options">reader options for processing</param>
+        /// <param name="pad">padding area from edges of barcode</param>
+        /// <param name="scale">scaling for processing for better results</param>
+        /// <param name="roii">meta data of image</param>
+        /// <param name="origCropW">width of image</param>
+        /// <param name="origCropH">height of image</param>
         private static void TryDecodeFast(Mat img, ReaderOptions options, int pad, double scale, RoiObject roii, int origCropW, int origCropH)
         {
             try
@@ -1348,6 +1442,11 @@ namespace CsplCam.Library.Services
         //============================================================================
         //added on 22-04-2026
         //==========================================================================
+        /// <summary>
+        /// /// function used to read pharma barcode only.implemented multiple fall back mechanism to read barcodes in even harder
+        /// </summary>
+        /// <param name="crop">imaeg for processing</param>
+        /// <param name="roi">meta data of image</param>
         private static void TryDecodePharmacode(Mat crop, RoiObject roi)
         {
             try
@@ -1494,6 +1593,11 @@ namespace CsplCam.Library.Services
             catch { }
         }
 
+        /// <summary>
+        /// entry point of all ocr operations including text and barcodes 
+        /// </summary>
+        /// <param name="currentImage">image for processing</param>
+        /// <param name="roi">meta data of images</param>
         public static void DecodeRoi(Mat currentImage, RoiObject roi)
         {
             roi.DecodedText = "";
@@ -1598,8 +1702,10 @@ namespace CsplCam.Library.Services
 
                         // 1. Calculate Median Height ONCE before the loop
                         double medianHeight = 20;
+
                         if (fastResults.Length > 0)
                         {
+                            //height
                             var heights = fastResults.Where(r => r != null).Select(r => r.Box.Height).OrderBy(h => h).ToList();
                             medianHeight = heights.Count > 0 ? heights[heights.Count / 2] : 20;
                         }
@@ -1610,20 +1716,25 @@ namespace CsplCam.Library.Services
                             var res = fastResults[i];
                             if (res == null) continue;
 
-                            // --- DYNAMIC HEIGHT CORRECTOR (o vs O) ---
-                            if (res.Text == "O" || res.Text == "o" || res.Text == "0")
-                            {
-                                // Lowercase 'o' is usually 60-80% the height of a normal letter.
-                                if (res.Box.Height <= medianHeight * 0.82)
-                                {
-                                    res.Text = "o";
-                                }
-                                // If the engine guessed lowercase 'o', but it's actually tall, fix it to Uppercase 'O'
-                                else if (res.Text == "o")
-                                {
-                                    res.Text = "O";
-                                }
-                            }
+                            //// --- DYNAMIC HEIGHT CORRECTOR (o vs O) ---
+                            //if (res.Text == "O" || res.Text == "o" || res.Text == "0")
+                            //{
+                            //    // Lowercase 'o' is usually 60-80% the height of a normal letter.
+                            //    if (res.Box.Height <= medianHeight * 0.82)
+                            //    {
+                            //        res.Text = "o";
+                            //    }
+                            //    //// If the engine guessed lowercase 'o', but it's actually tall, fix it to Uppercase 'O'
+                            //    //else if (res.Text == "o")
+                            //    //{
+
+
+                            //    //    res.Text = "O";
+                            //    //}
+                            //}
+
+                            //get the actual char after post processing
+                            res.Text = CharPostProcessing(res.Text, res.Box.Height, medianHeight);
 
                             // --- ORIGINAL APPEND & SCORE LOGIC ---
                             sb.Append(res.Text);
@@ -1704,19 +1815,6 @@ namespace CsplCam.Library.Services
                 localSw.Stop();
                 roi.TimeTakenForDecoding = localSw.Elapsed;
 
-                //int offsetX = safeBox.X - roi.Box.X, offsetY = safeBox.Y - roi.Box.Y;
-                //if (offsetX != 0 || offsetY != 0)
-                //{
-                //    for (int i = 0; i < roi.CharResults.Count; i++)
-                //    {
-                //        var cr = roi.CharResults[i];
-                //        cr.Box = new Rect(cr.Box.X + offsetX, cr.Box.Y + offsetY, cr.Box.Width, cr.Box.Height);
-                //        roi.CharResults[i] = cr;
-                //    }
-                //}
-
-
-
                 // ====================================================================
                 // 2. COORDINATE MAPPING & FINAL IMAGE CLAMPING
                 // This shifts coordinates from the 'Crop' back to the 'User UI' and 
@@ -1778,6 +1876,29 @@ namespace CsplCam.Library.Services
             }
         }
 
+        /// <summary>
+        /// post processing
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="actualHeight"></param>
+        /// <param name="minHeight"></param>
+        /// <returns></returns>
+        private static string CharPostProcessing(string? value,double actualHeight,double minHeight) 
+        {
+            // --- DYNAMIC HEIGHT CORRECTOR (o vs O) ---
+            if (value == "O" || value == "o" || value == "0")
+            {
+                // Lowercase 'o' is usually 60-80% the height of a normal letter.
+                if (actualHeight <= minHeight * 0.82)
+                {
+                    return "o";
+                }
+            }
+
+            return value!;
+        }
+
+
         //public static (char missingChar,int index) FinMissingChar(ReadOnlySpan<char> originalValue,ReadOnlySpan<char> observed)
         //{
         //    //1.store the length of original value
@@ -1817,6 +1938,13 @@ namespace CsplCam.Library.Services
         //    return "Pass";
         //}
 
+
+        /// <summary>
+        /// function for check expected result based on wildcards given
+        /// </summary>
+        /// <param name="expText">expected value</param>
+        /// <param name="decText">detected value</param>
+        /// <returns></returns>
         private static string IsResultPass(string expText, string decText)
         {
             // 1. Quick exit if lengths don't match

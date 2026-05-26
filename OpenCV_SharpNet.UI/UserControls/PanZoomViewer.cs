@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Drawing.Drawing2D;
 
-namespace OpenCV_SharpNet.UI.UserControls
+namespace OpenCV_SharpNet.UserControls
 {
     public partial class PanZoomViewer : UserControl
     {

@@ -7,12 +7,13 @@ using System.Data;
 using System.Reflection;
 using ZXingCpp;
 
-namespace OpenCV_SharpNet.UI.UserControls
+namespace OpenCV_SharpNet.UserControls
 {
     public partial class ROIControl : UserControl, IRoiControl
     {
         //GET ROI OBJECT
         public RoiObject BoundedROI { get; private set; }
+        public Size? ControlSize { get; set; }
 
         // --- FLAG ---
         private bool _isBinding = false;
@@ -47,11 +48,16 @@ namespace OpenCV_SharpNet.UI.UserControls
             //EnableDoubleBuffering(TblImageAndRepo);
 
             cmbRotationAngle.DataSource = Enum.GetValues(typeof(RotationAngles));
+            CmbSegments.DataSource = Enum.GetValues(typeof(SegmentationMode));
+            CmbSegments.SelectedItem = SegmentationMode.Industrial;
 
             //click events
             Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpBlobFilter.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+
+            //assign the size
+            ControlSize = new Size(this.Width, this.Height);
         }
 
         // =================================================================
@@ -101,7 +107,7 @@ namespace OpenCV_SharpNet.UI.UserControls
                 // OPTIMIZATION: Suspend Layout during heavy UI shifts
                 // =========================================================
                 TblPNlMain.SuspendLayout();
-                
+
                 if (!TxtExpected.Focused && roi.ExpectedText != TxtExpected.Text)
                     TxtExpected.Text = roi.ExpectedText;
 
@@ -310,7 +316,7 @@ namespace OpenCV_SharpNet.UI.UserControls
                 e.Cancel = true;
             }
         }
-       
+
         private void BtnCharResult_Click(object sender, EventArgs e)
         {
             if (BoundedROI is null || BoundedROI.CharResults is null) return;
@@ -341,6 +347,13 @@ namespace OpenCV_SharpNet.UI.UserControls
             if (string.IsNullOrWhiteSpace(TxtDecoded.Text)) return;
 
             TxtExpected.Text = TxtDecoded.Text;
+        }
+
+        private void CmbSegments_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_isBinding || BoundedROI == null) return;
+            BoundedROI.SegmentationMode = (SegmentationMode)CmbSegments.SelectedItem;
+            SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

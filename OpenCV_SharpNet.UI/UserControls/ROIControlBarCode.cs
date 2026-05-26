@@ -6,12 +6,14 @@ using System.Data;
 using System.Reflection;
 using ZXingCpp;
 
-namespace OpenCV_SharpNet.UI.UserControls
+namespace OpenCV_SharpNet.UserControls
 {
     public partial class ROIControlBarCode : UserControl, IRoiControl
     {
         //GET ROI OBJECT
         public RoiObject BoundedROI { get; private set; }
+
+        public Size? ControlSize { get; set; }
 
         // --- FLAG ---
         private bool _isBinding = false;
@@ -54,6 +56,8 @@ namespace OpenCV_SharpNet.UI.UserControls
             //click events
             Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
             GrpRoiData.Click += (sender, args) => SelectionClick?.Invoke(this, EventArgs.Empty);
+
+            ControlSize = new Size(Width, Height);
         }
 
         // =================================================================
@@ -169,6 +173,50 @@ namespace OpenCV_SharpNet.UI.UserControls
 
         private void BtnDecodeROI_Click(object sender, EventArgs e) { DecodeRequested?.Invoke(this, EventArgs.Empty); }
 
+        private void TxtExpected_TextChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.ExpectedText = TxtExpected.Text;
+        }
+
+        private void NumPadMaxWidth_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MaxBlobW = (int)NumPadMaxWidth.Value;
+        }
+
+        private void TxtExpectedThr_TextChanged(object sender, EventArgs e)
+        {
+            if (double.TryParse(TxtExpectedThr.Text, out double val))
+            {
+                if (BoundedROI.Type == RoiType.TemplateMatch) BoundedROI.TmThreshold = val;
+                else BoundedROI.Threshold = val;
+            }
+        }
+
+        private void NumPadMinWidth_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MinBlobW = (int)NumPadMinWidth.Value;
+        }
+
+        private void NumPadMinHeight_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MinBlobH = (int)NumPadMinHeight.Value;
+        }
+
+        private void NumPadMaxHeight_ValueChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+            BoundedROI.MaxBlobH = (int)NumPadMaxHeight.Value;
+        }
+
+        private void chkDoOCR_CheckedChanged(object sender, EventArgs e)
+        {
+            //BoundedROI.ShowOverlay = chkDoOCR.Checked;
+        }
+
         public void SetSelectionState(bool isSelected)
         {
             Color bg = isSelected ? Color.LemonChiffon : Color.WhiteSmoke;
@@ -181,6 +229,15 @@ namespace OpenCV_SharpNet.UI.UserControls
             BoundedROI.RotationAngle = (RotationAngles)cmbRotationAngle.SelectedItem;
             SettingsChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        private void NumPadMorphKeranalWidth_ValueChanged(object sender, EventArgs e)
+        {
+            //if (BoundedROI is null || _isBinding) return;
+            //BoundedROI.MorphKernelWidth = BoundedROI.MorphKernelHeight = (int)NumPadMorphKeranalWidth.Value;
+            //SettingsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void NumPadMorphIteration_ValueChanged(object sender, EventArgs e) { }
 
         // =================================================================
         // OPTIMIZATION: Safe Image Disposing to prevent GDI Crashes
@@ -213,6 +270,24 @@ namespace OpenCV_SharpNet.UI.UserControls
             if (mode is null || _isBinding || BoundedROI == null) return;
             BoundedROI.MorphOp = (MorphOperation)mode;
             SettingsChanged?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void RdMorphModeNone_Click(object sender, EventArgs e)
+        {
+            var d = (RadioButton)sender;
+            MorphModeSelection(d.Text);
+        }
+
+        private void RdMorphModeErode_Click(object sender, EventArgs e)
+        {
+            var d = (RadioButton)sender;
+            MorphModeSelection(d.Text);
+        }
+
+        private void RdMorphModeDilate_Click(object sender, EventArgs e)
+        {
+            var d = (RadioButton)sender;
+            MorphModeSelection(d.Text);
         }
 
         private void CmbRotationAngle_Validating(object sender, CancelEventArgs e)
@@ -312,6 +387,13 @@ namespace OpenCV_SharpNet.UI.UserControls
             {
                 cmbBarcodeFormat.SelectedItem = string.Empty;
             }
+        }
+
+        private void ChkGradingRepo_CheckedChanged(object sender, EventArgs e)
+        {
+            if (BoundedROI is null || _isBinding) return;
+
+            BoundedROI.IsRunGS1QcCheck = chkGradingRepo.Checked;
         }
     }
 }

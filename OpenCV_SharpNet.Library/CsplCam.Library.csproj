@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
 
-	  <!-- THIS IS THE MAGIC FIX FOR CONFUSEREX --><!--
-	  <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
+	  <!-- THIS IS THE MAGIC FIX FOR CONFUSEREX -->
+	  <!--<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>-->
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

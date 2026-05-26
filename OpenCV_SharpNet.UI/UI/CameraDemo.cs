@@ -17,11 +17,11 @@ using CvRect = OpenCvSharp.Rect;
 using Point = System.Drawing.Point;
 using CsplCam.Library.Interfaces;
 using CsplCam.Library.Services;
-using OpenCV_SharpNet.UI.UserControls;
 
 // Aliases
 using SysPoint = System.Drawing.Point;
 using SysRect = System.Drawing.Rectangle;
+using OpenCV_SharpNet.UserControls;
 
 
 namespace OpenCV_SharpNet.UI

@@ -1,4 +1,4 @@
-﻿namespace OpenCV_SharpNet.UI.UserControls
+﻿namespace OpenCV_SharpNet.UserControls
 {
     partial class PanZoomViewer
     {

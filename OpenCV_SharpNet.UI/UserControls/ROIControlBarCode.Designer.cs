@@ -1,6 +1,6 @@
 ﻿using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
-namespace OpenCV_SharpNet.UI.UserControls
+namespace OpenCV_SharpNet.UserControls
 {
     partial class ROIControlBarCode
     {
@@ -30,9 +30,12 @@ namespace OpenCV_SharpNet.UI.UserControls
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ROIControlBarCode));
             TblPNlMain = new TableLayoutPanel();
             grpQC_Result = new GroupBox();
+            tblPnlgs1Repo = new TableLayoutPanel();
             lstGS1_Repo = new ListBox();
+            chkGradingRepo = new CheckBox();
             TblPnlRotationAngle = new TableLayoutPanel();
             LblRotationAngle = new Label();
             cmbRotationAngle = new ComboBox();
@@ -54,6 +57,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             chkBarcodeAdvancedMode = new CheckBox();
             TblPNlMain.SuspendLayout();
             grpQC_Result.SuspendLayout();
+            tblPnlgs1Repo.SuspendLayout();
             TblPnlRotationAngle.SuspendLayout();
             TblPnlBottom.SuspendLayout();
             GrpRoiData.SuspendLayout();
@@ -80,35 +84,66 @@ namespace OpenCV_SharpNet.UI.UserControls
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 176F));
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 65F));
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 51F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 83F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 242F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 55F));
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 105F));
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 308F));
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 52F));
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            TblPNlMain.Size = new Size(597, 675);
+            TblPNlMain.Size = new Size(597, 765);
             TblPNlMain.TabIndex = 0;
             // 
             // grpQC_Result
             // 
-            grpQC_Result.Controls.Add(lstGS1_Repo);
+            grpQC_Result.Controls.Add(tblPnlgs1Repo);
             grpQC_Result.Dock = DockStyle.Fill;
-            grpQC_Result.Location = new Point(3, 378);
+            grpQC_Result.Location = new Point(3, 400);
             grpQC_Result.Name = "grpQC_Result";
-            grpQC_Result.Size = new Size(591, 236);
+            grpQC_Result.Size = new Size(591, 302);
             grpQC_Result.TabIndex = 10;
             grpQC_Result.TabStop = false;
             grpQC_Result.Text = "QC Report";
             grpQC_Result.UseCompatibleTextRendering = true;
+            // 
+            // tblPnlgs1Repo
+            // 
+            tblPnlgs1Repo.ColumnCount = 1;
+            tblPnlgs1Repo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tblPnlgs1Repo.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tblPnlgs1Repo.Controls.Add(lstGS1_Repo, 0, 1);
+            tblPnlgs1Repo.Controls.Add(chkGradingRepo, 0, 0);
+            tblPnlgs1Repo.Dock = DockStyle.Fill;
+            tblPnlgs1Repo.Location = new Point(3, 24);
+            tblPnlgs1Repo.Name = "tblPnlgs1Repo";
+            tblPnlgs1Repo.RowCount = 2;
+            tblPnlgs1Repo.RowStyles.Add(new RowStyle(SizeType.Absolute, 43F));
+            tblPnlgs1Repo.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tblPnlgs1Repo.Size = new Size(585, 275);
+            tblPnlgs1Repo.TabIndex = 0;
             // 
             // lstGS1_Repo
             // 
             lstGS1_Repo.Dock = DockStyle.Fill;
             lstGS1_Repo.Font = new Font("Palatino Linotype", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lstGS1_Repo.FormattingEnabled = true;
-            lstGS1_Repo.Location = new Point(3, 24);
+            lstGS1_Repo.Location = new Point(3, 46);
             lstGS1_Repo.Name = "lstGS1_Repo";
-            lstGS1_Repo.Size = new Size(585, 209);
+            lstGS1_Repo.Size = new Size(579, 226);
             lstGS1_Repo.TabIndex = 8;
+            // 
+            // chkGradingRepo
+            // 
+            chkGradingRepo.AutoSize = true;
+            chkGradingRepo.Dock = DockStyle.Fill;
+            chkGradingRepo.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold);
+            chkGradingRepo.Location = new Point(3, 3);
+            chkGradingRepo.Name = "chkGradingRepo";
+            chkGradingRepo.Padding = new Padding(5, 0, 0, 0);
+            chkGradingRepo.Size = new Size(579, 37);
+            chkGradingRepo.TabIndex = 9;
+            chkGradingRepo.Text = "Generate Grading Report";
+            chkGradingRepo.UseCompatibleTextRendering = true;
+            chkGradingRepo.UseVisualStyleBackColor = true;
+            chkGradingRepo.CheckedChanged += ChkGradingRepo_CheckedChanged;
             // 
             // TblPnlRotationAngle
             // 
@@ -193,11 +228,11 @@ namespace OpenCV_SharpNet.UI.UserControls
             TblPnlBottom.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             TblPnlBottom.Controls.Add(BtnDecodeROI, 1, 0);
             TblPnlBottom.Dock = DockStyle.Fill;
-            TblPnlBottom.Location = new Point(3, 620);
+            TblPnlBottom.Location = new Point(3, 708);
             TblPnlBottom.Name = "TblPnlBottom";
             TblPnlBottom.RowCount = 1;
             TblPnlBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlBottom.Size = new Size(591, 49);
+            TblPnlBottom.Size = new Size(591, 46);
             TblPnlBottom.TabIndex = 3;
             // 
             // BtnDecodeROI
@@ -206,12 +241,12 @@ namespace OpenCV_SharpNet.UI.UserControls
             BtnDecodeROI.Dock = DockStyle.Fill;
             BtnDecodeROI.Font = new Font("Calibri", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnDecodeROI.ForeColor = Color.Transparent;
-            BtnDecodeROI.Image = Properties.Resources.icons8_ocr_30;
+            BtnDecodeROI.Image = (Image)resources.GetObject("BtnDecodeROI.Image");
             BtnDecodeROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnDecodeROI.Location = new Point(219, 3);
             BtnDecodeROI.Name = "BtnDecodeROI";
             BtnDecodeROI.Padding = new Padding(10, 0, 0, 0);
-            BtnDecodeROI.Size = new Size(152, 43);
+            BtnDecodeROI.Size = new Size(152, 40);
             BtnDecodeROI.TabIndex = 2;
             BtnDecodeROI.Text = "Decode ROI";
             BtnDecodeROI.TextImageRelation = TextImageRelation.ImageBeforeText;
@@ -331,7 +366,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             TblImageAndRepo.Name = "TblImageAndRepo";
             TblImageAndRepo.RowCount = 1;
             TblImageAndRepo.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblImageAndRepo.Size = new Size(591, 77);
+            TblImageAndRepo.Size = new Size(591, 99);
             TblImageAndRepo.TabIndex = 9;
             // 
             // pzPreview
@@ -341,7 +376,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             pzPreview.Interpolation = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             pzPreview.Location = new Point(3, 3);
             pzPreview.Name = "pzPreview";
-            pzPreview.Size = new Size(585, 71);
+            pzPreview.Size = new Size(585, 93);
             pzPreview.TabIndex = 0;
             // 
             // grpBoxAdvancedMode
@@ -397,9 +432,11 @@ namespace OpenCV_SharpNet.UI.UserControls
             DoubleBuffered = true;
             Font = new Font("Palatino Linotype", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "ROIControlBarCode";
-            Size = new Size(597, 675);
+            Size = new Size(597, 765);
             TblPNlMain.ResumeLayout(false);
             grpQC_Result.ResumeLayout(false);
+            tblPnlgs1Repo.ResumeLayout(false);
+            tblPnlgs1Repo.PerformLayout();
             TblPnlRotationAngle.ResumeLayout(false);
             TblPnlRotationAngle.PerformLayout();
             TblPnlBottom.ResumeLayout(false);
@@ -426,7 +463,7 @@ namespace OpenCV_SharpNet.UI.UserControls
         private Label LblDecodedThresold;
         private TextBox TxtExpectedThr;
         private Label LblDecodedThr;
-        private CheckBox chkDoOCR;
+        //private CheckBox chkDoOCR;
         private TableLayoutPanel TblPnlBlobFil;
         private Label LblBlobMaxWidth;
         private Label LblBlobMinWidth;
@@ -449,7 +486,6 @@ namespace OpenCV_SharpNet.UI.UserControls
         private ComboBox cmbRotationAngle;
         private CheckBox chkAnchor;
         private CheckBox chkIsUseReferance;
-        private OpenCV_SharpNet.UI.UserControls.PanZoomViewer pzPreview;
         private ComboBox cmbBarcodeFormat;
         private Label lblBarcodeFormat;
         private GroupBox grpBoxAdvancedMode;
@@ -457,5 +493,8 @@ namespace OpenCV_SharpNet.UI.UserControls
         //private CheckBox chkIsBarcodeFormatAuto;
         private CheckBox chkBarcodeAdvancedMode;
         private CheckBox chkBarcodeFormatAuto;
+        private TableLayoutPanel tblPnlgs1Repo;
+        private CheckBox chkGradingRepo;
+        private PanZoomViewer pzPreview;
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace OpenCV_SharpNet.UI.UserControls
+﻿namespace OpenCV_SharpNet.UserControls
 {
     partial class RoiControlTemplate
     {
@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RoiControlTemplate));
             TblPNlMain = new TableLayoutPanel();
-            pzPreview = new PanZoomViewer();
             GrpBoxMorph = new GroupBox();
             tableLayoutPanel1 = new TableLayoutPanel();
             NumPadMorphIteration = new NumericUpDown();
@@ -56,6 +56,7 @@
             LblDecodedThr = new Label();
             LblDecoded = new Label();
             TxtDecoded = new TextBox();
+            pzPreview = new PanZoomViewer();
             TblPNlMain.SuspendLayout();
             GrpBoxMorph.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
@@ -72,11 +73,11 @@
             // 
             TblPNlMain.ColumnCount = 1;
             TblPNlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TblPNlMain.Controls.Add(pzPreview, 0, 3);
             TblPNlMain.Controls.Add(GrpBoxMorph, 0, 2);
             TblPNlMain.Controls.Add(TblPnlRotationAngle, 0, 1);
             TblPNlMain.Controls.Add(TblPnlBottom, 0, 4);
             TblPNlMain.Controls.Add(GrpRoiData, 0, 0);
+            TblPNlMain.Controls.Add(pzPreview, 0, 3);
             TblPNlMain.Dock = DockStyle.Fill;
             TblPNlMain.Location = new Point(0, 0);
             TblPNlMain.Name = "TblPNlMain";
@@ -89,16 +90,6 @@
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
             TblPNlMain.Size = new Size(597, 397);
             TblPNlMain.TabIndex = 1;
-            // 
-            // pzPreview
-            // 
-            pzPreview.Dock = DockStyle.Fill;
-            pzPreview.Image = null;
-            pzPreview.Interpolation = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            pzPreview.Location = new Point(3, 228);
-            pzPreview.Name = "pzPreview";
-            pzPreview.Size = new Size(591, 112);
-            pzPreview.TabIndex = 0;
             // 
             // GrpBoxMorph
             // 
@@ -359,7 +350,7 @@
             BtnDecodeROI.Dock = DockStyle.Fill;
             BtnDecodeROI.Font = new Font("Calibri", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnDecodeROI.ForeColor = Color.Transparent;
-            BtnDecodeROI.Image = Properties.Resources.icons8_ocr_30;
+            BtnDecodeROI.Image = (Image)resources.GetObject("BtnDecodeROI.Image");
             BtnDecodeROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnDecodeROI.Location = new Point(219, 3);
             BtnDecodeROI.Name = "BtnDecodeROI";
@@ -494,6 +485,16 @@
             TxtDecoded.Size = new Size(257, 33);
             TxtDecoded.TabIndex = 3;
             // 
+            // pzPreview
+            // 
+            pzPreview.Dock = DockStyle.Fill;
+            pzPreview.Image = null;
+            pzPreview.Interpolation = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            pzPreview.Location = new Point(3, 228);
+            pzPreview.Name = "pzPreview";
+            pzPreview.Size = new Size(591, 112);
+            pzPreview.TabIndex = 7;
+            // 
             // RoiControlTemplate
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -548,7 +549,7 @@
         private Label LblDecoded;
         private Label LblDecodedThresold;
         private Label LblDecodedThr;
-        private PanZoomViewer pzPreview;
         private Label LblExpectedThresold;
+        private PanZoomViewer pzPreview;
     }
 }

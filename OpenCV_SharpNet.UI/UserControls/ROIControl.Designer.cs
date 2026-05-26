@@ -1,6 +1,6 @@
 ﻿using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
-namespace OpenCV_SharpNet.UI.UserControls
+namespace OpenCV_SharpNet.UserControls
 {
     partial class ROIControl
     {
@@ -30,7 +30,11 @@ namespace OpenCV_SharpNet.UI.UserControls
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ROIControl));
             TblPNlMain = new TableLayoutPanel();
+            GrpBoxSegMentMode = new GroupBox();
+            tableLayoutPanel2 = new TableLayoutPanel();
+            CmbSegments = new ComboBox();
             GrpBoxMorph = new GroupBox();
             tableLayoutPanel1 = new TableLayoutPanel();
             NumPadMorphIteration = new NumericUpDown();
@@ -76,6 +80,8 @@ namespace OpenCV_SharpNet.UI.UserControls
             NumPadMaxHeight = new NumericUpDown();
             pzPreview = new PanZoomViewer();
             TblPNlMain.SuspendLayout();
+            GrpBoxSegMentMode.SuspendLayout();
+            tableLayoutPanel2.SuspendLayout();
             GrpBoxMorph.SuspendLayout();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)NumPadMorphIteration).BeginInit();
@@ -98,33 +104,73 @@ namespace OpenCV_SharpNet.UI.UserControls
             // 
             TblPNlMain.ColumnCount = 1;
             TblPNlMain.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            TblPNlMain.Controls.Add(GrpBoxMorph, 0, 3);
-            TblPNlMain.Controls.Add(TblPnlRotationAngle, 0, 2);
-            TblPNlMain.Controls.Add(TblPnlBottom, 0, 5);
-            TblPNlMain.Controls.Add(GrpRoiData, 0, 0);
-            TblPNlMain.Controls.Add(GrpBlobFilter, 0, 1);
-            TblPNlMain.Controls.Add(pzPreview, 0, 4);
+            TblPNlMain.Controls.Add(GrpBoxSegMentMode, 0, 0);
+            TblPNlMain.Controls.Add(GrpBoxMorph, 0, 4);
+            TblPNlMain.Controls.Add(TblPnlRotationAngle, 0, 3);
+            TblPNlMain.Controls.Add(TblPnlBottom, 0, 6);
+            TblPNlMain.Controls.Add(GrpRoiData, 0, 1);
+            TblPNlMain.Controls.Add(GrpBlobFilter, 0, 2);
+            TblPNlMain.Controls.Add(pzPreview, 0, 5);
             TblPNlMain.Dock = DockStyle.Fill;
             TblPNlMain.Location = new Point(0, 0);
             TblPNlMain.Name = "TblPNlMain";
-            TblPNlMain.RowCount = 4;
+            TblPNlMain.RowCount = 5;
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 78F));
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 241F));
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 102F));
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 49F));
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 112F));
             TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 101F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 46F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 108F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 101F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 15F));
-            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            TblPNlMain.Size = new Size(597, 651);
+            TblPNlMain.RowStyles.Add(new RowStyle(SizeType.Absolute, 8F));
+            TblPNlMain.Size = new Size(597, 737);
             TblPNlMain.TabIndex = 0;
+            // 
+            // GrpBoxSegMentMode
+            // 
+            GrpBoxSegMentMode.Controls.Add(tableLayoutPanel2);
+            GrpBoxSegMentMode.Dock = DockStyle.Fill;
+            GrpBoxSegMentMode.Location = new Point(3, 3);
+            GrpBoxSegMentMode.Name = "GrpBoxSegMentMode";
+            GrpBoxSegMentMode.Size = new Size(591, 72);
+            GrpBoxSegMentMode.TabIndex = 8;
+            GrpBoxSegMentMode.TabStop = false;
+            GrpBoxSegMentMode.Text = "Segmentation Mode";
+            // 
+            // tableLayoutPanel2
+            // 
+            tableLayoutPanel2.ColumnCount = 2;
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 298F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel2.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
+            tableLayoutPanel2.Controls.Add(CmbSegments, 0, 0);
+            tableLayoutPanel2.Dock = DockStyle.Fill;
+            tableLayoutPanel2.Location = new Point(3, 24);
+            tableLayoutPanel2.Name = "tableLayoutPanel2";
+            tableLayoutPanel2.RowCount = 1;
+            tableLayoutPanel2.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tableLayoutPanel2.Size = new Size(585, 45);
+            tableLayoutPanel2.TabIndex = 6;
+            // 
+            // CmbSegments
+            // 
+            CmbSegments.Dock = DockStyle.Fill;
+            CmbSegments.FormattingEnabled = true;
+            CmbSegments.Location = new Point(3, 8);
+            CmbSegments.Margin = new Padding(3, 8, 3, 3);
+            CmbSegments.Name = "CmbSegments";
+            CmbSegments.Size = new Size(292, 28);
+            CmbSegments.TabIndex = 3;
+            CmbSegments.SelectedIndexChanged += CmbSegments_SelectedIndexChanged;
             // 
             // GrpBoxMorph
             // 
             GrpBoxMorph.Controls.Add(tableLayoutPanel1);
             GrpBoxMorph.Dock = DockStyle.Fill;
-            GrpBoxMorph.Location = new Point(3, 391);
+            GrpBoxMorph.Location = new Point(3, 473);
             GrpBoxMorph.Name = "GrpBoxMorph";
-            GrpBoxMorph.Size = new Size(591, 102);
+            GrpBoxMorph.Size = new Size(591, 106);
             GrpBoxMorph.TabIndex = 6;
             GrpBoxMorph.TabStop = false;
             GrpBoxMorph.Text = "Morphological operations";
@@ -153,7 +199,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 53.3333321F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 46.6666679F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(585, 75);
+            tableLayoutPanel1.Size = new Size(585, 79);
             tableLayoutPanel1.TabIndex = 1;
             // 
             // NumPadMorphIteration
@@ -161,7 +207,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             NumPadMorphIteration.Dock = DockStyle.Fill;
             NumPadMorphIteration.Enabled = false;
             NumPadMorphIteration.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            NumPadMorphIteration.Location = new Point(316, 43);
+            NumPadMorphIteration.Location = new Point(316, 45);
             NumPadMorphIteration.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
             NumPadMorphIteration.Name = "NumPadMorphIteration";
             NumPadMorphIteration.Size = new Size(53, 28);
@@ -175,7 +221,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             lblMorphMode.Location = new Point(3, 3);
             lblMorphMode.Margin = new Padding(3);
             lblMorphMode.Name = "lblMorphMode";
-            lblMorphMode.Size = new Size(110, 34);
+            lblMorphMode.Size = new Size(110, 36);
             lblMorphMode.TabIndex = 12;
             lblMorphMode.Text = "Morph Mode: ";
             lblMorphMode.TextAlign = ContentAlignment.MiddleLeft;
@@ -186,10 +232,10 @@ namespace OpenCV_SharpNet.UI.UserControls
             lblMorphIternation.AutoSize = true;
             lblMorphIternation.Dock = DockStyle.Fill;
             lblMorphIternation.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblMorphIternation.Location = new Point(181, 43);
+            lblMorphIternation.Location = new Point(181, 45);
             lblMorphIternation.Margin = new Padding(3);
             lblMorphIternation.Name = "lblMorphIternation";
-            lblMorphIternation.Size = new Size(129, 29);
+            lblMorphIternation.Size = new Size(129, 31);
             lblMorphIternation.TabIndex = 10;
             lblMorphIternation.Text = "Morph Iteration :";
             lblMorphIternation.TextAlign = ContentAlignment.MiddleLeft;
@@ -200,10 +246,10 @@ namespace OpenCV_SharpNet.UI.UserControls
             lblMorphKeranalWidth.AutoSize = true;
             lblMorphKeranalWidth.Dock = DockStyle.Fill;
             lblMorphKeranalWidth.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblMorphKeranalWidth.Location = new Point(3, 43);
+            lblMorphKeranalWidth.Location = new Point(3, 45);
             lblMorphKeranalWidth.Margin = new Padding(3);
             lblMorphKeranalWidth.Name = "lblMorphKeranalWidth";
-            lblMorphKeranalWidth.Size = new Size(110, 29);
+            lblMorphKeranalWidth.Size = new Size(110, 31);
             lblMorphKeranalWidth.TabIndex = 0;
             lblMorphKeranalWidth.Text = "Kernel Size :";
             lblMorphKeranalWidth.TextAlign = ContentAlignment.MiddleLeft;
@@ -213,7 +259,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             // 
             NumPadMorphKeranalWidth.Dock = DockStyle.Fill;
             NumPadMorphKeranalWidth.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            NumPadMorphKeranalWidth.Location = new Point(119, 43);
+            NumPadMorphKeranalWidth.Location = new Point(119, 45);
             NumPadMorphKeranalWidth.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
             NumPadMorphKeranalWidth.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             NumPadMorphKeranalWidth.Name = "NumPadMorphKeranalWidth";
@@ -237,7 +283,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             tblPnlMorphMode.Name = "tblPnlMorphMode";
             tblPnlMorphMode.RowCount = 1;
             tblPnlMorphMode.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            tblPnlMorphMode.Size = new Size(432, 34);
+            tblPnlMorphMode.Size = new Size(432, 36);
             tblPnlMorphMode.TabIndex = 14;
             // 
             // rdMorphModeDilate
@@ -247,7 +293,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             rdMorphModeDilate.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             rdMorphModeDilate.Location = new Point(152, 3);
             rdMorphModeDilate.Name = "rdMorphModeDilate";
-            rdMorphModeDilate.Size = new Size(277, 28);
+            rdMorphModeDilate.Size = new Size(277, 30);
             rdMorphModeDilate.TabIndex = 2;
             rdMorphModeDilate.TabStop = true;
             rdMorphModeDilate.Text = "Dilate";
@@ -262,7 +308,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             rdMorphModeErode.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             rdMorphModeErode.Location = new Point(78, 3);
             rdMorphModeErode.Name = "rdMorphModeErode";
-            rdMorphModeErode.Size = new Size(68, 28);
+            rdMorphModeErode.Size = new Size(68, 30);
             rdMorphModeErode.TabIndex = 1;
             rdMorphModeErode.TabStop = true;
             rdMorphModeErode.Text = "Erode";
@@ -277,7 +323,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             rdMorphModeNone.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             rdMorphModeNone.Location = new Point(3, 3);
             rdMorphModeNone.Name = "rdMorphModeNone";
-            rdMorphModeNone.Size = new Size(69, 28);
+            rdMorphModeNone.Size = new Size(69, 30);
             rdMorphModeNone.TabIndex = 0;
             rdMorphModeNone.TabStop = true;
             rdMorphModeNone.Text = "None";
@@ -298,11 +344,11 @@ namespace OpenCV_SharpNet.UI.UserControls
             TblPnlRotationAngle.Controls.Add(chkAnchor, 3, 0);
             TblPnlRotationAngle.Controls.Add(chkIsUseReferance, 4, 0);
             TblPnlRotationAngle.Dock = DockStyle.Fill;
-            TblPnlRotationAngle.Location = new Point(3, 345);
+            TblPnlRotationAngle.Location = new Point(3, 424);
             TblPnlRotationAngle.Name = "TblPnlRotationAngle";
             TblPnlRotationAngle.RowCount = 1;
             TblPnlRotationAngle.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
-            TblPnlRotationAngle.Size = new Size(591, 40);
+            TblPnlRotationAngle.Size = new Size(591, 43);
             TblPnlRotationAngle.TabIndex = 5;
             // 
             // LblRotationAngle
@@ -313,7 +359,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             LblRotationAngle.Location = new Point(3, 3);
             LblRotationAngle.Margin = new Padding(3);
             LblRotationAngle.Name = "LblRotationAngle";
-            LblRotationAngle.Size = new Size(84, 34);
+            LblRotationAngle.Size = new Size(84, 37);
             LblRotationAngle.TabIndex = 2;
             LblRotationAngle.Text = " Rotation : ";
             LblRotationAngle.TextAlign = ContentAlignment.MiddleLeft;
@@ -337,7 +383,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             chkAnchor.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             chkAnchor.Location = new Point(290, 3);
             chkAnchor.Name = "chkAnchor";
-            chkAnchor.Size = new Size(143, 34);
+            chkAnchor.Size = new Size(143, 37);
             chkAnchor.TabIndex = 9;
             chkAnchor.Text = "Enable Anchor";
             chkAnchor.UseCompatibleTextRendering = true;
@@ -350,9 +396,10 @@ namespace OpenCV_SharpNet.UI.UserControls
             chkIsUseReferance.Font = new Font("Palatino Linotype", 9F, FontStyle.Bold);
             chkIsUseReferance.Location = new Point(439, 3);
             chkIsUseReferance.Name = "chkIsUseReferance";
-            chkIsUseReferance.Size = new Size(149, 34);
+            chkIsUseReferance.Size = new Size(149, 37);
             chkIsUseReferance.TabIndex = 10;
             chkIsUseReferance.Text = "Use Ref. Roi";
+            chkIsUseReferance.CheckedChanged += ChkIsUseReferance_CheckedChanged;
             // 
             // TblPnlBottom
             // 
@@ -364,7 +411,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             TblPnlBottom.Controls.Add(BtnDecodeROI, 1, 0);
             TblPnlBottom.Controls.Add(btnCharResult, 2, 0);
             TblPnlBottom.Dock = DockStyle.Fill;
-            TblPnlBottom.Location = new Point(3, 600);
+            TblPnlBottom.Location = new Point(3, 686);
             TblPnlBottom.Name = "TblPnlBottom";
             TblPnlBottom.RowCount = 1;
             TblPnlBottom.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
@@ -377,6 +424,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             BtnDecodeROI.Dock = DockStyle.Fill;
             BtnDecodeROI.Font = new Font("Calibri", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             BtnDecodeROI.ForeColor = Color.Transparent;
+            BtnDecodeROI.Image = (Image)resources.GetObject("BtnDecodeROI.Image");
             BtnDecodeROI.ImageAlign = ContentAlignment.MiddleLeft;
             BtnDecodeROI.Location = new Point(139, 3);
             BtnDecodeROI.Name = "BtnDecodeROI";
@@ -395,6 +443,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             btnCharResult.Dock = DockStyle.Fill;
             btnCharResult.Font = new Font("Calibri", 10.8F, FontStyle.Bold, GraphicsUnit.Point, 0);
             btnCharResult.ForeColor = Color.Transparent;
+            btnCharResult.Image = (Image)resources.GetObject("btnCharResult.Image");
             btnCharResult.ImageAlign = ContentAlignment.MiddleLeft;
             btnCharResult.Location = new Point(302, 3);
             btnCharResult.Name = "btnCharResult";
@@ -412,7 +461,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             GrpRoiData.BackColor = Color.Transparent;
             GrpRoiData.Controls.Add(TblPnlRoiOcrData);
             GrpRoiData.Dock = DockStyle.Fill;
-            GrpRoiData.Location = new Point(3, 3);
+            GrpRoiData.Location = new Point(3, 81);
             GrpRoiData.Name = "GrpRoiData";
             GrpRoiData.Size = new Size(591, 235);
             GrpRoiData.TabIndex = 0;
@@ -625,9 +674,9 @@ namespace OpenCV_SharpNet.UI.UserControls
             // 
             GrpBlobFilter.Controls.Add(TblPnlBlobFil);
             GrpBlobFilter.Dock = DockStyle.Fill;
-            GrpBlobFilter.Location = new Point(3, 244);
+            GrpBlobFilter.Location = new Point(3, 322);
             GrpBlobFilter.Name = "GrpBlobFilter";
-            GrpBlobFilter.Size = new Size(591, 95);
+            GrpBlobFilter.Size = new Size(591, 96);
             GrpBlobFilter.TabIndex = 4;
             GrpBlobFilter.TabStop = false;
             GrpBlobFilter.Text = "Blob Filter";
@@ -655,7 +704,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             TblPnlBlobFil.RowCount = 2;
             TblPnlBlobFil.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
             TblPnlBlobFil.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
-            TblPnlBlobFil.Size = new Size(585, 68);
+            TblPnlBlobFil.Size = new Size(585, 69);
             TblPnlBlobFil.TabIndex = 1;
             // 
             // NumPadMaxWidth
@@ -705,7 +754,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             LblBlobMinHeight.Location = new Point(3, 37);
             LblBlobMinHeight.Margin = new Padding(3);
             LblBlobMinHeight.Name = "LblBlobMinHeight";
-            LblBlobMinHeight.Size = new Size(98, 28);
+            LblBlobMinHeight.Size = new Size(98, 29);
             LblBlobMinHeight.TabIndex = 1;
             LblBlobMinHeight.Text = "Min Height : ";
             LblBlobMinHeight.TextAlign = ContentAlignment.MiddleLeft;
@@ -719,7 +768,7 @@ namespace OpenCV_SharpNet.UI.UserControls
             LblBlobMaxHeight.Location = new Point(184, 37);
             LblBlobMaxHeight.Margin = new Padding(3);
             LblBlobMaxHeight.Name = "LblBlobMaxHeight";
-            LblBlobMaxHeight.Size = new Size(98, 28);
+            LblBlobMaxHeight.Size = new Size(98, 29);
             LblBlobMaxHeight.TabIndex = 5;
             LblBlobMaxHeight.Text = "Max Height : ";
             LblBlobMaxHeight.TextAlign = ContentAlignment.MiddleLeft;
@@ -763,10 +812,10 @@ namespace OpenCV_SharpNet.UI.UserControls
             pzPreview.Dock = DockStyle.Fill;
             pzPreview.Image = null;
             pzPreview.Interpolation = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-            pzPreview.Location = new Point(3, 499);
+            pzPreview.Location = new Point(3, 585);
             pzPreview.Name = "pzPreview";
             pzPreview.Size = new Size(591, 95);
-            pzPreview.TabIndex = 7;
+            pzPreview.TabIndex = 9;
             // 
             // ROIControl
             // 
@@ -778,8 +827,10 @@ namespace OpenCV_SharpNet.UI.UserControls
             DoubleBuffered = true;
             Font = new Font("Palatino Linotype", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             Name = "ROIControl";
-            Size = new Size(597, 651);
+            Size = new Size(597, 737);
             TblPNlMain.ResumeLayout(false);
+            GrpBoxSegMentMode.ResumeLayout(false);
+            tableLayoutPanel2.ResumeLayout(false);
             GrpBoxMorph.ResumeLayout(false);
             tableLayoutPanel1.ResumeLayout(false);
             tableLayoutPanel1.PerformLayout();
@@ -850,6 +901,9 @@ namespace OpenCV_SharpNet.UI.UserControls
         private TableLayoutPanel TblPnlBottom;
         private Button BtnDecodeROI;
         private Button btnCharResult;
+        private GroupBox GrpBoxSegMentMode;
+        private TableLayoutPanel tableLayoutPanel2;
+        private ComboBox CmbSegments;
         private PanZoomViewer pzPreview;
     }
 }
