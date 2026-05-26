@@ -35,4 +35,8 @@
     <PackageReference Include="ZXingCpp" Version="0.4.0-alpha" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Extensions\" />
+  </ItemGroup>
+
 </Project>

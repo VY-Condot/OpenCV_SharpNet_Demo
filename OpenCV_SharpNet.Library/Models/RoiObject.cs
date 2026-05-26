@@ -151,15 +151,6 @@ namespace CsplCam.Library.Models
         public int AnchorBottom { get; set; } = 800;
         public int AnchorLeft { get; set; } = 800;
         public int AnchorRight { get; set; } = 800;
-        
-        ///// <summary>
-        ///// set the min and max confidence of the anchor character (the character with the highest anchor confidence in the image).
-        ///// </summary>
-        //public struct AnchorConfidence
-        //{
-        //    public static double Min { get; set; } = 0.35;
-        //    public static double Max { get; set; } = 0.50;
-        //}
 
         // Visual pattern (Not saved to JSON)
         [System.Text.Json.Serialization.JsonIgnore]
@@ -189,6 +180,12 @@ namespace CsplCam.Library.Models
         //=========================================================================================================
         public GS1_QC_CheckResult? Gs1QcResult { get; set; }
         public bool IsRunGS1QcCheck { get; set; } = false;
+
+        //=====================================================================
+        // added on :- 26052026
+        // new addition : add this property for getting suer config for grading range
+        //=====================================================================
+        public UserConfiguredGrading? UserConfiguredGrading { get; set; } = new();
 
         //==============================================================================================
         //ADD NEW PROPETY FOR REFERENCE AND ROI REFERENCE ID FOR FIND DYANMIC ROI
@@ -248,26 +245,8 @@ namespace CsplCam.Library.Models
                 AnchorLeft = this.AnchorLeft,
                 AnchorRight = this.AnchorRight,
                 AnchorTop = this.AnchorTop,
-                //OverallThreshold = this.OverallThreshold,
             };
         }
     }
 
-    //public class CharResult
-    //{
-    //    public Rect Box { get; set; }
-    //    public string? Text { get; set; }
-    //    public double Score { get; set; }
-    //    public bool IsGood { get; set; }
-
-    //    // --- NEW PROPERTY ---
-    //    public bool IsExpectedMatch { get; set; } // Does it match the expected character?
-    //}
-
-    //public class CharTemplate
-    //{
-    //    public Mat Vector { get; set; }      // The 30x30 visual shape
-    //    public double AspectRatio { get; set; } // Width / Height
-    //    public double FillDensity { get; set; } // How much ink? (0.0 to 1.0)
-    //}
 }

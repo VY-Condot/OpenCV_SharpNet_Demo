@@ -35,7 +35,9 @@ namespace OpenCV_SharpNet.UserControls
             grpQC_Result = new GroupBox();
             tblPnlgs1Repo = new TableLayoutPanel();
             lstGS1_Repo = new ListBox();
+            tblPnlGrade = new TableLayoutPanel();
             chkGradingRepo = new CheckBox();
+            btnSetting = new Button();
             TblPnlRotationAngle = new TableLayoutPanel();
             LblRotationAngle = new Label();
             cmbRotationAngle = new ComboBox();
@@ -58,6 +60,7 @@ namespace OpenCV_SharpNet.UserControls
             TblPNlMain.SuspendLayout();
             grpQC_Result.SuspendLayout();
             tblPnlgs1Repo.SuspendLayout();
+            tblPnlGrade.SuspendLayout();
             TblPnlRotationAngle.SuspendLayout();
             TblPnlBottom.SuspendLayout();
             GrpRoiData.SuspendLayout();
@@ -110,12 +113,12 @@ namespace OpenCV_SharpNet.UserControls
             tblPnlgs1Repo.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tblPnlgs1Repo.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 20F));
             tblPnlgs1Repo.Controls.Add(lstGS1_Repo, 0, 1);
-            tblPnlgs1Repo.Controls.Add(chkGradingRepo, 0, 0);
+            tblPnlgs1Repo.Controls.Add(tblPnlGrade, 0, 0);
             tblPnlgs1Repo.Dock = DockStyle.Fill;
             tblPnlgs1Repo.Location = new Point(3, 24);
             tblPnlgs1Repo.Name = "tblPnlgs1Repo";
             tblPnlgs1Repo.RowCount = 2;
-            tblPnlgs1Repo.RowStyles.Add(new RowStyle(SizeType.Absolute, 43F));
+            tblPnlgs1Repo.RowStyles.Add(new RowStyle(SizeType.Absolute, 51F));
             tblPnlgs1Repo.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tblPnlgs1Repo.Size = new Size(585, 275);
             tblPnlgs1Repo.TabIndex = 0;
@@ -125,10 +128,26 @@ namespace OpenCV_SharpNet.UserControls
             lstGS1_Repo.Dock = DockStyle.Fill;
             lstGS1_Repo.Font = new Font("Palatino Linotype", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lstGS1_Repo.FormattingEnabled = true;
-            lstGS1_Repo.Location = new Point(3, 46);
+            lstGS1_Repo.Location = new Point(3, 54);
             lstGS1_Repo.Name = "lstGS1_Repo";
-            lstGS1_Repo.Size = new Size(579, 226);
+            lstGS1_Repo.Size = new Size(579, 218);
             lstGS1_Repo.TabIndex = 8;
+            // 
+            // tblPnlGrade
+            // 
+            tblPnlGrade.ColumnCount = 3;
+            tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 274F));
+            tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 123F));
+            tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+            tblPnlGrade.Controls.Add(chkGradingRepo, 0, 0);
+            tblPnlGrade.Controls.Add(btnSetting, 1, 0);
+            tblPnlGrade.Dock = DockStyle.Fill;
+            tblPnlGrade.Location = new Point(3, 3);
+            tblPnlGrade.Name = "tblPnlGrade";
+            tblPnlGrade.RowCount = 1;
+            tblPnlGrade.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+            tblPnlGrade.Size = new Size(579, 45);
+            tblPnlGrade.TabIndex = 9;
             // 
             // chkGradingRepo
             // 
@@ -138,12 +157,26 @@ namespace OpenCV_SharpNet.UserControls
             chkGradingRepo.Location = new Point(3, 3);
             chkGradingRepo.Name = "chkGradingRepo";
             chkGradingRepo.Padding = new Padding(5, 0, 0, 0);
-            chkGradingRepo.Size = new Size(579, 37);
+            chkGradingRepo.Size = new Size(268, 39);
             chkGradingRepo.TabIndex = 9;
             chkGradingRepo.Text = "Generate Grading Report";
             chkGradingRepo.UseCompatibleTextRendering = true;
             chkGradingRepo.UseVisualStyleBackColor = true;
             chkGradingRepo.CheckedChanged += ChkGradingRepo_CheckedChanged;
+            // 
+            // btnSetting
+            // 
+            btnSetting.BackColor = Color.RosyBrown;
+            btnSetting.Dock = DockStyle.Fill;
+            btnSetting.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnSetting.Location = new Point(277, 3);
+            btnSetting.Name = "btnSetting";
+            btnSetting.Size = new Size(117, 39);
+            btnSetting.TabIndex = 10;
+            btnSetting.Text = "Setting";
+            btnSetting.UseCompatibleTextRendering = true;
+            btnSetting.UseVisualStyleBackColor = false;
+            btnSetting.Click += BtnSetting_Click;
             // 
             // TblPnlRotationAngle
             // 
@@ -436,7 +469,8 @@ namespace OpenCV_SharpNet.UserControls
             TblPNlMain.ResumeLayout(false);
             grpQC_Result.ResumeLayout(false);
             tblPnlgs1Repo.ResumeLayout(false);
-            tblPnlgs1Repo.PerformLayout();
+            tblPnlGrade.ResumeLayout(false);
+            tblPnlGrade.PerformLayout();
             TblPnlRotationAngle.ResumeLayout(false);
             TblPnlRotationAngle.PerformLayout();
             TblPnlBottom.ResumeLayout(false);
@@ -496,5 +530,7 @@ namespace OpenCV_SharpNet.UserControls
         private TableLayoutPanel tblPnlgs1Repo;
         private CheckBox chkGradingRepo;
         private PanZoomViewer pzPreview;
+        private TableLayoutPanel tblPnlGrade;
+        private Button btnSetting;
     }
 }

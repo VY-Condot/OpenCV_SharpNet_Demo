@@ -1,6 +1,7 @@
 ﻿using CsplCam.Library.Enums;
 using CsplCam.Library.Interfaces;
 using CsplCam.Library.Models;
+using OpenCV_SharpNet.UI.UI.GS1_QC;
 using System.ComponentModel;
 using System.Data;
 using System.Reflection;
@@ -28,6 +29,8 @@ namespace OpenCV_SharpNet.UserControls
 
         //new event for open the roi anchor reference window
         public event EventHandler OpenRoiReferenceWindow;
+
+        //public event EventHandler OpenGradingWindow;
 
         string[] strBarCodeFormats = new string[] { string.Empty, "Pharma" };
 
@@ -394,6 +397,11 @@ namespace OpenCV_SharpNet.UserControls
             if (BoundedROI is null || _isBinding) return;
 
             BoundedROI.IsRunGS1QcCheck = chkGradingRepo.Checked;
+        }
+
+        private void BtnSetting_Click(object sender, EventArgs e)
+        {
+            new FrmGradingSetting(BoundedROI).Show();
         }
     }
 }

@@ -18,6 +18,7 @@ using CsplCam.Library.Interfaces;
 using CsplCam.Library.Services;
 using CsplCam.Library.Services.AI;
 using OpenCV_SharpNet.UserControls;
+using OpenCV_SharpNet.UI.UI.GS1_QC;
 
 namespace OpenCV_SharpNet.UI
 {
@@ -1862,6 +1863,11 @@ namespace OpenCV_SharpNet.UI
         {
             SplitContainerImageView.Panel2Collapsed = !SplitContainerImageView.Panel2Collapsed;
             hideGridRecToolStripMenuItem.Text = SplitContainerImageView.Panel2Collapsed ? "Show Grid Records" : "Hide Grid Records"; //change text
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            new FrmGradingSetting(selectedRoi).Show();
         }
     }
 }

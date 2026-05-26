@@ -14,25 +14,10 @@ namespace CsplCam.Library.Services.GS1_QC_Check
     [DebuggerStepThrough]
     public class GS1_QC_Check : IGS1_QC_Check
     {
-
         /// <summary>
         /// for defining the size of the barcode and wrapping
         /// </summary>
         public int WrapSize { get; set; } = 400;
-
-        #region public properties for user value for grading systems including all grades
-
-        public enum Grades 
-        {
-            A = 4,
-            B = 3,
-            C = 2,
-            D = 1,
-            F = 0
-        }
-
-        #endregion
-
 
         public GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded)
         {
