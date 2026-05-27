@@ -129,6 +129,10 @@ namespace OpenCV_SharpNet.UserControls
                 if (!chkAnchor.Focused && chkAnchor.Checked != roi.IsAnchor)
                     chkAnchor.Checked = roi.IsAnchor;
 
+                //grading check box state
+                if (!chkGradingRepo.Focused && chkGradingRepo.Checked != roi.IsRunGS1QcCheck)
+                    chkGradingRepo.Checked = roi.IsRunGS1QcCheck;
+
                 GenerateReport();
 
                 if (cmbRotationAngle.Items.Count > 0 && !cmbRotationAngle.Focused && (RotationAngles)cmbRotationAngle.SelectedItem != roi.RotationAngle)
@@ -324,17 +328,36 @@ namespace OpenCV_SharpNet.UserControls
                 lstGS1_Repo.Items.Add($"Over All: {BoundedROI.Gs1QcResult.OverAll}");
                 lstGS1_Repo.Items.Add(string.Empty);
 
-                lstGS1_Repo.Items.Add($"Decode: {BoundedROI.Gs1QcResult.Decode}");
-                lstGS1_Repo.Items.Add($"Symbol Contrast: {BoundedROI.Gs1QcResult.SC}");
-                lstGS1_Repo.Items.Add($"Auxiliary Nonuniformity: {BoundedROI.Gs1QcResult.AN}");
-                lstGS1_Repo.Items.Add($"Grid Nonuniformity: {BoundedROI.Gs1QcResult.GN}");
-                lstGS1_Repo.Items.Add($"Modulation: {BoundedROI.Gs1QcResult.MOD}");
-                lstGS1_Repo.Items.Add($"Fixed Pattern Damage: {BoundedROI.Gs1QcResult.FPD}");
-                lstGS1_Repo.Items.Add($"Unused Error Correction: {BoundedROI.Gs1QcResult.UEC}");
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.Decode))
+                    lstGS1_Repo.Items.Add($"Decode: {BoundedROI.Gs1QcResult.Decode}");
+
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.SC))
+                    lstGS1_Repo.Items.Add($"Symbol Contrast: {BoundedROI.Gs1QcResult.SC}");
+
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.AN))
+                    lstGS1_Repo.Items.Add($"Auxiliary Nonuniformity: {BoundedROI.Gs1QcResult.AN}");
+
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.GN))
+                    lstGS1_Repo.Items.Add($"Grid Nonuniformity: {BoundedROI.Gs1QcResult.GN}");
+
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.MOD))
+                    lstGS1_Repo.Items.Add($"Modulation: {BoundedROI.Gs1QcResult.MOD}");
+
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.FPD))
+                    lstGS1_Repo.Items.Add($"Fixed Pattern Damage: {BoundedROI.Gs1QcResult.FPD}");
+
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.UEC))
+                    lstGS1_Repo.Items.Add($"Unused Error Correction: {BoundedROI.Gs1QcResult.UEC}");
+                
                 lstGS1_Repo.Items.Add($"Print Growth (Info): {BoundedROI.Gs1QcResult.PG}");
+
                 lstGS1_Repo.Items.Add(string.Empty);
+
                 lstGS1_Repo.Items.Add($"AngleOf Distortion: {BoundedROI.Gs1QcResult.AS9132_Distortion}");
-                lstGS1_Repo.Items.Add($"Quiet Zone: {BoundedROI.Gs1QcResult.AS9132_QuietZone}");
+
+                if(!string.IsNullOrWhiteSpace(BoundedROI.Gs1QcResult.AS9132_QuietZone))
+                    lstGS1_Repo.Items.Add($"Quiet Zone: {BoundedROI.Gs1QcResult.AS9132_QuietZone}");
+
                 lstGS1_Repo.Items.Add($"Elongation: {BoundedROI.Gs1QcResult.AS9132_Elongation}");
             }
             else

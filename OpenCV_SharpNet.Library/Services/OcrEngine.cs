@@ -1771,7 +1771,9 @@ namespace CsplCam.Library.Services
                                 {
                                     //roi.Gs1QcResult = new GS1_QC_Check().EvaluateISO15415Quality(qcGray, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
 
-                                    roi.Gs1QcResult = new GS1_QC_Check.GS1_QC_Check().EvaluateISO15415Quality(qcGray, barcodeBox, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
+                                    //roi.Gs1QcResult = new GS1_QC_Check.GS1_QC_Check().EvaluateISO15415Quality(qcGray, barcodeBox, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
+
+                                    roi.Gs1QcResult = new GS1_QC_Check.GS1_QC_Check().EvaluateISO15415Quality(qcGray,roi,barcodeBox, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
                                 }
                                 //roi.Gs1QcResult = new GS1_QC_Check().EvaluateISO15415Quality(qcGray, barcodeBox, isDecodedSuccessfully);
                                 else

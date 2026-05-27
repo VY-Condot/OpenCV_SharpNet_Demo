@@ -1,4 +1,5 @@
 ﻿using CsplCam.Library.Interfaces;
+using CsplCam.Library.Models;
 using CsplCam.Library.Models.GS1_QC;
 using OpenCvSharp;
 using System;
@@ -11,7 +12,7 @@ using Size = OpenCvSharp.Size;
 
 namespace CsplCam.Library.Services.GS1_QC_Check
 {
-    [DebuggerStepThrough]
+    //[DebuggerStepThrough]
     public class GS1_QC_Check : IGS1_QC_Check
     {
         /// <summary>
@@ -19,7 +20,7 @@ namespace CsplCam.Library.Services.GS1_QC_Check
         /// </summary>
         public int WrapSize { get; set; } = 400;
 
-        public GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded)
+        public GS1_QC_CheckResult EvaluateISO15415Quality_OLD(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded)
         {
             try
             {
@@ -283,6 +284,317 @@ namespace CsplCam.Library.Services.GS1_QC_Check
                 );
             }
             catch { return new GS1_QC_CheckResult(); }
+        }
+
+
+        public GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop,RoiObject roiObject, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded)
+        {
+            try
+            {
+                if (zxingCorners == null || zxingCorners.Length != 4) return new GS1_QC_CheckResult();
+
+                // =========================================================================
+                // 1. CLOCKWISE SORTING & GEOMETRY METRICS (AN, GN)
+                // =========================================================================
+                var cw = SortCornersClockwiseFast(zxingCorners);
+
+                double wTop = PointDistance(cw[0], cw[1]);
+                double wBot = PointDistance(cw[3], cw[2]);
+                double hLeft = PointDistance(cw[0], cw[3]);
+                double hRight = PointDistance(cw[1], cw[2]);
+
+                double avgWidth = (wTop + wBot) / 2.0;
+                double avgHeight = (hLeft + hRight) / 2.0;
+
+                double axialNonUniformity = 0;
+                int gradeAN = 0;
+                if (roiObject.UserConfiguredGrading.AxialNonuniformity.IsEnabled)
+                {
+                    axialNonUniformity = Math.Abs((avgWidth / Math.Max(1.0, avgHeight)) - 1.0);
+
+                    //Grading systems number scoring based on define properties
+                    //axialNonUniformity 
+                    //gradeAN = axialNonUniformity <= 0.06 ? (int)Grades.A : axialNonUniformity <= 0.08 ? (int)Grades.B : axialNonUniformity <= 0.10 ? (int)Grades.C : axialNonUniformity <= 0.12 ? (int)Grades.D : (int)Grades.F;
+
+                    gradeAN = GetGrades(axialNonUniformity, roiObject.UserConfiguredGrading.AxialNonuniformity.GradingData);
+                }
+
+                double d1 = PointDistance(cw[0], cw[2]);
+                double d2 = PointDistance(cw[1], cw[3]);
+
+                // =========================================================================
+                // 2. EXTRACTION FIX (Isolate the barcode to eliminate text)
+                // =========================================================================
+                int warpSize = WrapSize;
+                Point2f[] dstPts = { new Point2f(0, 0), new Point2f(warpSize, 0), new Point2f(warpSize, warpSize), new Point2f(0, warpSize) };
+
+                using Mat cleanBarcode = new Mat();
+                using Mat transform = Cv2.GetPerspectiveTransform(cw, dstPts);
+                Cv2.WarpPerspective(rawGrayCrop, cleanBarcode, transform, new Size(warpSize, warpSize));
+
+                double globalThreshold = Cv2.Threshold(cleanBarcode, new Mat(), 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+
+                // =========================================================================
+                // 3. ESTIMATE GRID SIZE ON CLEAN IMAGE
+                // =========================================================================
+                int transitions = CountTransitionsFast(cleanBarcode, new Point2f(5, 5), new Point2f(warpSize - 5, 5), globalThreshold);
+                int estSize = transitions + 1;
+                int gridSize = GetClosestStandardGridSize(estSize);
+
+                double gnCells = 0;
+                int gradeGN = 0;
+                if (roiObject.UserConfiguredGrading.GridNonuniformity.IsEnabled)
+                {
+                    gnCells = Math.Abs((d1 / Math.Max(1.0, d2)) - 1.0) * gridSize;
+
+                    //Grading systems number scoring based on define properties
+                    //gridNonUniformity
+                    gradeGN = gnCells <= 0.38 ? (int)Grades.A : gnCells <= 0.50 ? (int)Grades.B : gnCells <= 0.63 ? (int)Grades.C : gnCells <= 0.75 ? (int)Grades.D : (int)Grades.F;
+                }
+
+                // =========================================================================
+                // 4. OPTIMIZED SAMPLING & VIRTUAL ROTATION 
+                // =========================================================================
+                double cellSize = (double)warpSize / gridSize;
+                int maskRadius = Math.Max(1, (int)Math.Round((cellSize * 0.8) / 2.0));
+
+                // Sample the grid exactly ONCE, saving massive CPU and RAM
+                double[,] baseGridR = new double[gridSize, gridSize];
+                for (int r = 0; r < gridSize; r++)
+                {
+                    int cy = Math.Clamp((int)((r + 0.5) * cellSize), 0, warpSize - 1);
+                    for (int c = 0; c < gridSize; c++)
+                    {
+                        int cx = Math.Clamp((int)((c + 0.5) * cellSize), 0, warpSize - 1);
+                        baseGridR[r, c] = GetFastCircularMean(cleanBarcode, cx, cy, maskRadius);
+                    }
+                }
+
+                int bestFpdErrors = int.MaxValue;
+                double[,] bestCellR = new double[gridSize, gridSize];
+
+                // Evaluate 4 virtual rotations without rotating the actual image matrices
+                for (int i = 0; i < 4; i++)
+                {
+                    double[,] cellR = new double[gridSize, gridSize];
+                    int fpdErrors = 0;
+
+                    for (int r = 0; r < gridSize; r++)
+                    {
+                        for (int c = 0; c < gridSize; c++)
+                        {
+                            // Map indices to simulate rotation mathematically
+                            double val = i switch
+                            {
+                                0 => baseGridR[r, c],                                        // 0 deg
+                                1 => baseGridR[gridSize - 1 - c, r],                         // 90 deg CW
+                                2 => baseGridR[gridSize - 1 - r, gridSize - 1 - c],          // 180 deg
+                                _ => baseGridR[c, gridSize - 1 - r]                          // 270 deg CW
+                            };
+
+                            cellR[r, c] = val;
+
+                            // Dynamic FPD logic
+                            if (c == 0 || r == gridSize - 1)
+                            { // Left & Bottom L-Pattern
+                                if (val > globalThreshold) fpdErrors++;
+                            }
+                            else if (r == 0)
+                            { // Top Clock Track
+                                if ((val <= globalThreshold) != (c % 2 == 0)) fpdErrors++;
+                            }
+                            else if (c == gridSize - 1)
+                            { // Right Clock Track
+                                if ((val <= globalThreshold) != (r % 2 != 0)) fpdErrors++;
+                            }
+                        }
+                    }
+
+                    if (fpdErrors < bestFpdErrors)
+                    {
+                        bestFpdErrors = fpdErrors;
+                        bestCellR = cellR;
+                    }
+                }
+
+                // =========================================================================
+                // 5. SC & MODULATION MATH
+                // =========================================================================
+                double rMax = 0, rMin = 255;
+                foreach (double val in bestCellR) { if (val > rMax) rMax = val; if (val < rMin) rMin = val; }
+
+                double scPercent = 0;
+                int gradeSC = 0;
+                double symbolContrast = 0;
+                if (roiObject.UserConfiguredGrading.SymbolContrast.IsEnabled)
+                {
+                    scPercent = ((rMax - rMin) / 255.0) * 100.0;
+
+                    //Grading systems number scoring based on define properties
+                    //symbolic contrast & modulation
+                    gradeSC = scPercent >= 70 ? (int)Grades.A : scPercent >= 55 ? (int)Grades.B : scPercent >= 40 ? (int)Grades.C : scPercent >= 20 ? (int)Grades.D : (int)Grades.F;
+
+                   symbolContrast = Math.Max(1.0, rMax - rMin);
+                }
+
+                
+                List<double> modValues = new List<double>((gridSize - 2) * (gridSize - 2));
+                int visualErrors = 0;
+
+                for (int r = 1; r < gridSize - 1; r++)
+                {
+                    for (int c = 1; c < gridSize - 1; c++)
+                    {
+                        double v = bestCellR[r, c];
+                        double reflectanceMargin = v <= globalThreshold ? globalThreshold - v : v - globalThreshold;
+                        double mod = reflectanceMargin / symbolContrast;
+                        modValues.Add(mod);
+
+                        if (mod < 0.15) visualErrors++;
+                    }
+                }
+
+                modValues.Sort();
+                int ecCapacityIndex = (int)(modValues.Count * 0.15);
+                double worstMod = modValues.Count > ecCapacityIndex ? modValues[ecCapacityIndex] : 0;
+
+                int gradeMOD = 0;
+                if (roiObject.UserConfiguredGrading.Modulation.IsEnabled)
+                {
+                    gradeMOD = worstMod >= 0.40 ? 4 : worstMod >= 0.30 ? 3 : worstMod >= 0.20 ? 2 : worstMod >= 0.10 ? 1 : 0;
+                }
+
+                // =========================================================================
+                // 6. FINAL GRADES
+                // =========================================================================
+                int gradeFPD = 0;
+                if (roiObject.UserConfiguredGrading.FixedPatternDamage.IsEnabled)
+                {
+                    gradeFPD = bestFpdErrors == 0 ? (int)Grades.A : bestFpdErrors <= 1 ? (int)Grades.B : bestFpdErrors <= 2 ? (int)Grades.C : bestFpdErrors <= 3 ? (int)Grades.D : (int)Grades.F;
+                }
+
+                int gradeDecode = isDecoded ? 4 : 0;
+                int gradeUEC = visualErrors <= 2 ? 4 : 2;
+
+                int finalGrade = Math.Min(Math.Min(Math.Min(gradeDecode, gradeSC), Math.Min(gradeAN, gradeGN)), Math.Min(Math.Min(gradeMOD, gradeFPD), gradeUEC));
+                string[] letters = { "F", "D", "C", "B", "A" };
+
+                // =========================================================================
+                // 7. ASNI / AS9132
+                // =========================================================================
+                int pad = Math.Max(15, boundingBox.Width / 10);
+                int x = Math.Max(0, boundingBox.X - pad);
+                int y = Math.Max(0, boundingBox.Y - pad);
+                int w = Math.Min(rawGrayCrop.Width - x, boundingBox.Width + (pad * 2));
+                int h = Math.Min(rawGrayCrop.Height - y, boundingBox.Height + (pad * 2));
+                if (w < 15 || h < 15) return new GS1_QC_CheckResult();
+
+                using Mat symbolRoi = new Mat(rawGrayCrop, new Rect(x, y, w, h));
+
+                Point2f ptTL = new Point2f(), ptTR = new Point2f(), ptBR = new Point2f(), ptBL = new Point2f();
+                bool cornersFound = false;
+
+                if (isDecoded)
+                {
+                    try
+                    {
+                        // Optimization: reuse the Step property efficiently
+                        var iv = new ImageView(symbolRoi.Data, symbolRoi.Width, symbolRoi.Height, ImageFormat.Lum, (int)symbolRoi.Step());
+                        var results = BarcodeReader.Read(iv, new ReaderOptions { Formats = BarcodeFormats.Any, TryHarder = false });
+                        if (results.Length > 0)
+                        {
+                            var p = results[0].Position;
+                            ptTL = new Point2f(p.TopLeft.X, p.TopLeft.Y);
+                            ptTR = new Point2f(p.TopRight.X, p.TopRight.Y);
+                            ptBR = new Point2f(p.BottomRight.X, p.BottomRight.Y);
+                            ptBL = new Point2f(p.BottomLeft.X, p.BottomLeft.Y);
+                            cornersFound = true;
+                        }
+                    }
+                    catch { }
+                }
+
+                if (!cornersFound)
+                {
+                    using Mat binCrop = new Mat();
+                    Cv2.Threshold(symbolRoi, binCrop, 0, 255, ThresholdTypes.BinaryInv | ThresholdTypes.Otsu);
+                    using Mat fused = new Mat();
+                    using Mat kernel = Cv2.GetStructuringElement(MorphShapes.Rect, new OpenCvSharp.Size(5, 5));
+                    Cv2.MorphologyEx(binCrop, fused, MorphTypes.Close, kernel);
+                    Cv2.FindContours(fused, out var contours, out _, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+                    if (contours.Length > 0)
+                    {
+                        // Fast manual loop replaces heavy LINQ OrderBy
+                        Point[] hull = Cv2.ConvexHull(contours.OrderByDescending(c => Cv2.ContourArea(c)).First());
+                        ptTL = GetExtremeCorner(hull, 1, 1);   // X + Y Min
+                        ptBR = GetExtremeCorner(hull, -1, -1); // X + Y Max
+                        ptTR = GetExtremeCorner(hull, -1, 1);  // X - Y Max
+                        ptBL = GetExtremeCorner(hull, 1, -1);  // X - Y Min
+                    }
+                }
+
+                // Perspective unwarp for ASNI
+                int warpSize_Q = 300;
+                Point2f[] srcPts = { ptTL, ptTR, ptBR, ptBL };
+                Point2f[] dstPts_Q = { new Point2f(0, 0), new Point2f(warpSize_Q - 1, 0), new Point2f(warpSize_Q - 1, warpSize_Q - 1), new Point2f(0, warpSize_Q - 1) };
+
+                using Mat transform_Q = Cv2.GetPerspectiveTransform(srcPts, dstPts_Q);
+                using Mat warped = new Mat();
+                Cv2.WarpPerspective(symbolRoi, warped, transform_Q, new OpenCvSharp.Size(warpSize_Q, warpSize_Q));
+
+                double globalThr = Cv2.Threshold(warped, new Mat(), 0, 255, ThresholdTypes.Binary | ThresholdTypes.Otsu);
+                int gridSize_Q = EstimateGridSizeFast(warped, globalThr);
+
+                // AS9132 Calculations
+                double physWidth = PointDistance(ptTL, ptTR);
+                double physCellSize = gridSize_Q > 0 ? physWidth / gridSize_Q : 0;
+
+                // Replaced slow array allocations and LINQ `.Min()` / `.Max()`
+                double minX = Math.Min(Math.Min(ptTL.X, ptTR.X), Math.Min(ptBR.X, ptBL.X));
+                double maxX = Math.Max(Math.Max(ptTL.X, ptTR.X), Math.Max(ptBR.X, ptBL.X));
+                double minY = Math.Min(Math.Min(ptTL.Y, ptTR.Y), Math.Min(ptBR.Y, ptBL.Y));
+                double maxY = Math.Max(Math.Max(ptTL.Y, ptTR.Y), Math.Max(ptBR.Y, ptBL.Y));
+
+                double minClearancePx = Math.Min(Math.Min(minX, symbolRoi.Width - maxX), Math.Min(minY, symbolRoi.Height - maxY));
+                double qzModules = physCellSize > 0 ? (minClearancePx / physCellSize) : 0;
+
+                int gradeQZ = qzModules >= 0.4 ? 4 : 0;
+                double qzPercent = Math.Min(100.0, qzModules * 100.0);
+                double angleDistortion = GetAS9132Distortion(ptBL, ptTL, ptBR);
+
+                return new GS1_QC_CheckResult
+                (
+                    Decode: roiObject.UserConfiguredGrading.Decode.IsEnabled ? letters[gradeDecode] : null,
+                    SC: roiObject.UserConfiguredGrading.SymbolContrast.IsEnabled ? $"{letters[gradeSC]} ({(scPercent):F2}%) " : null,
+                    AN: roiObject.UserConfiguredGrading.AxialNonuniformity.IsEnabled ? $"{letters[gradeAN]} ({axialNonUniformity:F2})" : null,
+                    GN: roiObject.UserConfiguredGrading.GridNonuniformity.IsEnabled ? $"{letters[gradeGN]} ({gnCells:F2} cell)" : null,
+                    MOD: roiObject.UserConfiguredGrading.Modulation.IsEnabled ?  letters[gradeMOD] : null,
+                    FPD: roiObject.UserConfiguredGrading.FixedPatternDamage.IsEnabled ? letters[gradeFPD] : null,
+                    UEC: roiObject.UserConfiguredGrading.UnusedErrorCorrection.IsEnabled ? $"{letters[gradeUEC]}" : null,
+                    PG: $"R_Max: {(rMax / 255.0 * 100):F2}%, R_Min: {(rMin / 255.0 * 100):F2}%",
+                    OverAll: $"{letters[finalGrade]}",
+                    AS9132_Distortion: $"{angleDistortion:F2}°",
+                    AS9132_QuietZone: roiObject.UserConfiguredGrading.QuietZone.IsEnabled ? $"{qzPercent:F2}% ({letters[gradeQZ]})" : null,
+                    AS9132_Elongation: $"{(axialNonUniformity * 100):F2}%",
+                    DPM_Rmin: $"R_Min: {(rMin / 255.0 * 100):F2}%"
+                );
+            }
+            catch { return new GS1_QC_CheckResult(); }
+        }
+
+
+        private int GetGrades(double value,List<GradingRange> gradingRanges)
+        {
+            foreach (var item in gradingRanges)
+            {
+                if (item.IsWithinRange(value, item.ComparisonOperators))
+                {
+                    return (int)item.Grades;
+                }
+            }
+
+            return (int)Grades.F;
         }
 
         // =========================================================================================

@@ -81,7 +81,6 @@
             hideMenuoolStripMenuItem = new ToolStripMenuItem();
             hideResultWinToolStripMenuItem = new ToolStripMenuItem();
             hideGridRecToolStripMenuItem = new ToolStripMenuItem();
-            button1 = new Button();
             TblMain.SuspendLayout();
             TblBodyMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)SplitConImageViewAndButton).BeginInit();
@@ -612,7 +611,6 @@
             // 
             // GrpBoxSegMentMode
             // 
-            GrpBoxSegMentMode.Controls.Add(button1);
             GrpBoxSegMentMode.Controls.Add(CmbSegments);
             GrpBoxSegMentMode.Dock = DockStyle.Fill;
             GrpBoxSegMentMode.Location = new Point(3, 3);
@@ -627,7 +625,7 @@
             CmbSegments.FormattingEnabled = true;
             CmbSegments.Location = new Point(11, 29);
             CmbSegments.Name = "CmbSegments";
-            CmbSegments.Size = new Size(179, 28);
+            CmbSegments.Size = new Size(350, 28);
             CmbSegments.TabIndex = 0;
             // 
             // TblPnlImageList
@@ -820,16 +818,6 @@
             hideGridRecToolStripMenuItem.Text = "Hide Grid Records";
             hideGridRecToolStripMenuItem.Click += HideGridRecToolStripMenuItem_Click;
             // 
-            // button1
-            // 
-            button1.Location = new Point(262, 32);
-            button1.Name = "button1";
-            button1.Size = new Size(94, 29);
-            button1.TabIndex = 1;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += Button1_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -936,6 +924,5 @@
         private ToolStripMenuItem hideMenuoolStripMenuItem;
         private ToolStripMenuItem hideResultWinToolStripMenuItem;
         private ToolStripMenuItem hideGridRecToolStripMenuItem;
-        private Button button1;
     }
 }

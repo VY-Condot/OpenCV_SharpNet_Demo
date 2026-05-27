@@ -1803,7 +1803,10 @@ namespace OpenCV_SharpNet.UI
             };
         }
 
-        private void BtnAddTempateROI_Click(object sender, EventArgs e) { AddRoi(RoiType.TemplateMatch); }
+        private void BtnAddTempateROI_Click(object sender, EventArgs e)
+        { 
+            AddRoi(RoiType.TemplateMatch); 
+        }
         private void CmbSegments_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (selectedRoi == null) return;
@@ -1863,11 +1866,6 @@ namespace OpenCV_SharpNet.UI
         {
             SplitContainerImageView.Panel2Collapsed = !SplitContainerImageView.Panel2Collapsed;
             hideGridRecToolStripMenuItem.Text = SplitContainerImageView.Panel2Collapsed ? "Show Grid Records" : "Hide Grid Records"; //change text
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
-        {
-            new FrmGradingSetting(selectedRoi).Show();
         }
     }
 }

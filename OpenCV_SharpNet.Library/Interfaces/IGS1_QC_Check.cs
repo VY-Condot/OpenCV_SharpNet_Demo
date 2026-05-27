@@ -1,4 +1,5 @@
-﻿using CsplCam.Library.Models.GS1_QC;
+﻿using CsplCam.Library.Models;
+using CsplCam.Library.Models.GS1_QC;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace CsplCam.Library.Interfaces
         // ADD the 'bool isDecoded' parameter here:
         //GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, bool isDecoded);
 
-        GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded);
+        //GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded);
+        GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, RoiObject roiObject, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded);
     }
 }
