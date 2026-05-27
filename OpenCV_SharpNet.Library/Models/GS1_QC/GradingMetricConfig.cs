@@ -13,6 +13,11 @@ namespace CsplCam.Library.Models.GS1_QC
     {
         public GradingSystems GradingSystem { get; init; }
         public bool IsEnabled { get; set; } = true; // Fixed spelling from IsEnbled
+
+        public double MinValue { get; set; } = 0;
+        public double MaxValue { get; set; } = 1;
+        public double Increment { get; set; } = 0.01;
+
         //public List<GradingRange> GradingData { get; set; } = new();
         public List<GradingRange> GradingData;
 

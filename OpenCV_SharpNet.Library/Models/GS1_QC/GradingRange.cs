@@ -18,8 +18,6 @@ namespace CsplCam.Library.Models.GS1_QC
         public double GradeValue { get; init; }
         public Grades Grades { get; init; }
 
-        //public bool IsEnbled { get; init; }
-
         public ComparisonOperators ComparisonOperators { get; init; }
 
         //creat private constructor

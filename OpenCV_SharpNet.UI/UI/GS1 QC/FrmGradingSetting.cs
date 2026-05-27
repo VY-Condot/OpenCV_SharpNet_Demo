@@ -69,9 +69,12 @@ namespace OpenCV_SharpNet.UI.UI.GS1_QC
             else
             {
                 var tempgradingView = new GradingView(RoiObject);
+
                 _gradingViews.Add(name, tempgradingView);
                 return tempgradingView;
             }
         }
+
+
     }
 }

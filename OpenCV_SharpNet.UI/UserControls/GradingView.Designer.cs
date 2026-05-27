@@ -407,6 +407,7 @@
             Controls.Add(TblPNlMain);
             Name = "GradingView";
             Size = new Size(658, 460);
+            Load += GradingView_Load;
             TblPNlMain.ResumeLayout(false);
             TblPnlBottom.ResumeLayout(false);
             GrpGradeSetting.ResumeLayout(false);
@@ -443,22 +444,22 @@
         private Label lblGradeTypeName;
         private Label lblMaxValue;
         private CheckBox chkInCludeGrade;
-        private NumericUpDown numPadGradeMaxValueA;
         private Label lblGradeNames;
         private FlowLayoutPanel flowpnlGrades;
         private Panel pnlgradeA;
         private Label lblGradeA;
         private Panel pnlGradeB;
         private Label lblGradeB;
-        private NumericUpDown numPadGradeMaxValueB;
         private Panel pnlGradeC;
         private Label lblGradeC;
-        private NumericUpDown numPadGradeMaxValueC;
         private Panel pnlGradeD;
         private Label lblGradeD;
-        private NumericUpDown numPadGradeMaxValueD;
         private Panel pnlGradeF;
         private Label lblGradeF;
-        private NumericUpDown numPadGradeMaxValueF;
+        public NumericUpDown numPadGradeMaxValueA;
+        public NumericUpDown numPadGradeMaxValueB;
+        public NumericUpDown numPadGradeMaxValueC;
+        public NumericUpDown numPadGradeMaxValueD;
+        public NumericUpDown numPadGradeMaxValueF;
     }
 }

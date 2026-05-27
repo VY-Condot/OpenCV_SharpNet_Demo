@@ -28,7 +28,6 @@ namespace OpenCV_SharpNet.UI.UserControls
 
             Roi = roiObject;
 
-
             //binding mapping 
             numPadGradeMaxValueA.Tag = "A";
             numPadGradeMaxValueB.Tag = "B";
@@ -41,6 +40,31 @@ namespace OpenCV_SharpNet.UI.UserControls
         private bool _isBinding = false;
         public GradingSystems GradingSystems { get; set; }
 
+        private void SettingNumericPad(GradingMetricConfig activeMetric)
+        {
+            NumericUpDown[] numPadArray = { numPadGradeMaxValueA, numPadGradeMaxValueB, numPadGradeMaxValueC, numPadGradeMaxValueD, numPadGradeMaxValueF };
+
+            foreach (var item in numPadArray)
+            {
+                SetDataToNumericPad(item, activeMetric);
+            }
+        }
+
+        private void SetDataToNumericPad(NumericUpDown numericUpDown, GradingMetricConfig activeMetric)
+        {
+            numericUpDown.Minimum = (decimal)activeMetric.MinValue;
+            numericUpDown.Maximum = (decimal)activeMetric.MaxValue;
+            numericUpDown.Increment = (decimal)activeMetric.Increment;
+        }
+
+        private GradingMetricConfig GetGradingMetricConfig(UserConfiguredGrading userConfiguredGrading)
+        {
+            if (userConfiguredGrading is null)
+                throw new ArgumentNullException(nameof(userConfiguredGrading), "User Configured Grading is null");
+
+            return userConfiguredGrading.GetMetric(GradingSystems);
+        }
+
         public void BindData()
         {
             _isBinding = true;
@@ -48,7 +72,12 @@ namespace OpenCV_SharpNet.UI.UserControls
             try
             {
                 // 1. Get the current active metric configuration
-                var activeMetric = Roi.UserConfiguredGrading.GetMetric(GradingSystems);
+                //var activeMetric = Roi.UserConfiguredGrading.GetMetric(GradingSystems);
+
+                var activeMetric = GetGradingMetricConfig(Roi.UserConfiguredGrading);
+
+                //setting numeric pad values
+                //SettingNumericPad(activeMetric);
 
                 // 2. Set the UI label header
                 lblGradeTypeName.Text = activeMetric.GradingSystem.ToString();
@@ -64,6 +93,12 @@ namespace OpenCV_SharpNet.UI.UserControls
                 numPadGradeMaxValueC.Value = (decimal)activeMetric.GradingData.FirstOrDefault(r => r.Grades == Grades.C).GradeValue;
                 numPadGradeMaxValueD.Value = (decimal)activeMetric.GradingData.FirstOrDefault(r => r.Grades == Grades.D).GradeValue;
                 numPadGradeMaxValueF.Value = (decimal)activeMetric.GradingData.FirstOrDefault(r => r.Grades == Grades.F).GradeValue;
+
+
+                //SetNum(numPadGradeMaxValueA, (int)activeMetric.GradingData.FirstOrDefault(r => r.Grades == Grades.A).GradeValue);
+                //SetNum(numPadGradeMaxValueA, (int)activeMetric.GradingData.FirstOrDefault(r => r.Grades == Grades.A).GradeValue);
+                //SetNum(numPadGradeMaxValueA, (int)activeMetric.GradingData.FirstOrDefault(r => r.Grades == Grades.A).GradeValue);
+                //SetNum(numPadGradeMaxValueA, (int)activeMetric.GradingData.FirstOrDefault(r => r.Grades == Grades.A).GradeValue);
             }
             finally
             {
@@ -71,44 +106,14 @@ namespace OpenCV_SharpNet.UI.UserControls
             }
         }
 
-        //private void BtnSaveGradingSetting_Click(object sender, EventArgs e)
-        //{
-        //    // 1. Get the current active metric configuration
-        //    var activeMetric = Roi.UserConfiguredGrading.GetMetric(GradingSystems);
-
-        //    activeMetric.IsEnabled = chkInCludeGrade.Checked;
-
-        //    // 3. Optional: Bind your IsEnabled property to a master UI Checkbox if you have one
-        //    // chkMetricEnabled.Checked = activeMetric.IsEnabled;
-
-        //    //// 4. Extract individual grade values from the underlying data list using LINQ
-        //    //List<GradingRange> d = new List<GradingRange>();
-        //    //foreach (var item in Controls.Cast<NumericUpDown>().ToList())
-        //    //{
-        //    //    var s = new GradingRange
-        //    //    {
-        //    //        ComparisonOperators = ComparisonOperators.GreaterThanEqualTo,
-        //    //        Grades = (Grades)item.Tag,
-        //    //        GradeValue = (double)item.Value
-        //    //    };
-
-        //    //    d.Add(s);
-        //    //}
-
-        //    var d = Controls.OfType<NumericUpDown>()
-        //            .Where(n => n.Tag is Grades)
-        //            .Select(n => new GradingRange
-        //            {
-        //                ComparisonOperators = ComparisonOperators.GreaterThanEqualTo,
-        //                Grades = (Grades)n.Tag,
-        //                GradeValue = (double)n.Value
-        //            })
-        //            .ToList();
-
-
-        //    activeMetric.GradingData = d;
-        //}
-
+        private void SetNum(NumericUpDown num, int val)
+        {
+            if (!num.Focused)
+            {
+                int safeVal = Math.Max((int)num.Minimum, Math.Min((int)num.Maximum, val));
+                if (num.Value != safeVal) num.Value = safeVal;
+            }
+        }
 
         private void BtnSaveGradingSetting_Click(object sender, EventArgs e)
         {
@@ -149,6 +154,14 @@ namespace OpenCV_SharpNet.UI.UserControls
 
                 _ => ComparisonOperators.LessThanEqualTo
             };
+        }
+
+        private void GradingView_Load(object sender, EventArgs e)
+        {
+            var activeMetric = GetGradingMetricConfig(Roi.UserConfiguredGrading);
+
+            //setting numeric pad values
+            SettingNumericPad(activeMetric);
         }
     }
 }

@@ -11,13 +11,18 @@ namespace CsplCam.Library.Models.GS1_QC
     /// </summary>
     public class UserConfiguredGrading
     {
-        public GradingMetricConfig AxialNonuniformity { get; set; } = new(GradingSystems.AxialNonuniformity);
-        public GradingMetricConfig GridNonuniformity { get; set; } = new(GradingSystems.GridNonuniformity);
-        public GradingMetricConfig UnusedErrorCorrection { get; set; } = new(GradingSystems.UnusedErrorCorrection);
-        public GradingMetricConfig FixedPatternDamage { get; set; } = new(GradingSystems.FixedPatternDamage);
-        public GradingMetricConfig Modulation { get; set; } = new(GradingSystems.Modulation);
-        public GradingMetricConfig Decode { get; set; } = new(GradingSystems.Decode);
-        public GradingMetricConfig SymbolContrast { get; set; } = new(GradingSystems.SymbolContrast);
+        public GradingMetricConfig AxialNonuniformity { get; set; } = new(GradingSystems.AxialNonuniformity) { MinValue = 0 , MaxValue = 1,Increment = 0.01 };
+        public GradingMetricConfig GridNonuniformity { get; set; } = new(GradingSystems.GridNonuniformity) 
+        { MinValue = 0, MaxValue = 1, Increment = 0.01 };
+        public GradingMetricConfig UnusedErrorCorrection { get; set; } = new(GradingSystems.UnusedErrorCorrection) { MinValue = 0, MaxValue = 5, Increment = 1 };
+        public GradingMetricConfig FixedPatternDamage { get; set; } = new(GradingSystems.FixedPatternDamage)
+        { MinValue = 0, MaxValue = 5, Increment = 1 };
+        public GradingMetricConfig Modulation { get; set; } = new(GradingSystems.Modulation)
+        { MinValue = 0, MaxValue = 1, Increment = 0.01 };
+        public GradingMetricConfig Decode { get; set; } = new(GradingSystems.Decode) 
+        { MinValue = 0, MaxValue = 5, Increment = 1 };
+        public GradingMetricConfig SymbolContrast { get; set; } = new(GradingSystems.SymbolContrast)
+        { MinValue = 0, MaxValue = 100, Increment = 1 };
         //public GradingMetricConfig PrintGrowth { get; set; } = new(GradingSystems.PrintGrowth);
         //public GradingMetricConfig AngleOfDistortion { get; set; } = new(GradingSystems.AngleOfDistortion);
         public GradingMetricConfig QuietZone { get; set; } = new(GradingSystems.QuietZone);
