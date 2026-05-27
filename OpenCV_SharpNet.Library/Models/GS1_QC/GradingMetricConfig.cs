@@ -56,11 +56,11 @@ namespace CsplCam.Library.Models.GS1_QC
                 case GradingSystems.UnusedErrorCorrection:
                     gradingRanges = new List<GradingRange>
                     {
-                        GradingRange.Create(Grades.A, 2, ComparisonOperators.LessThanEqualTo),
-                        GradingRange.Create(Grades.B, 2, ComparisonOperators.LessThanEqualTo),
-                        GradingRange.Create(Grades.C, 2, ComparisonOperators.LessThanEqualTo),
-                        GradingRange.Create(Grades.D, 2, ComparisonOperators.LessThanEqualTo),
-                        GradingRange.Create(Grades.F, 3, ComparisonOperators.GreaterThanEqualTo)
+                        GradingRange.Create(Grades.A, 2.0, ComparisonOperators.LessThanEqualTo),
+                        GradingRange.Create(Grades.B, 1.8, ComparisonOperators.LessThanEqualTo),
+                        GradingRange.Create(Grades.C, 1.6, ComparisonOperators.LessThanEqualTo),
+                        GradingRange.Create(Grades.D, 1.4, ComparisonOperators.LessThanEqualTo),
+                        GradingRange.Create(Grades.F, 2.1, ComparisonOperators.GreaterThanEqualTo)
                     };
                     break;
                 case GradingSystems.FixedPatternDamage:

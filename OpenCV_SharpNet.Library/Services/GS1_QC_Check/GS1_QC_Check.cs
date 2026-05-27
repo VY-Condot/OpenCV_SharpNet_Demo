@@ -625,6 +625,54 @@ namespace CsplCam.Library.Services.GS1_QC_Check
             return (int)Grades.F;
         }
 
+        /// <summary>
+        /// Evaluates grade based on configured ranges or defaults.
+        /// For ranges with >= operator: checks from highest to lowest (A, B, C, D, F).
+        /// For ranges with <= operator: checks from lowest to highest (F, D, C, B, A).
+        /// Falls back to Gs1QcDefaults if no custom ranges configured.
+        /// </summary>
+        private int GetGrades(double value, List<GradingRange> gradingRanges,
+            Func<double, int> defaultGradeCompute)
+        {
+            // If no custom ranges defined, use defaults
+            if (gradingRanges == null || gradingRanges.Count == 0)
+            {
+                return defaultGradeCompute(value);
+            }
+
+            // Filter ranges by comparison operator to avoid mixing logic
+            var greaterEqualRanges = gradingRanges
+                .Where(r => r.ComparisonOperators == ComparisonOperators.GreaterThanEqualTo)
+                .OrderByDescending(r => r.GradeValue) // Check highest thresholds first
+                .ToList();
+
+            var lessEqualRanges = gradingRanges
+                .Where(r => r.ComparisonOperators == ComparisonOperators.LessThanEqualTo)
+                .OrderBy(r => r.GradeValue) // Check lowest thresholds first
+                .ToList();
+
+            // For >= logic (e.g., SC: value >= 70 = A)
+            foreach (var range in greaterEqualRanges)
+            {
+                if (value >= range.GradeValue)
+                {
+                    return (int)range.Grades;
+                }
+            }
+
+            // For <= logic (e.g., AN: value <= 0.06 = A)
+            foreach (var range in lessEqualRanges)
+            {
+                if (value <= range.GradeValue)
+                {
+                    return (int)range.Grades;
+                }
+            }
+
+            // Default to F if no range matched
+            return (int)Grades.F;
+        }
+
         // =========================================================================================
         // HIGH-SPEED HELPER METHODS
         // =========================================================================================

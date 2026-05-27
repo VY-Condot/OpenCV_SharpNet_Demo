@@ -46,8 +46,8 @@
             // splitContainer1.Panel1
             // 
             splitContainer1.Panel1.Controls.Add(grpBoxGradeSystems);
-            splitContainer1.Size = new Size(877, 528);
-            splitContainer1.SplitterDistance = 286;
+            splitContainer1.Size = new Size(974, 528);
+            splitContainer1.SplitterDistance = 301;
             splitContainer1.TabIndex = 0;
             // 
             // grpBoxGradeSystems
@@ -57,7 +57,7 @@
             grpBoxGradeSystems.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
             grpBoxGradeSystems.Location = new Point(0, 0);
             grpBoxGradeSystems.Name = "grpBoxGradeSystems";
-            grpBoxGradeSystems.Size = new Size(286, 528);
+            grpBoxGradeSystems.Size = new Size(301, 528);
             grpBoxGradeSystems.TabIndex = 0;
             grpBoxGradeSystems.TabStop = false;
             grpBoxGradeSystems.Text = "Grade Systems";
@@ -70,7 +70,7 @@
             lstGradeSytems.FormattingEnabled = true;
             lstGradeSytems.Location = new Point(3, 23);
             lstGradeSytems.Name = "lstGradeSytems";
-            lstGradeSytems.Size = new Size(280, 502);
+            lstGradeSytems.Size = new Size(295, 502);
             lstGradeSytems.TabIndex = 0;
             lstGradeSytems.SelectedIndexChanged += LstGradeSytems_SelectedIndexChanged;
             // 
@@ -78,7 +78,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(877, 528);
+            ClientSize = new Size(974, 528);
             Controls.Add(splitContainer1);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "FrmGradingSetting";

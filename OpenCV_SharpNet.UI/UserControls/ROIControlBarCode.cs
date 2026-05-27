@@ -420,6 +420,8 @@ namespace OpenCV_SharpNet.UserControls
             if (BoundedROI is null || _isBinding) return;
 
             BoundedROI.IsRunGS1QcCheck = chkGradingRepo.Checked;
+
+            btnSetting.Enabled = chkGradingRepo.Checked;
         }
 
         private void BtnSetting_Click(object sender, EventArgs e)

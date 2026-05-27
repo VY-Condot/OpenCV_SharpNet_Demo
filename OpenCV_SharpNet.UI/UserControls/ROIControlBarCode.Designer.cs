@@ -136,8 +136,8 @@ namespace OpenCV_SharpNet.UserControls
             // tblPnlGrade
             // 
             tblPnlGrade.ColumnCount = 3;
-            tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 274F));
-            tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 123F));
+            tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 225F));
+            tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 172F));
             tblPnlGrade.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tblPnlGrade.Controls.Add(chkGradingRepo, 0, 0);
             tblPnlGrade.Controls.Add(btnSetting, 1, 0);
@@ -157,7 +157,7 @@ namespace OpenCV_SharpNet.UserControls
             chkGradingRepo.Location = new Point(3, 3);
             chkGradingRepo.Name = "chkGradingRepo";
             chkGradingRepo.Padding = new Padding(5, 0, 0, 0);
-            chkGradingRepo.Size = new Size(268, 39);
+            chkGradingRepo.Size = new Size(219, 39);
             chkGradingRepo.TabIndex = 9;
             chkGradingRepo.Text = "Generate Grading Report";
             chkGradingRepo.UseCompatibleTextRendering = true;
@@ -168,10 +168,11 @@ namespace OpenCV_SharpNet.UserControls
             // 
             btnSetting.BackColor = Color.RosyBrown;
             btnSetting.Dock = DockStyle.Fill;
+            btnSetting.Enabled = false;
             btnSetting.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            btnSetting.Location = new Point(277, 3);
+            btnSetting.Location = new Point(228, 3);
             btnSetting.Name = "btnSetting";
-            btnSetting.Size = new Size(117, 39);
+            btnSetting.Size = new Size(166, 39);
             btnSetting.TabIndex = 10;
             btnSetting.Text = "Setting";
             btnSetting.UseCompatibleTextRendering = true;
