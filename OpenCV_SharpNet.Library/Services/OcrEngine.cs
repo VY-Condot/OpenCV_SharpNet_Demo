@@ -1769,11 +1769,9 @@ namespace CsplCam.Library.Services
                                 Rect barcodeBox = isDecodedSuccessfully ? roi.CharResults[0].Box : new Rect(0, 0, qcGray.Width, qcGray.Height);
                                 if (roi.BarCodeFormat.Equals("datamatrix", StringComparison.OrdinalIgnoreCase) || roi.BarCodeFormat.Equals("QRCode", StringComparison.OrdinalIgnoreCase) || roi.BarCodeFormat.Equals("Aztec", StringComparison.OrdinalIgnoreCase) || roi.BarCodeFormat.Equals("PDF", StringComparison.OrdinalIgnoreCase))
                                 {
-                                    //roi.Gs1QcResult = new GS1_QC_Check().EvaluateISO15415Quality(qcGray, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
-
                                     //roi.Gs1QcResult = new GS1_QC_Check.GS1_QC_Check().EvaluateISO15415Quality(qcGray, barcodeBox, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
 
-                                    roi.Gs1QcResult = new GS1_QC_Check.GS1_QC_Check().EvaluateISO15415Quality(qcGray,roi,barcodeBox, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
+                                    roi.Gs1QcResult = new GS1_QC_Check.GS1_QC_Check().EvaluateISO15415Quality(qcGray, roi, barcodeBox, roi.CharResults[0].ExactCorners, isDecodedSuccessfully);
                                 }
                                 //roi.Gs1QcResult = new GS1_QC_Check().EvaluateISO15415Quality(qcGray, barcodeBox, isDecodedSuccessfully);
                                 else

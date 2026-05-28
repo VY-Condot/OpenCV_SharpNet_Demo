@@ -16,7 +16,6 @@ namespace CsplCam.Library.Interfaces
         //void ApplyGS1QualityCheck(Mat rawGrayCrop, Rect boundingBox);
 
         // ADD the 'bool isDecoded' parameter here:
-        //GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, bool isDecoded);
 
         //GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded);
         GS1_QC_CheckResult EvaluateISO15415Quality(Mat rawGrayCrop, RoiObject roiObject, Rect boundingBox, Point2f[] zxingCorners, bool isDecoded);
