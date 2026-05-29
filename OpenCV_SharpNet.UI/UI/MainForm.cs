@@ -544,8 +544,13 @@ namespace OpenCV_SharpNet.UI
                             if (IntCharCounter < roi.ExpectedText?.Length) IntCharCounter++;
 
                             string txt = cr.Text;
-                            Brush DesiredBrush = brushOverlay;
-                            Pen DesirePen = penOverlay;
+
+                            //Brush DesiredBrush = brushOverlay;
+                            //Pen DesirePen = penOverlay;
+
+                            Brush DesiredBrush = cr.IsGood ? brushOverlay : brushTrainBad;
+                            Pen DesirePen = cr.IsGood ? penOverlay : penTrainBad;
+
                             g.DrawRectangle(DesirePen, sr);
 
                             if (roi.RotationAngle == RotationAngles.Ninety || roi.RotationAngle == RotationAngles.TwoSeventy)

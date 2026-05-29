@@ -788,9 +788,16 @@ namespace CsplCam.Library.Services
                 // might guess the wrong case. If the letter matches but the case is wrong, 
                 // we force it to match the Expected Text case!
                 // ====================================================================
-                if (hasSpecificTarget && string.Equals(bestLabel, targetLabel, StringComparison.OrdinalIgnoreCase))
+                //if (hasSpecificTarget && string.Equals(bestLabel, targetLabel, StringComparison.OrdinalIgnoreCase))
+                //{
+                //    bestLabel = targetLabel;
+                //
+
+                if (hasSpecificTarget && !string.Equals(bestLabel, targetLabel, StringComparison.Ordinal))
                 {
-                    bestLabel = targetLabel;
+                    //bestLabel = targetLabel;
+                    bestLabel = "?";
+                    bestScore = 0.0;
                 }
 
                 return (bestLabel, Math.Clamp(bestScore, 0, 1));
