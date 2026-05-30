@@ -19,6 +19,7 @@ using CsplCam.Library.Services;
 using CsplCam.Library.Services.AI;
 using OpenCV_SharpNet.UserControls;
 using OpenCV_SharpNet.UI.UI.GS1_QC;
+using OpenCV_SharpNet.UI.UI;
 
 namespace OpenCV_SharpNet.UI
 {
@@ -320,6 +321,7 @@ namespace OpenCV_SharpNet.UI
                 {
                     totalTimeTaken = 0;
                     selectedRoi = roi;
+                    //selectedRoi.ShowOverlay = true;
 
                     GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
                     GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
@@ -537,6 +539,35 @@ namespace OpenCV_SharpNet.UI
                     {
                         CvRect charAbs = new CvRect(roi.Box.X + cr.Box.X, roi.Box.Y + cr.Box.Y, cr.Box.Width, cr.Box.Height);
                         SysRect sr = ImageToScreen(charAbs);
+
+                        //if (roi.JustTrained)
+                        //{
+                        //    if (cr.IsGood && roi.JustTrained)
+                        //    {
+                        //        g.DrawRectangle(penTrainGood, sr);
+                        //        g.DrawString(cr.Text, fontChar, brushTrainGood, sr, fmtCenter);
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    string strTempChar = (IntCharCounter < roi.ExpectedText?.Length) ? roi.ExpectedText[IntCharCounter].ToString() : string.Empty;
+                        //    if (IntCharCounter < roi.ExpectedText?.Length) IntCharCounter++;
+
+                        //    string txt = cr.Text;
+
+                        //    //Brush DesiredBrush = brushOverlay;
+                        //    //Pen DesirePen = penOverlay;
+
+                        //    Brush DesiredBrush = cr.IsGood ? brushOverlay : brushTrainBad;
+                        //    Pen DesirePen = cr.IsGood ? penOverlay : penTrainBad;
+
+                        //    g.DrawRectangle(DesirePen, sr);
+
+                        //    if (roi.RotationAngle == RotationAngles.Ninety || roi.RotationAngle == RotationAngles.TwoSeventy)
+                        //        g.DrawString(txt, fontChar, DesiredBrush, sr.Right + 2, sr.Top + (sr.Height / 2.0f), fmtSide);
+                        //    else
+                        //        g.DrawString(txt, fontChar, DesiredBrush, sr.Left + (sr.Width / 2.0f), sr.Top - 2, fmtTop);
+                        //}
 
                         if (isOverlayMode)
                         {
@@ -1339,6 +1370,7 @@ namespace OpenCV_SharpNet.UI
 
             totalTimeTaken = 0;
             _imgCount++;
+            //selectedRoi.ShowOverlay = true;
 
             // 1. LATENCY LOCK
             GCSettings.LatencyMode = GCLatencyMode.SustainedLowLatency;
@@ -1809,8 +1841,8 @@ namespace OpenCV_SharpNet.UI
         }
 
         private void BtnAddTempateROI_Click(object sender, EventArgs e)
-        { 
-            AddRoi(RoiType.TemplateMatch); 
+        {
+            AddRoi(RoiType.TemplateMatch);
         }
         private void CmbSegments_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1871,6 +1903,11 @@ namespace OpenCV_SharpNet.UI
         {
             SplitContainerImageView.Panel2Collapsed = !SplitContainerImageView.Panel2Collapsed;
             hideGridRecToolStripMenuItem.Text = SplitContainerImageView.Panel2Collapsed ? "Show Grid Records" : "Hide Grid Records"; //change text
+        }
+
+        private void AdvanceSettingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new FrmAdavanceSetting().Show();
         }
     }
 }

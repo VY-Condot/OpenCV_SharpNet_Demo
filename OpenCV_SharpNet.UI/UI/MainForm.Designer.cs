@@ -81,6 +81,7 @@
             hideMenuoolStripMenuItem = new ToolStripMenuItem();
             hideResultWinToolStripMenuItem = new ToolStripMenuItem();
             hideGridRecToolStripMenuItem = new ToolStripMenuItem();
+            advanceSettingToolStripMenuItem = new ToolStripMenuItem();
             TblMain.SuspendLayout();
             TblBodyMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)SplitConImageViewAndButton).BeginInit();
@@ -782,7 +783,7 @@
             // 
             msAppMenu.BackColor = Color.FloralWhite;
             msAppMenu.ImageScalingSize = new Size(20, 20);
-            msAppMenu.Items.AddRange(new ToolStripItem[] { pictureStorageToolStripMenuItem });
+            msAppMenu.Items.AddRange(new ToolStripItem[] { pictureStorageToolStripMenuItem, advanceSettingToolStripMenuItem });
             msAppMenu.Location = new Point(0, 0);
             msAppMenu.Name = "msAppMenu";
             msAppMenu.Size = new Size(1321, 28);
@@ -817,6 +818,13 @@
             hideGridRecToolStripMenuItem.Size = new Size(227, 26);
             hideGridRecToolStripMenuItem.Text = "Hide Grid Records";
             hideGridRecToolStripMenuItem.Click += HideGridRecToolStripMenuItem_Click;
+            // 
+            // advanceSettingToolStripMenuItem
+            // 
+            advanceSettingToolStripMenuItem.Name = "advanceSettingToolStripMenuItem";
+            advanceSettingToolStripMenuItem.Size = new Size(127, 24);
+            advanceSettingToolStripMenuItem.Text = "AdvanceSetting";
+            advanceSettingToolStripMenuItem.Click += AdvanceSettingToolStripMenuItem_Click;
             // 
             // MainForm
             // 
@@ -924,5 +932,6 @@
         private ToolStripMenuItem hideMenuoolStripMenuItem;
         private ToolStripMenuItem hideResultWinToolStripMenuItem;
         private ToolStripMenuItem hideGridRecToolStripMenuItem;
+        private ToolStripMenuItem advanceSettingToolStripMenuItem;
     }
 }

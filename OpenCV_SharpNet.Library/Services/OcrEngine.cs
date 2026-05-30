@@ -41,7 +41,14 @@ namespace CsplCam.Library.Services
         /// <summary>
         /// user for final confifidence match of ocv template matching for accuracy boost as well as speed boost
         /// </summary>
-        public static double OcvTargetMatchConfidence { get; set; } = 0.75;
+        public static double OcvTargetMatchConfidence { get; set; } = 0.80;
+
+        public static double AspectRatioDifferenceMultiplier { get; set; } = 0.8;
+        public static double DensityDifferenceMultiplier { get; set; } = 0.5;
+        public static double CharXaxisDifferenceMultiplier { get; set; } = 1.5;
+        public static double CharYaxisDifferenceMultiplier { get; set; } = 1.5;
+        public static double AspectRatioDifferenceThreshold { get; set; } = 0.20;
+        public static double AspectRatioPenaltyValue { get; set; } = 2.5;
 
         /// <summary>
         /// Angle in degrees to deskew the character crops during training and recognition. This is a global setting that applies to all ROIs. You can adjust it based on your specific use case and the typical skew you encounter in your images. A value of 20 degrees is a common starting point for many OCR applications, but you may want to experiment with it to find the optimal angle for your dataset.
@@ -695,8 +702,11 @@ namespace CsplCam.Library.Services
                             double cxDiff = Math.Abs(inputCx - item.Cx);
                             double cyDiff = Math.Abs(inputCy - item.Cy);
 
-                            double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
-                            if (arDiff > 0.15) penalty += (arDiff * 2.5);
+                            //claculate penalty
+                            double penalty = (arDiff * AspectRatioDifferenceMultiplier) + (densityDiff * DensityDifferenceMultiplier) + (cxDiff * CharXaxisDifferenceMultiplier) + (cyDiff * CharYaxisDifferenceMultiplier);
+
+                            //add penalty
+                            if (arDiff > AspectRatioDifferenceThreshold) penalty += (arDiff * AspectRatioPenaltyValue);
 
                             double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
 
@@ -746,8 +756,14 @@ namespace CsplCam.Library.Services
                         double cxDiff = Math.Abs(inputCx - item.Cx);
                         double cyDiff = Math.Abs(inputCy - item.Cy);
 
-                        double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
-                        if (arDiff > 0.15) penalty += (arDiff * 2.5);
+                        //double penalty = (arDiff * 0.8) + (densityDiff * 0.5) + (cxDiff * 1.5) + (cyDiff * 1.5);
+                        //if (arDiff > 0.15) penalty += (arDiff * 2.5);
+
+                        //claculate penalty
+                        double penalty = (arDiff * AspectRatioDifferenceMultiplier) + (densityDiff * DensityDifferenceMultiplier) + (cxDiff * CharXaxisDifferenceMultiplier) + (cyDiff * CharYaxisDifferenceMultiplier);
+
+                        //add penalty
+                        if (arDiff > AspectRatioDifferenceThreshold) penalty += (arDiff * AspectRatioPenaltyValue);
 
                         if (1.0 - penalty < bestScore) continue;
 
