@@ -718,11 +718,6 @@ namespace CsplCam.Library.Services
 
                         //check global search based on confidence
                         skipGlobalSearch = bestScore >= confidenceThreshold;
-
-                        ////// THE FIX: If the user provided a specific letter/number, NEVER search the whole dataset!
-                        ////skipGlobalSearch = true;
-                        //if(!skipGlobalSearch && bestLabel.ToUpper().Equals(folderName.ToUpper()))
-                        //    skipGlobalSearch = true;
                     }
                     else
                     {
@@ -733,21 +728,6 @@ namespace CsplCam.Library.Services
                         ////fall bakc to global serach
                         skipGlobalSearch = false;
                     }
-
-                    //// only run when the global search is true  
-                    //if (skipGlobalSearch)
-                    //{
-                    //    // ====================================================================
-                    //    // THE HYBRID FIX: "The Confidence Check"
-                    //    // If the expected character is a VERY STRONG match (> 85%), 
-                    //    // we trust it completely and skip the global search (Massive Speed Boost).
-                    //    // If it's a weak match (like 52%), we DO NOT trust it. We force a global 
-                    //    // search to see if another character is actually a better fit.
-                    //    // ====================================================================
-                    //    double confidenceThreshold = Math.Max(OcvTargetMatchConfidence, ThresholdRatio); // Use 85%, or the user's threshold if they set it higher.
-
-                    //    skipGlobalSearch = bestScore >= confidenceThreshold;
-                    //}
                 }
 
                 // --- STEP 2: GLOBAL FALLBACK OCR (Only runs for *, #, @, or empty Expected Text) ---
@@ -783,7 +763,7 @@ namespace CsplCam.Library.Services
 
 
                 // ====================================================================
-                // THE CASE-SENSITIVITY FIX (Your brilliant observation!)
+                // 
                 // Because a 30x30 'S' and 's' are mathematically identical, the engine 
                 // might guess the wrong case. If the letter matches but the case is wrong, 
                 // we force it to match the Expected Text case!
