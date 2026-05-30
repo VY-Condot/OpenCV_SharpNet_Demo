@@ -1741,7 +1741,7 @@ namespace CsplCam.Library.Services
                             //}
 
                             //get the actual char after post processing
-                            res.Text = CharPostProcessing(res.Text, res.Box.Height, medianHeight);
+                            //res.Text = CharPostProcessing(res.Text, res.Box.Height, medianHeight);
 
                             // --- ORIGINAL APPEND & SCORE LOGIC ---
                             sb.Append(res.Text);
