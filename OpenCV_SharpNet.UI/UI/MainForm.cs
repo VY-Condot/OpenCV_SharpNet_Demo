@@ -51,6 +51,9 @@ namespace OpenCV_SharpNet.UI
         bool IsGenerateReport = bool.TryParse(ConfigurationManager.AppSettings["IsGenerateReport"], out var res) ? res : false;
         List<GS1_QC_CheckResult> lstGs1Res = new();
 
+        //get this roimanger from the application settings
+        IRoiManager roiManger = new RoiManager();
+
         public MainForm()
         {
             InitializeComponent();
@@ -1568,7 +1571,7 @@ namespace OpenCV_SharpNet.UI
             ImageCanvas.Invalidate();
         }
 
-        private void BtnSaveRoi_Click(object sender, EventArgs e)
+        private async void BtnSaveRoi_Click(object sender, EventArgs e)
         {
             if (rois.Count == 0)
             {
@@ -1585,31 +1588,35 @@ namespace OpenCV_SharpNet.UI
                 {
                     try
                     {
-                        var dataToSave = new List<RoiDataTransfer>();
-                        foreach (var roi in rois) dataToSave.Add(ROIConverter.FromLogic(roi));
+                        //var dataToSave = new List<RoiDataTransfer>();
+                        //foreach (var roi in rois) dataToSave.Add(ROIConverter.FromLogic(roi));
 
-                        var wrapper = new RoiConfigWrapper
-                        {
-                            OriginalImageWidth = currentImage?.Width ?? 1,
-                            OriginalImageHeight = currentImage?.Height ?? 1,
+                        //var wrapper = new RoiConfigWrapper
+                        //{
+                        //    OriginalImageWidth = currentImage?.Width ?? 1,
+                        //    OriginalImageHeight = currentImage?.Height ?? 1,
 
-                            //get saved ocr engine config
-                            OcvTargetMatchConfidence = OcrEngine.OcvTargetMatchConfidence,
-                            AspectRatioDifferenceMultiplier = OcrEngine.AspectRatioDifferenceMultiplier,
-                            DensityDifferenceMultiplier = OcrEngine.DensityDifferenceMultiplier,
-                            AspectRatioDifferenceThreshold = OcrEngine.AspectRatioDifferenceThreshold,
-                            AspectRatioPenaltyValue = OcrEngine.AspectRatioPenaltyValue,
-                            SkewAngle = OcrEngine.SkewAngle,
+                        //    //get saved ocr engine config
+                        //    OcvTargetMatchConfidence = OcrEngine.OcvTargetMatchConfidence,
+                        //    AspectRatioDifferenceMultiplier = OcrEngine.AspectRatioDifferenceMultiplier,
+                        //    DensityDifferenceMultiplier = OcrEngine.DensityDifferenceMultiplier,
+                        //    AspectRatioDifferenceThreshold = OcrEngine.AspectRatioDifferenceThreshold,
+                        //    AspectRatioPenaltyValue = OcrEngine.AspectRatioPenaltyValue,
+                        //    SkewAngle = OcrEngine.SkewAngle,
 
 
-                            Rois = dataToSave
-                        };
+                        //    Rois = dataToSave
+                        //};
 
-                        var options = new JsonSerializerOptions { WriteIndented = true };
-                        string jsonString = JsonSerializer.Serialize(wrapper, options); // FIX: Serialized 'wrapper', not 'dataToSave'
-                        System.IO.File.WriteAllText(sfd.FileName, jsonString);
+                        //var options = new JsonSerializerOptions { WriteIndented = true };
+                        //string jsonString = JsonSerializer.Serialize(wrapper, options); // FIX: Serialized 'wrapper', not 'dataToSave'
+                        //System.IO.File.WriteAllText(sfd.FileName, jsonString);
 
-                        MessageBox.Show($"Successfully saved {rois.Count} ROIs.");
+                        //call new converter that handles both Roi list and wrapper with engine settings
+                        bool isSaved = await roiManger.SaveRoi(currentImage,rois, sfd.FileName);
+
+                        if(isSaved)
+                            MessageBox.Show($"Successfully saved {rois.Count} ROIs.");
                     }
                     catch (Exception ex)
                     {
@@ -1620,7 +1627,7 @@ namespace OpenCV_SharpNet.UI
             DisplaySelectInfo(DisplayInfo.ROISave);
         }
 
-        private void BtnLoadRoi_Click(object sender, EventArgs e)
+        private async void BtnLoadRoi_Click(object sender, EventArgs e)
         {
             if (currentImage == null)
             {
@@ -1636,73 +1643,76 @@ namespace OpenCV_SharpNet.UI
                 {
                     try
                     {
-                        string jsonString = System.IO.File.ReadAllText(ofd.FileName);
-                        List<RoiDataTransfer> loadedDtos = null;
-                        int savedWidth = currentImage.Width;
-                        int savedHeight = currentImage.Height;
+                        //string jsonString = System.IO.File.ReadAllText(ofd.FileName);
+                        //List<RoiDataTransfer> loadedDtos = null;
+                        //int savedWidth = currentImage.Width;
+                        //int savedHeight = currentImage.Height;
 
-                        try
-                        {
-                            var wrapper = JsonSerializer.Deserialize<RoiConfigWrapper>(jsonString);
-                            if (wrapper != null && wrapper.Rois != null)
-                            {
-                                loadedDtos = wrapper.Rois;
-                                if (wrapper.OriginalImageWidth > 0) savedWidth = wrapper.OriginalImageWidth;
-                                if (wrapper.OriginalImageHeight > 0) savedHeight = wrapper.OriginalImageHeight;
+                        //try
+                        //{
+                        //    var wrapper = JsonSerializer.Deserialize<RoiConfigWrapper>(jsonString);
+                        //    if (wrapper != null && wrapper.Rois != null)
+                        //    {
+                        //        loadedDtos = wrapper.Rois;
+                        //        if (wrapper.OriginalImageWidth > 0) savedWidth = wrapper.OriginalImageWidth;
+                        //        if (wrapper.OriginalImageHeight > 0) savedHeight = wrapper.OriginalImageHeight;
 
 
-                                // Load OCR engine settings
-                                OcrEngine.OcvTargetMatchConfidence = wrapper.OcvTargetMatchConfidence;
-                                OcrEngine.AspectRatioDifferenceMultiplier = wrapper.AspectRatioDifferenceMultiplier;
-                                OcrEngine.DensityDifferenceMultiplier = wrapper.DensityDifferenceMultiplier;
-                                OcrEngine.AspectRatioDifferenceThreshold = wrapper.AspectRatioDifferenceThreshold;
-                                OcrEngine.AspectRatioPenaltyValue = wrapper.AspectRatioPenaltyValue;
-                                OcrEngine.SkewAngle = wrapper.SkewAngle;
-                            }
-                        }
-                        catch
-                        {
-                            loadedDtos = JsonSerializer.Deserialize<List<RoiDataTransfer>>(jsonString);
-                        }
+                        //        // Load OCR engine settings
+                        //        OcrEngine.OcvTargetMatchConfidence = wrapper.OcvTargetMatchConfidence;
+                        //        OcrEngine.AspectRatioDifferenceMultiplier = wrapper.AspectRatioDifferenceMultiplier;
+                        //        OcrEngine.DensityDifferenceMultiplier = wrapper.DensityDifferenceMultiplier;
+                        //        OcrEngine.AspectRatioDifferenceThreshold = wrapper.AspectRatioDifferenceThreshold;
+                        //        OcrEngine.AspectRatioPenaltyValue = wrapper.AspectRatioPenaltyValue;
+                        //        OcrEngine.SkewAngle = wrapper.SkewAngle;
+                        //    }
+                        //}
+                        //catch
+                        //{
+                        //    loadedDtos = JsonSerializer.Deserialize<List<RoiDataTransfer>>(jsonString);
+                        //}
 
-                        if (loadedDtos == null || loadedDtos.Count == 0) return;
+                        //if (loadedDtos == null || loadedDtos.Count == 0) return;
 
-                        double scaleX = (double)currentImage.Width / savedWidth;
-                        double scaleY = (double)currentImage.Height / savedHeight;
+                        //double scaleX = (double)currentImage.Width / savedWidth;
+                        //double scaleY = (double)currentImage.Height / savedHeight;
 
                         foreach (var r in rois) if (r.AnchorTemplate != null) r.AnchorTemplate.Dispose();
                         rois.Clear();
                         selectedRoi = null;
 
-                        foreach (var dto in loadedDtos)
-                        {
-                            var logicRoi = ROIConverter.ToLogic(dto);
+                        //foreach (var dto in loadedDtos)
+                        //{
+                        //    var logicRoi = ROIConverter.ToLogic(dto);
 
-                            if (scaleX != 1.0 || scaleY != 1.0)
-                            {
-                                int newX = (int)(logicRoi.Box.X * scaleX);
-                                int newY = (int)(logicRoi.Box.Y * scaleY);
-                                int newW = (int)(logicRoi.Box.Width * scaleX);
-                                int newH = (int)(logicRoi.Box.Height * scaleY);
-                                logicRoi.Box = new CvRect(newX, newY, newW, newH);
+                        //    if (scaleX != 1.0 || scaleY != 1.0)
+                        //    {
+                        //        int newX = (int)(logicRoi.Box.X * scaleX);
+                        //        int newY = (int)(logicRoi.Box.Y * scaleY);
+                        //        int newW = (int)(logicRoi.Box.Width * scaleX);
+                        //        int newH = (int)(logicRoi.Box.Height * scaleY);
+                        //        logicRoi.Box = new CvRect(newX, newY, newW, newH);
 
-                                logicRoi.AnchorTop = (int)(logicRoi.AnchorTop * scaleY);
-                                logicRoi.AnchorBottom = (int)(logicRoi.AnchorBottom * scaleY);
-                                logicRoi.AnchorLeft = (int)(logicRoi.AnchorLeft * scaleX);
-                                logicRoi.AnchorRight = (int)(logicRoi.AnchorRight * scaleX);
+                        //        logicRoi.AnchorTop = (int)(logicRoi.AnchorTop * scaleY);
+                        //        logicRoi.AnchorBottom = (int)(logicRoi.AnchorBottom * scaleY);
+                        //        logicRoi.AnchorLeft = (int)(logicRoi.AnchorLeft * scaleX);
+                        //        logicRoi.AnchorRight = (int)(logicRoi.AnchorRight * scaleX);
 
-                                if (logicRoi.AnchorTemplate != null && !logicRoi.AnchorTemplate.Empty())
-                                {
-                                    Mat resizedTemplate = new Mat();
-                                    Cv2.Resize(logicRoi.AnchorTemplate, resizedTemplate,
-                                        new OpenCvSharp.Size(logicRoi.AnchorTemplate.Width * scaleX, logicRoi.AnchorTemplate.Height * scaleY),
-                                        0, 0, InterpolationFlags.Cubic);
-                                    logicRoi.AnchorTemplate.Dispose();
-                                    logicRoi.AnchorTemplate = resizedTemplate;
-                                }
-                            }
-                            rois.Add(logicRoi);
-                        }
+                        //        if (logicRoi.AnchorTemplate != null && !logicRoi.AnchorTemplate.Empty())
+                        //        {
+                        //            Mat resizedTemplate = new Mat();
+                        //            Cv2.Resize(logicRoi.AnchorTemplate, resizedTemplate,
+                        //                new OpenCvSharp.Size(logicRoi.AnchorTemplate.Width * scaleX, logicRoi.AnchorTemplate.Height * scaleY),
+                        //                0, 0, InterpolationFlags.Cubic);
+                        //            logicRoi.AnchorTemplate.Dispose();
+                        //            logicRoi.AnchorTemplate = resizedTemplate;
+                        //        }
+                        //    }
+                        //    rois.Add(logicRoi);
+                        //}
+
+                        //get previous data from roimanger class
+                        rois = await roiManger.LoadRoi(currentImage, ofd.FileName);
 
                         if (rois.Any(r => r.IsAnchor)) AlignRois();
 
