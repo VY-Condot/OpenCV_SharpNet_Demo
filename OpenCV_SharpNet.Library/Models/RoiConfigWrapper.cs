@@ -17,13 +17,13 @@ namespace CsplCam.Library.Models
 
 
 
-        ////engine setting parameters
-        //public static double OcvTargetMatchConfidence { get; set; } = 0.80;
-        //public static double AspectRatioDifferenceMultiplier { get; set; } = 0.8;
-        //public static double DensityDifferenceMultiplier { get; set; } = 0.5;
-        //public static double AspectRatioDifferenceThreshold { get; set; } = 0.20;
-        //public static double AspectRatioPenaltyValue { get; set; } = 2.5;
-        //public static double SkewAngle { get; set; } = 10;
+        //engine setting parameters
+        public double OcvTargetMatchConfidence { get; set; } = 0.80;
+        public double AspectRatioDifferenceMultiplier { get; set; } = 0.8;
+        public double DensityDifferenceMultiplier { get; set; } = 0.5;
+        public double AspectRatioDifferenceThreshold { get; set; } = 0.20;
+        public double AspectRatioPenaltyValue { get; set; } = 2.5;
+        public double SkewAngle { get; set; } = 10;
 
         public List<RoiDataTransfer> Rois { get; set; }
     }

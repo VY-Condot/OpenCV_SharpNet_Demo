@@ -1592,6 +1592,16 @@ namespace OpenCV_SharpNet.UI
                         {
                             OriginalImageWidth = currentImage?.Width ?? 1,
                             OriginalImageHeight = currentImage?.Height ?? 1,
+
+                            //get saved ocr engine config
+                            OcvTargetMatchConfidence = OcrEngine.OcvTargetMatchConfidence,
+                            AspectRatioDifferenceMultiplier = OcrEngine.AspectRatioDifferenceMultiplier,
+                            DensityDifferenceMultiplier = OcrEngine.DensityDifferenceMultiplier,
+                            AspectRatioDifferenceThreshold = OcrEngine.AspectRatioDifferenceThreshold,
+                            AspectRatioPenaltyValue = OcrEngine.AspectRatioPenaltyValue,
+                            SkewAngle = OcrEngine.SkewAngle,
+
+
                             Rois = dataToSave
                         };
 
@@ -1639,6 +1649,15 @@ namespace OpenCV_SharpNet.UI
                                 loadedDtos = wrapper.Rois;
                                 if (wrapper.OriginalImageWidth > 0) savedWidth = wrapper.OriginalImageWidth;
                                 if (wrapper.OriginalImageHeight > 0) savedHeight = wrapper.OriginalImageHeight;
+
+
+                                // Load OCR engine settings
+                                OcrEngine.OcvTargetMatchConfidence = wrapper.OcvTargetMatchConfidence;
+                                OcrEngine.AspectRatioDifferenceMultiplier = wrapper.AspectRatioDifferenceMultiplier;
+                                OcrEngine.DensityDifferenceMultiplier = wrapper.DensityDifferenceMultiplier;
+                                OcrEngine.AspectRatioDifferenceThreshold = wrapper.AspectRatioDifferenceThreshold;
+                                OcrEngine.AspectRatioPenaltyValue = wrapper.AspectRatioPenaltyValue;
+                                OcrEngine.SkewAngle = wrapper.SkewAngle;
                             }
                         }
                         catch
