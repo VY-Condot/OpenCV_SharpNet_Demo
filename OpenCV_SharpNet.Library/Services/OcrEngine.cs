@@ -684,9 +684,9 @@ namespace CsplCam.Library.Services
                         if (templates.Count == 0) return ("?", 0.0);
 
                         //convert into unsafe pointer for faster access
-                        
+
                         //1.convert into span for direct acces
-                         var charTempates = CollectionsMarshal.AsSpan(templates);
+                        var charTempates = CollectionsMarshal.AsSpan(templates);
 
                         //convert into usafe array for direct access
                         ref CharTemplate templateArray = ref MemoryMarshal.GetReference(charTempates);
@@ -694,8 +694,8 @@ namespace CsplCam.Library.Services
                         //3.start accessing items
                         for (int i = 0; i < charTempates.Length; i++)
                         {
-                            //get actual chartemplate item
-                            ref CharTemplate item = ref Unsafe.Add(ref templateArray,i);
+                            //get actual char template item
+                            ref CharTemplate item = ref Unsafe.Add(ref templateArray, i);
 
                             double arDiff = Math.Abs(inputAR - item.AspectRatio);
                             double densityDiff = Math.Abs(inputDensity - item.FillDensity);
@@ -710,10 +710,10 @@ namespace CsplCam.Library.Services
 
                             double finalScore = FastDotProduct(ts.FloatArray, item.Vector) - penalty;
 
-                            if (finalScore > bestScore) 
-                            { 
-                                bestScore = finalScore; 
-                                bestLabel = folderName; 
+                            if (finalScore > bestScore)
+                            {
+                                bestScore = finalScore;
+                                bestLabel = folderName;
                             }
                         }
 
@@ -739,6 +739,7 @@ namespace CsplCam.Library.Services
                         skipGlobalSearch = false;
                     }
                 }
+
 
                 // --- STEP 2: GLOBAL FALLBACK OCR (Only runs for *, #, @, or empty Expected Text) ---
                 if (!skipGlobalSearch)

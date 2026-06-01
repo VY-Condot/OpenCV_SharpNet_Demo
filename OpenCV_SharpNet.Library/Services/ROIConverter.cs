@@ -1,5 +1,6 @@
 ﻿using CsplCam.Library.Enums;
 using CsplCam.Library.Models;
+using CsplCam.Library.Models.GS1_QC;
 using OpenCvSharp;
 using System;
 using System.Collections.Generic;
@@ -58,8 +59,15 @@ namespace CsplCam.Library.Services
                 MorphOp = logicObj.MorphOp,
                 SegmentationMode = logicObj.SegmentationMode,
                 ReferenceRoiID = logicObj.ReferenceRoiID,
-                IsUseRoiReference = logicObj.IsUseRoiReference
+                IsUseRoiReference = logicObj.IsUseRoiReference,
                 //OverallThreshold = logicObj.OverallThreshold
+
+
+                //=====================================================================
+                // added on :- 26052026
+                // new addition : add this property for getting suer config for grading range
+                //=====================================================================
+                UserConfiguredGrading = logicObj.UserConfiguredGrading 
             };
         }
 
@@ -104,8 +112,14 @@ namespace CsplCam.Library.Services
                 MorphOp = objROITransfer.MorphOp,
                 SegmentationMode = objROITransfer.SegmentationMode,
                 ReferenceRoiID = objROITransfer.ReferenceRoiID,
-                IsUseRoiReference = objROITransfer.IsUseRoiReference
+                IsUseRoiReference = objROITransfer.IsUseRoiReference,
                 //OverallThreshold = objROITransfer.OverallThreshold
+
+                //=====================================================================
+                // added on :- 26052026
+                // new addition : add this property for getting suer config for grading range
+                //=====================================================================
+                UserConfiguredGrading = objROITransfer.UserConfiguredGrading
             };
         }
     }

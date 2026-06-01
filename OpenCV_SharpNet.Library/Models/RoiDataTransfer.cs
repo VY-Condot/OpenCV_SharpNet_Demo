@@ -1,5 +1,6 @@
 ﻿using CsplCam.Library.Enums;
 using CsplCam.Library.Models;
+using CsplCam.Library.Models.GS1_QC;
 using CsplCam.Library.Services;
 using OpenCvSharp;
 using System.Diagnostics;
@@ -85,5 +86,12 @@ namespace CsplCam.Library.Models
         //==============================================================================================
         public bool IsUseRoiReference { get; set; } = false;
         public int ReferenceRoiID { get; set; } = -1;
+
+
+        //=====================================================================
+        // added on :- 26052026
+        // new addition : add this property for getting suer config for grading range
+        //=====================================================================
+        public UserConfiguredGrading? UserConfiguredGrading { get; set; } = new();
     }
 }

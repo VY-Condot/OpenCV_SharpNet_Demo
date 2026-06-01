@@ -11,7 +11,7 @@ namespace CsplCam.Library.Models.GS1_QC
     /// </summary>
     public class GradingMetricConfig
     {
-        public GradingSystems GradingSystem { get; init; }
+        public GradingSystems GradingSystem { get; set; }
         public bool IsEnabled { get; set; } = true; // Fixed spelling from IsEnbled
 
         public double MinValue { get; set; } = 0;
@@ -19,7 +19,15 @@ namespace CsplCam.Library.Models.GS1_QC
         public double Increment { get; set; } = 0.01;
 
         //public List<GradingRange> GradingData { get; set; } = new();
-        public List<GradingRange> GradingData;
+        public List<GradingRange> GradingData { get; set; }
+
+        /// <summary>
+        /// Parameterless constructor for JSON deserialization.
+        /// </summary>
+        public GradingMetricConfig()
+        {
+            GradingData = new List<GradingRange>();
+        }
 
         public GradingMetricConfig(GradingSystems system)   
         {
